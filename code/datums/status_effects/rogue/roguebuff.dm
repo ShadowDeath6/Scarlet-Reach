@@ -543,9 +543,15 @@
 		owner.adjustOxyLoss(-healing_on_tick, 0)
 		owner.adjustToxLoss(-healing_on_tick, 0)
 		owner.adjustOrganLoss(ORGAN_SLOT_BRAIN, -healing_on_tick)
-		owner.adjustCloneLoss(-healing_on_tick, 0)		
+		owner.adjustCloneLoss(-healing_on_tick, 0)
+
+/atom/movable/screen/alert/status_effect/buff/rockmuncher
+	name = "Stone Incorporation"
+	desc = "I am \"digesting\" a stone and rejuvenating my form with the elements that it contains."
+	icon_state = "buff"
 
 /datum/status_effect/buff/rockmuncher
+	alert_type = /atom/movable/screen/alert/status_effect/buff/rockmuncher
 	id = "rockmuncher"
 	duration = 10 SECONDS
 	var/healing_on_tick = 4
@@ -556,7 +562,7 @@
 
 /datum/status_effect/buff/rockmuncher/tick()
 	var/obj/effect/temp_visual/heal/H = new /obj/effect/temp_visual/heal_rogue(get_turf(owner))
-	H.color = "#FF0000"
+	H.color = "#93DDFA"
 	var/list/wCount = owner.get_wounds()
 	if(owner.construct)
 		if(wCount.len > 0)
@@ -568,6 +574,7 @@
 		owner.adjustToxLoss(0.15*-healing_on_tick, 0)
 		owner.adjustOrganLoss(ORGAN_SLOT_BRAIN, 0.15*-healing_on_tick)
 		owner.adjustCloneLoss(0.15*-healing_on_tick, 0)
+		owner.energy_add(healing_on_tick+5) //give us a bit of blue bar back, more if the stone is magical.
 
 /datum/status_effect/buff/healing/on_remove()
 	owner.remove_filter(MIRACLE_HEALING_FILTER)
