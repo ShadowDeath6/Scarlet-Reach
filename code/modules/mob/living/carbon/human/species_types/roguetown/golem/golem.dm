@@ -45,7 +45,7 @@
 		OFFSET_NECK_F = list(0,-1), OFFSET_MOUTH_F = list(0,-1), OFFSET_PANTS_F = list(0,0), \
 		OFFSET_SHIRT_F = list(0,0), OFFSET_ARMOR_F = list(0,0), OFFSET_UNDIES_F = list(0,-1), \
 		)
-	race_bonus = list(STAT_CONSTITUTION = 1, STAT_SPEED = -2)
+	race_bonus = list(STAT_CONSTITUTION = 2, STAT_SPEED = -2)
 	enflamed_icon = "widefire"
 	organs = list(
 		ORGAN_SLOT_BRAIN = /obj/item/organ/brain/golem,
@@ -107,6 +107,15 @@
 	"red - blood" = "822b2b"
 
 	))
+
+
+/datum/species/golem/on_species_gain(mob/living/carbon/C, datum/species/old_species)
+	. = ..()
+	C.construct = TRUE
+
+/datum/species/golem/on_species_loss(mob/living/carbon/C)
+	. = ..()
+	C.construct = FALSE
 
 
 //golem upgrade item so they can gain skills
