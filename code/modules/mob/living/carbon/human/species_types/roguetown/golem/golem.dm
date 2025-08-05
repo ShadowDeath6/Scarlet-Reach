@@ -11,9 +11,9 @@
 	materials composing their shells makes them more resilient if not slower than most. As of late, a rebellion amongst \
 	the Golems of Giza has given way to a new generation of individualistic arcyne-forged. Much of society as a whole is \
 	conflicted on Golems, for their sensibilities vary wildly from one to the next. \
-	into cohabitation with races they'd deem lesser.<br> \
-	(Insomnia, No hunger, no blood, immune to both potions and poisons.) \
-	(+1 Constitution, -2 Speed)"
+	<br> \
+	(Insomnia, No hunger, no blood, immune to both potions and poisons. Can only gain higher-level skills with skill exhibitors.) \
+	(+2 Constitution, -2 Speed)"
 
 	construct = 1
 	skin_tone_wording = "Material"
