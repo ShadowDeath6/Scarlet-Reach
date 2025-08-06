@@ -43,8 +43,7 @@
 // Proc for wretch to select a bounty and supernatural affliction
 /proc/wretch_select_bounty(mob/living/carbon/human/H)
 	// First select supernatural affliction
-	var/aff_choice = input(H, "What supernatural curse afflicts you? (\"None\" grants +1 to all stats, \"Vampire\" and \"Werewolf\" give -1 to all stats)", "Supernatural Affliction") as null|anything in list("None (+1 to all stats)", "Vampire (-1 to all stats)", "Werewolf (-1 to all stats)")
-	var/affliction = aff_choice
+	var/affliction = input(H, "What supernatural curse afflicts you? (\"None\" grants +1 to all stats, \"Vampire\" and \"Werewolf\" give -1 to all stats)", "Supernatural Affliction") as null|anything in list("None (+1 to all stats)", "Vampire (-1 to all stats)", "Werewolf (-1 to all stats)")
 	if(H.construct && affliction != "None (+1 to all stats)")//golems can't be infected by WW/Vamps, so they can't start as them
 		affliction = "None (+1 to all stats)"
 		to_chat(H, "You are a Golem. Your inorganic form is incapable of bearing the curse of undeath, nor the blessing of Dendor.")
