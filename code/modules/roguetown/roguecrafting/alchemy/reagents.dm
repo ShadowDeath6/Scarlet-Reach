@@ -12,10 +12,10 @@
 	color = "#ff9494"
 	taste_description = "tangy sweetness"
 	overdose_threshold = 0
-	metabolization_rate = REAGENTS_METABOLISM
+	metabolization_rate = REAGENTS_METABOLISM * 0.75
 	alpha = 173
 
-/datum/reagent/medicine/minorhealthpot/on_mob_life(mob/living/carbon/M) // Heals half as much as health potion, but not wounds.
+/datum/reagent/medicine/minorhealthpot/on_mob_life(mob/living/carbon/M) // Heals half as much as health potion
 	var/list/wCount = M.get_wounds()
 	if(M.blood_volume < BLOOD_VOLUME_NORMAL) //can not overfill
 		M.blood_volume = min(M.blood_volume+20, BLOOD_VOLUME_MAXIMUM)
@@ -27,9 +27,9 @@
 	for(var/datum/reagent/toxin/R in M.reagents.reagent_list)
 		if(R != src)
 			M.reagents.remove_reagent(R.type,1)
-	M.adjustBruteLoss(-1, 0)
-	M.adjustFireLoss(-1, 0)
-	M.adjustToxLoss(-1, 0)
+	M.adjustBruteLoss(-1.5, 0)
+	M.adjustFireLoss(-1.5, 0)
+	M.adjustToxLoss(-1.5, 0)
 	M.adjustOxyLoss(-1.5, 0)
 	M.adjustCloneLoss(-1, 0)
 	for(var/obj/item/organ/organny in M.internal_organs)
@@ -37,13 +37,13 @@
 	..()
 	. = 1
 
-/datum/chemical_reaction/minorpot
+/datum/chemical_reaction/health_minorpot
 	name = "Lesser Health Potion"
 	id = /datum/reagent/medicine/minorhealthpot
 	results = list(/datum/reagent/medicine/minorhealthpot = 10)
 	required_reagents = list(/datum/reagent/medicine/healthpot = 5, /datum/reagent/water = 5)
 
-/datum/chemical_reaction/minorpot
+/datum/chemical_reaction/health_medpot
 	name = "Health Potion"
 	id = /datum/reagent/medicine/healthpot
 	results = list(/datum/reagent/medicine/healthpot = 10)
@@ -84,7 +84,7 @@
 /datum/reagent/medicine/stronghealth
 	name = "Strong Health Potion"
 	description = "Quickly regenerates all types of damage."
-	color = "#820000be"
+	color = "#820000"
 	taste_description = "rich lifeblood"
 	metabolization_rate = REAGENTS_METABOLISM * 3
 
@@ -124,6 +124,14 @@
 		M.energy_add(30)
 	..()
 
+
+/datum/chemical_reaction/mana_medpot
+	name = "Mana Potion"
+	id = /datum/reagent/medicine/healthpot
+	results = list(/datum/reagent/medicine/manapot = 10)
+	required_reagents = list(/datum/reagent/medicine/strongmana = 5, /datum/reagent/water = 5)
+
+
 /datum/reagent/medicine/strongmana
 	name = "Strong Mana Potion"
 	description = "Rapidly regenerates energy."
@@ -151,6 +159,12 @@
 		M.stamina_add(-20)
 	..()
 	. = 1
+
+/datum/chemical_reaction/stam_medpot
+	name = "Stamina Potion"
+	id = /datum/reagent/medicine/stampot
+	results = list(/datum/reagent/medicine/stampot = 10)
+	required_reagents = list(/datum/reagent/medicine/strongstam = 5, /datum/reagent/water = 5)
 
 /datum/reagent/medicine/strongstam
 	name = "Strong Stamina Potion"
@@ -209,7 +223,7 @@
 	Previously, it would apply a status effect to the mob lasting for 93 / 300 seconds and remove everything
 	However it meant that putting it in an alchemical vial was a trap as it sipped 9 units instead of 5 units that is the required minimum.
 	And removed any excessive potion inside the body. This has been changed to apply a 3 seconds buff to the mob, but have much lower
-	metabolization rate, so that the duration of the buff depends on how long you last. 
+	metabolization rate, so that the duration of the buff depends on how long you last.
 	Roughly tested. At Metabolization Rate 1. 9 units sip (1/3 of a vial) last 20 seconds.
 	To make this somewhat equal to the old system, base metabolization rate is 0.1 - making it last 200 seconds - 600 seconds if you sip an entire vial.
 	This is 2x on weaker potions (Intelligence, Fortune). However, overdose threshold is now 30 units so you can only drink one vial at once.
