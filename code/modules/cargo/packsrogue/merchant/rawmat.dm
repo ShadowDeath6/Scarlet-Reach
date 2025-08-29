@@ -49,7 +49,7 @@
 
 /datum/supply_pack/rogue/rawmats/cloth
 	name = "Cloth"
-	cost = 60
+	cost = 40
 	contains = list(/obj/item/natural/cloth,
 	/obj/item/natural/cloth,
 	/obj/item/natural/cloth,
@@ -61,7 +61,7 @@
 
 /datum/supply_pack/rogue/rawmats/stones
 	name = "Stone"
-	cost = 30
+	cost = 20
 	contains = list(/obj/item/natural/stone,
 	/obj/item/natural/stone,
 	/obj/item/natural/stone,
