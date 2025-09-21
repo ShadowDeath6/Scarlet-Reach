@@ -1,19 +1,19 @@
 // LAMIA
-/obj/item/bodypart/taur/lamia
-	name = "lamian tail"
+/obj/item/bodypart/taur
+	name = "undefined animal lower half"
 	desc = ""
 	icon = 'icons/mob/species/taurs.dmi'
 	icon_state = ""
 	attack_verb = list("hit")
 	max_damage = 300
-	body_zone = BODY_ZONE_LAMIAN_TAIL
+	body_zone = BODY_ZONE_TAUR
 	body_part = LEGS
 	body_damage_coeff = 1
 	px_x = -16
 	px_y = 12
 	max_stamina_damage = 50
-	subtargets = list(BODY_ZONE_L_LEG, BODY_ZONE_PRECISE_L_FOOT, BODY_ZONE_R_LEG, BODY_ZONE_PRECISE_R_FOOT, BODY_ZONE_LAMIAN_TAIL)
-	grabtargets = list(BODY_ZONE_LAMIAN_TAIL)
+	subtargets = list(BODY_ZONE_L_LEG, BODY_ZONE_PRECISE_L_FOOT, BODY_ZONE_R_LEG, BODY_ZONE_PRECISE_R_FOOT, BODY_ZONE_TAUR)
+	grabtargets = list(BODY_ZONE_TAUR)
 	dismemberable = FALSE //if you lose your tail, it's fucking GG bruh. you can't get the donor anywhere, so no. you can't dismember it brah
 
 	// Taur stuff!
@@ -30,12 +30,12 @@
 	var/has_tail_color = TRUE
 	var/color_blend_mode = BLEND_ADD
 	var/tail_color = null
-	var/tail_markings_color = "#d4c5c5"
+	var/tail_markings_color = "d4c5c5"
 
-/obj/item/bodypart/lamian_tail/New()
+/obj/item/bodypart/taur/New()
 	. = ..()
 
-/obj/item/bodypart/lamian_tail/get_limb_icon(dropped, hideaux = FALSE)
+/obj/item/bodypart/taur/get_limb_icon(dropped, hideaux = FALSE)
 	// List of overlays
 	. = list()
 
@@ -81,37 +81,41 @@
 
 
 
-GLOBAL_LIST_INIT(tail_types, subtypesof(/obj/item/bodypart/lamian_tail))
+GLOBAL_LIST_INIT(tail_types, subtypesof(/obj/item/bodypart/taur))
 
-/obj/item/bodypart/lamian_tail/lamian_tail
+/obj/item/bodypart/taur/lamian_tail
 	name = "lamia tail"
 
-	offset_x = -16
 	tail_icon_state = "lamia_tail"
 	tail_tip_icon_state = "lamia_tail_tip"
 	tail_markings_icon_state = "lamia_tail_markings"
 	tail_markings_tip_icon_state = "lamia_tail_markings_tip"
 
-	has_tail_color = TRUE
 
-/obj/item/bodypart/lamian_tail/mermaid_tail
+/obj/item/bodypart/taur/mermaid_tail
 	name = "mermaid tail"
 
-	offset_x = -16
 	tail_icon_state = "mermaid_tail"
 	tail_tip_icon_state = "mermaid_tail_tip"
 	tail_markings_icon_state = "mermaid_tail_markings" // done by ooooooog/ShadowDeath6
 	tail_markings_tip_icon_state = "mermaid_tail_markings_tip" // done by ooooooog/ShadowDeath6
 
-	has_tail_color = TRUE
 
-/obj/item/bodypart/lamian_tail/mermaid_tail_alt
+/obj/item/bodypart/taur/mermaid_tail_alt
 	name = "mermaid tail, alt"
 
-	offset_x = -16
 	tail_icon_state = "mermaid_tail_alt"
 	tail_tip_icon_state = "mermaid_tail_alt_tip"
 	tail_markings_icon_state = "mermaid_tail_alt_markings" // done by ooooooog/ShadowDeath6
 	tail_markings_tip_icon_state = "mermaid_tail_alt_markings_tip" // done by ooooooog/ShadowDeath6
 
-	has_tail_color = TRUE
+
+/obj/item/bodypart/taur/spider
+	name = "spider body"
+
+	offset_x = -16
+	tail_icon_state = "spider"
+	tail_tip_icon_state = "spider_tip"
+	tail_markings_icon_state = "spider_markings" // done by ooooooog/ShadowDeath6
+	tail_markings_tip_icon_state = "spider_tip_markings" // done by ooooooog/ShadowDeath6
+

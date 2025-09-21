@@ -1342,7 +1342,7 @@ SUBSYSTEM_DEF(gamemode)
 	var/total_influence = get_follower_influence(chosen_storyteller)
 	for(var/influence_factor in initialized_storyteller.influence_factors)
 		total_influence += calculate_specific_influence(chosen_storyteller, influence_factor)
-	
+
 	total_influence += initialized_storyteller.bonus_points
 
 	return total_influence

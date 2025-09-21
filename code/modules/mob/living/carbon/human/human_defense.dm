@@ -93,7 +93,7 @@
 					if(bclass in C.prevent_crits)
 						if(!best_armor)
 							best_armor = C
-						else if (round(((best_armor.obj_integrity / best_armor.max_integrity) * 100), 1) < round(((C.obj_integrity / C.max_integrity) * 100), 1)) //We want the armor with highest % integrity 
+						else if (round(((best_armor.obj_integrity / best_armor.max_integrity) * 100), 1) < round(((C.obj_integrity / C.max_integrity) * 100), 1)) //We want the armor with highest % integrity
 							best_armor = C
 	return best_armor
 /*
@@ -697,11 +697,11 @@
 	BODY_ZONE_L_ARM,
 	BODY_ZONE_R_ARM,
 	)
-	if(!islamia(src))
+	if(!is_taur(src))
 		body_zones += BODY_ZONE_L_LEG
 		body_zones += BODY_ZONE_R_LEG
 	else
-		body_zones += BODY_ZONE_LAMIAN_TAIL
+		body_zones += BODY_ZONE_TAUR
 	for(var/body_zone in body_zones)
 		var/obj/item/bodypart/bodypart = get_bodypart(body_zone)
 		if(!bodypart)

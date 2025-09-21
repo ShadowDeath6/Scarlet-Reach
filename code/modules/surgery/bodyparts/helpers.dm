@@ -137,7 +137,7 @@
 		full += BODY_ZONE_R_LEG
 		full += BODY_ZONE_L_LEG
 	else
-		full += BODY_ZONE_LAMIAN_TAIL
+		full += BODY_ZONE_TAUR
 
 	for(var/obj/item/bodypart/bodypart as anything in bodyparts)
 		full -= bodypart.body_zone
@@ -172,7 +172,7 @@
 /mob/living/carbon/get_lamian_tail()
 	for(var/X in bodyparts)
 		var/obj/item/bodypart/affecting = X
-		if(affecting.body_zone == BODY_ZONE_LAMIAN_TAIL)
+		if(affecting.body_zone == BODY_ZONE_TAUR)
 			return affecting
 	return null
 
@@ -258,7 +258,7 @@
 	var/needs_new_legs = FALSE
 	for(var/X in bodyparts)
 		var/obj/item/bodypart/O = X
-		if(O.body_zone == BODY_ZONE_LAMIAN_TAIL)
+		if(O.body_zone == BODY_ZONE_TAUR)
 			O.drop_limb(1)
 			qdel(O)
 			needs_new_legs = TRUE
@@ -275,18 +275,21 @@
 	regenerate_icons()
 	set_resting(FALSE)
 
-/mob/living/carbon/proc/Lamiaze(tail_type = /obj/item/bodypart/lamian_tail, color = "#ffffff", markings_color = "#ffffff")
+/mob/living/carbon/proc/taurize(taur_type = null, color = "#ffffff", markings_color = "#ffffff")
+	if(!taur_type)//we ALWAYS need to have a taur body type set when calling this
+		return
 	if(client?.prefs)
-		if((LAMIAN_TAIL in client.prefs.pref_species.species_traits))//if we call lamia-ize on an existing lamia (just fully_heal, basically)
+		if((TAUR_BODY in client.prefs.pref_species.species_traits))//if we call taur-ize on an existing taur (just fully_heal, basically)
 			color = "#"+client.prefs.tail_color
+			markings_color = "#"+client.prefs.tail_markings_color
 	for(var/X in bodyparts)
 		var/obj/item/bodypart/O = X
 		// drop taur tails too
-		if(O.body_part == LEG_LEFT || O.body_part == LEG_RIGHT || O.body_zone == BODY_ZONE_LAMIAN_TAIL)
+		if(O.body_part == LEG_LEFT || O.body_part == LEG_RIGHT || O.body_zone == BODY_ZONE_TAUR)
 			O.drop_limb(1)
 			qdel(O)
 
-	var/obj/item/bodypart/lamian_tail/T = new tail_type()
+	var/obj/item/bodypart/taur/T = new taur_type()
 	T.tail_color = color
 	T.tail_markings_color = markings_color
 	T.attach_limb(src)
@@ -295,10 +298,10 @@
 	regenerate_icons()
 	set_resting(FALSE)
 
-/mob/living/carbon/proc/de_Lamia()//gives you your legs back, only used when changing species
+/mob/living/carbon/proc/de_taur()//gives you your legs back, only used when changing species
 	for(var/X in bodyparts)
 		var/obj/item/bodypart/O = X
-		if(O.body_zone == BODY_ZONE_LAMIAN_TAIL)
+		if(O.body_zone == BODY_ZONE_TAUR)
 			O.drop_limb(1)
 			qdel(O)
 	var/obj/item/bodypart/r_leg/R = new()

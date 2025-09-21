@@ -163,18 +163,18 @@ GLOBAL_LIST_EMPTY(chosen_names)
 	var/update_mutant_colors = TRUE
 
 	var/headshot_link
-	
+
 	var/nsfw_headshot_link
-	
+
 	var/ooc_extra_link
 	var/ooc_extra
 	var/list/descriptor_entries = list()
 	var/list/custom_descriptors = list()
 
-	var/char_accent = "No accent"	
+	var/char_accent = "No accent"
 
 	// PATREON
-	// Vrell - I fucking hate how inconsistent the variable style is for this shit. underscores? all lowercase? camelcase? 
+	// Vrell - I fucking hate how inconsistent the variable style is for this shit. underscores? all lowercase? camelcase?
 	var/patreon_say_color = "ff7a05"
 	var/patreon_say_color_enabled = FALSE
 	// END PATREON
@@ -185,13 +185,13 @@ GLOBAL_LIST_EMPTY(chosen_names)
 
 	var/flavortext
 	var/flavortext_display
-	
+
 	var/is_legacy = FALSE
 
 	var/ooc_notes
 	var/ooc_notes_display
 
-	var/tail_type = /obj/item/bodypart/lamian_tail/lamian_tail
+	var/tail_type = null
 	var/tail_color = "ffffff"
 	var/tail_markings_color = "ffffff"
 
@@ -217,11 +217,11 @@ GLOBAL_LIST_EMPTY(chosen_names)
 			return
 	//Set the race to properly run race setter logic
 	set_new_race(pref_species, null)
-	
 
-	
 
-	
+
+
+
 	if(!charflaw)
 		charflaw = pick(GLOB.character_flaws)
 		charflaw = GLOB.character_flaws[charflaw]
@@ -256,7 +256,9 @@ GLOBAL_LIST_EMPTY(chosen_names)
 	reset_all_customizer_accessory_colors()
 	randomize_all_customizer_accessories()
 	reset_descriptors()
-	tail_type = /obj/item/bodypart/lamian_tail/lamian_tail
+	tail_type = /obj/item/bodypart/taur
+	if(new_race.allowed_tail_types)
+		tail_type = pick(new_race.allowed_tail_types)
 
 #define APPEARANCE_CATEGORY_COLUMN "<td valign='top' width='14%'>"
 #define MAX_MUTANT_ROWS 4
@@ -360,7 +362,7 @@ GLOBAL_LIST_EMPTY(chosen_names)
 			dat += "<BR>"
 			dat += "<b>Nickname:</b> "
 			dat += "<a href='?_src_=prefs;preference=nickname;task=input'>[nickname]</a><BR>"
-	
+
 			// LETHALSTONE EDIT BEGIN: add pronoun prefs
 			dat += "<b>Pronouns:</b> <a href='?_src_=prefs;preference=pronouns;task=input'>[pronouns]</a><BR>"
 			// LETHALSTONE EDIT END
@@ -386,8 +388,8 @@ GLOBAL_LIST_EMPTY(chosen_names)
 					dat += "<a href='?_src_=prefs;preference=toggle_random;random_type=[RANDOM_GENDER]'>Always Random Bodytype: [(randomise[RANDOM_GENDER]) ? "Yes" : "No"]</A>"
 					dat += "<a href='?_src_=prefs;preference=toggle_random;random_type=[RANDOM_GENDER_ANTAG]'>When Antagonist: [(randomise[RANDOM_GENDER_ANTAG]) ? "Yes" : "No"]</A>"
 
-			if((LAMIAN_TAIL in pref_species.species_traits))
-				var/obj/item/bodypart/lamian_tail/T = tail_type
+			if((TAUR_BODY in pref_species.species_traits))
+				var/obj/item/bodypart/taur/T = tail_type
 				var/name = ispath(T) ? T::name : "None"
 				dat += "<b>Tail Type:</b> <a href='?_src_=prefs;preference=tail_type;task=input'>[name]</a><BR>"
 				dat += "<b>Tail Color:</b><span style='border: 1px solid #161616; background-color: #[tail_color];'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <a href='?_src_=prefs;preference=tail_color;task=input'>Change</a><BR>"
@@ -451,20 +453,20 @@ GLOBAL_LIST_EMPTY(chosen_names)
 			dat += "<table width='100%'><tr><td width='1%' valign='top'>"
 			dat += "<b>Update feature colors with change:</b> <a href='?_src_=prefs;preference=update_mutant_colors;task=input'>[update_mutant_colors ? "Yes" : "No"]</a><BR>"
 			var/use_skintones = pref_species.use_skintones
-			if(use_skintones && !(LAMIAN_TAIL in pref_species.species_traits))
+			if(use_skintones && !(TAUR_BODY in pref_species.species_traits))
 				if(pref_species.id != "lupian")
 					dat += "<b>[pref_species.skin_tone_wording]: </b><a href='?_src_=prefs;preference=skin_color_ref_list;task=input'>(?)</a> <a href='?_src_=prefs;preference=s_tone;task=input'>Change</a>"
 				else
 					dat += "<b>[pref_species.skin_tone_wording]: </b><a href='?_src_=prefs;preference=s_tone;task=input'>Change</a>"
 				dat += "<br>"
 
-			if((MUTCOLORS in pref_species.species_traits) && !(LAMIAN_TAIL in pref_species.species_traits) || (MUTCOLORS_PARTSONLY in pref_species.species_traits) && !(LAMIAN_TAIL in pref_species.species_traits))
+			if((MUTCOLORS in pref_species.species_traits) && !(TAUR_BODY in pref_species.species_traits) || (MUTCOLORS_PARTSONLY in pref_species.species_traits) && !(TAUR_BODY in pref_species.species_traits))
 
 				dat += "<b>Mutant Color #1:</b><span style='border: 1px solid #161616; background-color: #[features["mcolor"]];'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <a href='?_src_=prefs;preference=mutant_color;task=input'>Change</a><BR>"
 				dat += "<b>Mutant Color #2:</b><span style='border: 1px solid #161616; background-color: #[features["mcolor2"]];'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <a href='?_src_=prefs;preference=mutant_color2;task=input'>Change</a><BR>"
 				dat += "<b>Mutant Color #3:</b><span style='border: 1px solid #161616; background-color: #[features["mcolor3"]];'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <a href='?_src_=prefs;preference=mutant_color3;task=input'>Change</a><BR>"
 
-			if((LAMIAN_TAIL in pref_species.species_traits))
+			if((TAUR_BODY in pref_species.species_traits))
 
 				dat += "<b>Skin/scales color #1:</b><a href='?_src_=prefs;preference=skin_color_ref_list;task=input'>(?)</a><span style='border: 1px solid #161616; background-color: #[features["mcolor"]];'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <a href='?_src_=prefs;preference=skin_choice_pick;task=input'>Change</a><BR>"
 				dat += "<b>Feature Color #1:</b><span style='border: 1px solid #161616; background-color: #[features["mcolor2"]];'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <a href='?_src_=prefs;preference=mutant_color2;task=input'>Change</a><BR>"
@@ -647,7 +649,7 @@ GLOBAL_LIST_EMPTY(chosen_names)
 			dat += "<b>Play Admin MIDIs:</b> <a href='?_src_=prefs;preference=hear_midis'>[(toggles & SOUND_MIDI) ? "Enabled":"Disabled"]</a><br>"
 			dat += "<b>Play Lobby Music:</b> <a href='?_src_=prefs;preference=lobby_music'>[(toggles & SOUND_LOBBY) ? "Enabled":"Disabled"]</a><br>"
 			dat += "<b>See Pull Requests:</b> <a href='?_src_=prefs;preference=pull_requests'>[(chat_toggles & CHAT_PULLR) ? "Enabled":"Disabled"]</a><br>"
-	
+
 			dat += "<br>"
 
 
@@ -1567,7 +1569,7 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 				if("tail_type")
 					var/list/species_tail_list = pref_species.get_tail_list()
 					if(!LAZYLEN(species_tail_list))
-						tail_type = /obj/item/bodypart/lamian_tail/lamian_tail
+						//tail_type = /obj/item/bodypart/taur
 						to_chat(user, span_bad("There are no available tail types for this species."))
 						return
 
@@ -1644,12 +1646,12 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 							to_chat(user, "<font color='red'>This voice color is too dark for mortals.</font>")
 							return
 						voice_color = sanitize_hexcolor(new_voice)
-				
+
 				if("extra_language")
 					var/static/list/selectable_languages = list(
 						/datum/language/elvish,
 						/datum/language/dwarvish,
-						/datum/language/orcish, 
+						/datum/language/orcish,
 						/datum/language/hellspeak,
 						/datum/language/draconic,
 						/datum/language/celestial,
@@ -1667,7 +1669,7 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 							continue
 						var/datum/language/a_language = new language()
 						choices[a_language.name] = language
-					
+
 					var/chosen_language = input(user, "Choose your character's extra language:", "Character Preference") as null|anything in choices
 					if(chosen_language)
 						if(chosen_language == "None")
@@ -1739,7 +1741,7 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 					var/list/dat = list()
 					dat +="Skin color codes reference list<br>"
 					dat += "<br>"
-					for(var/tone in pref_species.get_skin_list_tooltip()) 
+					for(var/tone in pref_species.get_skin_list_tooltip())
 						dat += "[tone]<br>"
 					var/datum/browser/popup = new(user, "Formatting Help", nwidth = 300, nheight = 500)
 					popup.set_content(dat.Join())
@@ -1872,7 +1874,7 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 							ooc_extra += "<br>"
 							ooc_extra += "<img src='[ooc_extra_link]'/>"
 							info = "an embedded image."
-						else 
+						else
 							switch(extension)
 								if("mp4")
 									ooc_extra = "<br>"
@@ -2210,7 +2212,7 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 						domhand = 2
 					else
 						domhand = 1
-				
+
 				if("hotkeys")
 					hotkeys = !hotkeys
 					if(hotkeys)
@@ -2574,7 +2576,7 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 	character.flavortext = flavortext
 
 	character.flavortext_display = flavortext_display
-	
+
 	character.ooc_notes = ooc_notes
 
 	character.ooc_notes_display = ooc_notes_display
@@ -2597,8 +2599,8 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 			for(var/X in L)
 				ADD_TRAIT(character, curse2trait(X), TRAIT_GENERIC)
 
-	if((LAMIAN_TAIL in pref_species.species_traits))
-		character.Lamiaze(tail_type, "#[tail_color]", "#[tail_markings_color]")
+	if((TAUR_BODY in pref_species.species_traits))
+		character.taurize(tail_type, "#[tail_color]", "#[tail_markings_color]")
 	else if(character_setup)
 		// This should only ever ~do~ anything for previews
 		character.ensure_not_lamia()
@@ -2609,7 +2611,7 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 		character.update_body_parts(redraw = TRUE)
 
 	character.char_accent = char_accent
-	
+
 
 
 

@@ -18,7 +18,7 @@
 /datum/surgery_step/add_lamian_tail
 	name = "Transplant lamian tail"
 	implements = list(
-		/obj/item/bodypart/lamian_tail = 80, 
+		/obj/item/bodypart/lamian_tail = 80,
 	)
 	target_mobtypes = list(/mob/living/carbon/human, /mob/living/carbon/monkey)
 	time = 3 SECONDS
@@ -39,7 +39,7 @@
 	return ..()
 
 /datum/surgery_step/add_lamian_tail/preop(mob/user, mob/living/target, target_zone, obj/item/bodypart/lamian_tail/bodypart, datum/intent/intent)
-	target_zone = BODY_ZONE_LAMIAN_TAIL
+	target_zone = BODY_ZONE_TAUR
 
 	if(ismonkey(target) && bodypart.animal_origin != MONKEY_BODYPART)
 		to_chat(user, span_warning("[bodypart] doesn't match the patient's morphology."))
@@ -59,7 +59,7 @@
 	return TRUE
 
 /datum/surgery_step/add_lamian_tail/success(mob/user, mob/living/target, target_zone, obj/item/bodypart/lamian_tail/bodypart, datum/intent/intent)
-	target_zone = BODY_ZONE_LAMIAN_TAIL
+	target_zone = BODY_ZONE_TAUR
 
 	if(bodypart.attach_limb(target) && bodypart.attach_wound)
 		bodypart.add_wound(bodypart.attach_wound)
@@ -119,7 +119,7 @@
 		if(istype(bodypart, /obj/item/bodypart/head/dullahan))
 			to_chat(user, span_warning("The head is refusing the body."))
 			return FALSE
-			
+
 	display_results(user, target, span_notice("I begin to replace [target]'s [parse_zone(target_zone)] with [tool]..."),
 		span_notice("[user] begins to replace [target]'s [parse_zone(target_zone)] with [tool]."),
 		span_notice("[user] begins to replace [target]'s [parse_zone(target_zone)]."))

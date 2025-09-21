@@ -174,8 +174,8 @@
 		if(BODY_ZONE_R_LEG)
 			if(covered_locations & LEG_RIGHT)
 				return TRUE
-		if(BODY_ZONE_LAMIAN_TAIL)
-			if(covered_locations & TAIL_LAMIA)
+		if(BODY_ZONE_TAUR)
+			if(covered_locations & TAUR_BODY)
 				return TRUE
 		if(BODY_ZONE_PRECISE_L_HAND)
 			if(covered_locations & HAND_LEFT)

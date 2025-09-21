@@ -98,11 +98,14 @@ GLOBAL_LIST_INIT(our_forest_sex, typecacheof(list(
 #define isvermin(A) (is_species(A, /datum/species/anthromorphsmall))
 #define isaxian(A) (is_species(A, /datum/species/akula))
 #define islamia(A) (is_species(A, /datum/species/lamia))
+#define isdrider(A) (is_species(A, /datum/species/drider))
 #define isdracon(A) (is_species(A, /datum/species/dracon))
 #define islupian(A) (is_species(A, /datum/species/lupian))
 #define ismoth(A) (is_species(A, /datum/species/moth))
 #define istabaxi(A) (is_species(A, /datum/species/tabaxi))
 #define isvulp(A) (is_species(A, /datum/species/vulpkanin))
+
+#define is_taur(A) (is_species(A, /datum/species/lamia) || is_species(A, /datum/species/drider))
 
 
 //more carbon mobs

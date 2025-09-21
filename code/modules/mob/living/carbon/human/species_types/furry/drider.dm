@@ -1,16 +1,11 @@
-/mob/living/carbon/human/species/lamia
-	race = /datum/species/lamia
+/mob/living/carbon/human/species/drider
+	race = /datum/species/drider
 
-/datum/species/lamia
-	name = "Lamia"
-	id = "lamia"
-	desc = "The monstrous spawn of Abyssor, snake and humen conjoined together, the deepkin and merfolk. \
-	Sirens, mermaids, nagas and many others fall into 'lamia' categorization. While one could consider them to be of Dendor's, he had no hand in their creation. \
-	Lamia are widespread in the southern coastal regions, where their tribes have settled in aeons ago, much of their written and oral history is filled with accounts \
-	of grand raids on coastal regions, for they have been terrorizing any race that has dared to settle near their waters. For this, they are widely shunned by the other races, \
-	with the exception of Axians and some coast-dwelling Zardmen with whom they share their natural heartlands. Many a sailor has met their end at the claws of Lamias. \
-	Yet... not all of them have stayed in the depths of the abyss, for some of the clans have moved far away from the coastal regions, settling in swamps, forests and even deserts, having spread themselves far and wide aeons ago.<br>\
-	(+1 Strength, -1 Speed, Strong kicks, Longstrider, Strong stomach)" // SMOKINGRAWOCB
+/datum/species/drider
+	name = "Drider"
+	id = "drider"
+	desc = "fill this in later<br>\
+	(+1 Strength, -1 Speed, Strong kicks, Longstrider, Strong stomach)"
 	default_color = "FFFFFF"
 	species_traits = list(EYECOLOR, LIPS, HAIR, TAUR_BODY, OLDGREY, MUTCOLORS)
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_MAGIC | MIRROR_PRIDE | RACE_SWAP | SLIME_EXTRACT
@@ -35,7 +30,7 @@
 		OFFSET_NECK_F = list(0,-1), OFFSET_MOUTH_F = list(0,-1), OFFSET_PANTS_F = list(0,0), \
 		OFFSET_SHIRT_F = list(0,0), OFFSET_ARMOR_F = list(0,0), OFFSET_UNDIES_F = list(0,-1), \
 		)
-	inherent_traits = list(TRAIT_LONGSTRIDER, TRAIT_WILD_EATER, TRAIT_LAMIAN_TAIL, TRAIT_CALTROPIMMUNE)
+	inherent_traits = list(TRAIT_LONGSTRIDER, TRAIT_WILD_EATER,TRAIT_CALTROPIMMUNE)
 	race_bonus = list(STAT_STRENGTH = 1, STAT_SPEED = -1) // SMOKINGRAWOCB
 	enflamed_icon = "widefire"
 /* I have no idea how rendering works and I can't figure it out!!
@@ -53,7 +48,6 @@
 		ORGAN_SLOT_EARS = /obj/item/organ/ears,
 		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/lamia_forked,
 		ORGAN_SLOT_LIVER = /obj/item/organ/liver,
-//		ORGAN_SLOT_TAIL = /obj/item/organ/tail/lamian_tail,
 		ORGAN_SLOT_STOMACH = /obj/item/organ/stomach,
 		ORGAN_SLOT_APPENDIX = /obj/item/organ/appendix,
 		)
@@ -73,7 +67,6 @@
 		/datum/customizer/organ/ears/lamia,
 		/datum/customizer/organ/frills/anthro, //add elf ears
 		/datum/customizer/organ/testicles/anthro,
-//		/datum/customizer/organ/tail/lamia,
 		/datum/customizer/organ/wings/lamia,
 		/datum/customizer/organ/horns/lamia,
 		/datum/customizer/organ/penis/lamia, // only tapered or hemi tapered or tentacle
@@ -86,12 +79,10 @@
 		/datum/body_marking_set/bellysocks,
 		/datum/body_marking_set/tiger,
 		/datum/body_marking_set/tiger_dark,  //Delinefortune: removed TWO /datum/body_marking/ because there supposed to be /datum/body_marking_set
-//		/datum/body_marking_set/lamian_tail // how the fuck do I get it to display over tail
 	)
 
 	languages = list(
 		/datum/language/common,
-		/datum/language/abyssal //we are hellenic in this bitch
 	)
 
 	body_markings = list(
@@ -139,28 +130,24 @@
 	)
 
 	allowed_tail_types = list(
-		/obj/item/bodypart/taur/lamian_tail,
-		/obj/item/bodypart/taur/mermaid_tail,
-		/obj/item/bodypart/taur/mermaid_tail_alt,
+		/obj/item/bodypart/taur/spider,
 	)
 
-/datum/species/lamia/check_roundstart_eligible()
+/datum/species/drider/check_roundstart_eligible()
 	return TRUE
 
-/datum/species/lamia/qualifies_for_rank(rank, list/features)
+/datum/species/drider/qualifies_for_rank(rank, list/features)
 	return TRUE
 
-/datum/species/lamia/on_species_gain(mob/living/carbon/C, datum/species/old_species) // one of those auto-appends a dot at the end of player speech
+/datum/species/drider/on_species_gain(mob/living/carbon/C, datum/species/old_species) // one of those auto-appends a dot at the end of player speech
 	..()
-	RegisterSignal(C, COMSIG_MOB_SAY, PROC_REF(handle_speech))
 	C.taurize()
 
-/datum/species/lamia/on_species_loss(mob/living/carbon/C) // one of those auto-appends a dot at the end of player speech
+/datum/species/drider/on_species_loss(mob/living/carbon/C) // one of those auto-appends a dot at the end of player speech
 	. = ..()
-	UnregisterSignal(C, COMSIG_MOB_SAY)
 	C.de_taur()
 
-/datum/species/lamia/get_random_features()
+/datum/species/drider/get_random_features()
 	var/list/returned = MANDATORY_FEATURE_LIST
 	var/main_color
 	var/second_color
@@ -196,7 +183,7 @@
 	returned["mcolor3"] = third_color
 	return returned
 
-/datum/species/lamia/get_skin_list() // nothing ever happens
+/datum/species/drider/get_skin_list() // nothing ever happens
 	return list(
 		"Ghost" = SKIN_COLOR_GHOST,
 		"Grenzel Woods" = SKIN_COLOR_GRENZEL_WOODS,
@@ -229,7 +216,7 @@
 		"Stone" = SKIN_COLOR_STONE
 	)
 
-/datum/species/lamia/get_skin_list_tooltip()
+/datum/species/drider/get_skin_list_tooltip()
 	return list(
 		"Ghost <span style='border: 1px solid #161616; background-color: #[SKIN_COLOR_GHOST];'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>" = SKIN_COLOR_GHOST,
 		"Grenzel Woods <span style='border: 1px solid #161616; background-color: #[SKIN_COLOR_GRENZEL_WOODS];'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>" = SKIN_COLOR_GRENZEL_WOODS,
@@ -262,13 +249,5 @@
 		"Stone <span style='border: 1px solid #161616; background-color: #[SKIN_COLOR_STONE];'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>" = SKIN_COLOR_STONE
 	)
 
-/datum/species/lamia/random_name(gender,unique,lastname)
-	var/randname
-	if(gender == MALE)
-		randname = pick(world.file2list("strings/names/roguetown/lamiamale.txt"))
-	if(gender == FEMALE)
-		randname = pick(world.file2list("strings/names/roguetown/lamiafemale.txt"))
-	return randname
-
-/datum/species/lamia/spec_fully_heal(mob/living/carbon/human/H)
+/datum/species/drider/spec_fully_heal(mob/living/carbon/human/H)
 	H.taurize()

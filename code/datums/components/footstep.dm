@@ -66,7 +66,7 @@
 	if(steps >= 6)
 		steps = 0
 
-	if(islamia(LM))
+	if(is_taur(LM))
 		if(LM.m_intent == MOVE_INTENT_RUN)
 			if(steps != 0 && steps != 3)
 				return
@@ -115,7 +115,7 @@ var/list/kick_verb
 	var/list/used_footsteps
 	var/obj/item/clothing/shoes/humshoes = H.shoes
 
-	if((humshoes && !humshoes?.is_barefoot) && !islamia(H) || feetCover && !islamia(H)) //are we wearing shoes, and do they actually cover the sole
+	if((humshoes && !humshoes?.is_barefoot) && !is_taur(H) || feetCover && !is_taur(H)) //are we wearing shoes, and do they actually cover the sole
 		//SANITY CHECK, WILL NOT PLAY A SOUND IF THE LIST IS INVALID
 		if(!GLOB.footstep[T.footstep] || (LAZYLEN(GLOB.footstep[T.footstep]) < 3))
 			testing("SOME silly guy GAVE AN INVALID FOOTSTEP VALUE ([T.footstep]) TO [T.type]!!! FIX THIS SHIT!!!")
@@ -133,13 +133,31 @@ var/list/kick_verb
 			GLOB.footstep[T.footstep][2],
 			FALSE,
 			GLOB.footstep[T.footstep][3] + e_range)
-//	if(!islamia(H))
 	else
 		//SANITY CHECK, WILL NOT PLAY A SOUND IF THE LIST IS INVALID
 		if(!GLOB.barefootstep[T.barefootstep] || (LAZYLEN(GLOB.barefootstep[T.barefootstep]) < 3))
 			testing("SOME silly guy GAVE AN INVALID BAREFOOTSTEP VALUE ([T.barefootstep]) TO [T.type]!!! FIX THIS SHIT!!!")
 			return
-		if(!islamia(H))
+		if(is_taur(H))
+			if(islamia(H))
+				used_footsteps = list(
+					'sound/foley/footsteps/lamia_slither (1).ogg',
+					'sound/foley/footsteps/lamia_slither (2).ogg',
+					'sound/foley/footsteps/lamia_slither (3).ogg',
+				)
+				used_footsteps = used_footsteps.Copy()
+				used_sound = pick_n_take(used_footsteps)
+				if(used_sound == last_sound)
+					used_sound = pick(used_footsteps)
+				if(!used_sound)
+					used_sound = last_sound
+				last_sound = used_sound
+			if(isdrider(H))
+				used_sound = 'sound/foley/footsteps/spiderstep.ogg'
+			volume = rand(40, 85)
+			e_range = rand(1, 3)
+			playsound(T, used_sound, "vol" = volume, "extrarange" = e_range)
+		else
 			used_footsteps = GLOB.barefootstep[T.barefootstep][1]
 			used_footsteps = used_footsteps.Copy()
 			used_sound = pick_n_take(used_footsteps)
@@ -152,19 +170,3 @@ var/list/kick_verb
 				GLOB.barefootstep[T.barefootstep][2],
 				TRUE,
 				GLOB.barefootstep[T.barefootstep][3] + e_range)
-		else
-			used_footsteps = list(
-				'sound/foley/footsteps/lamia_slither (1).ogg',
-				'sound/foley/footsteps/lamia_slither (2).ogg',
-				'sound/foley/footsteps/lamia_slither (3).ogg',
-			)
-			used_footsteps = used_footsteps.Copy()
-			used_sound = pick_n_take(used_footsteps)
-			if(used_sound == last_sound)
-				used_sound = pick(used_footsteps)
-			if(!used_sound)
-				used_sound = last_sound
-			last_sound = used_sound
-			volume = rand(40, 85)
-			e_range = rand(1, 3)
-			playsound(T, used_sound, "vol" = volume, "extrarange" = e_range)

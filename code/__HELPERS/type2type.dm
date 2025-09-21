@@ -357,11 +357,11 @@
 		if(bpc & LEG_RIGHT)
 			covered_parts |= list(READABLE_ZONE_R_LEG)
 
-	if(bpc & TAIL_LAMIA && !precise)
-		covered_parts |= list(READABLE_ZONE_LAMIAN_TAIL)
-	if(verbose || precise || !(bpc & TAIL_LAMIA))
-		if(bpc & TAIL_LAMIA)
-			covered_parts |= list(READABLE_ZONE_LAMIAN_TAIL)
+	if(bpc & TAUR_BODY && !precise)
+		covered_parts |= list(READABLE_ZONE_TAUR)
+	if(verbose || precise || !(bpc & TAUR_BODY))
+		if(bpc & TAUR_BODY)
+			covered_parts |= list(READABLE_ZONE_TAUR)
 
 	if(bpc & FEET && !precise)
 		covered_parts |= list(READABLE_ZONE_FEET)
@@ -409,7 +409,7 @@
 			return READABLE_ZONE_R_LEG
 		if(BODY_ZONE_PRECISE_R_FOOT)
 			return READABLE_ZONE_R_FOOT
-		
+
 
 /proc/slot2body_zone(slot)
 	switch(slot)

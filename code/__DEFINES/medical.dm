@@ -5,7 +5,7 @@
 #define BODY_ZONE_R_ARM		"r_arm"
 #define BODY_ZONE_L_LEG		"l_leg"
 #define BODY_ZONE_R_LEG		"r_leg"
-#define BODY_ZONE_LAMIAN_TAIL "lamian_tail"
+#define BODY_ZONE_TAUR		"taur body"
 
 #define BODY_ZONE_PRECISE_SKULL		"skull"
 #define BODY_ZONE_PRECISE_EARS		"ears"
@@ -36,7 +36,7 @@
 #define READABLE_ZONE_LEGS		"Legs"
 #define READABLE_ZONE_L_LEG		"Left leg"
 #define READABLE_ZONE_R_LEG		"Right leg"
-#define READABLE_ZONE_LAMIAN_TAIL "Tail"
+#define READABLE_ZONE_TAUR		"Lower body"
 
 #define READABLE_ZONE_NOSE		"Nose"
 #define READABLE_ZONE_MOUTH		"Mouth"

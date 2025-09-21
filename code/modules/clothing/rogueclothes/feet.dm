@@ -5,8 +5,8 @@
 	desc = ""
 	gender = PLURAL
 	slot_flags = ITEM_SLOT_SHOES
-	body_parts_covered = FEET|TAIL_LAMIA
-	body_parts_inherent = FEET|TAIL_LAMIA
+	body_parts_covered = FEET|TAUR_BODY
+	body_parts_inherent = FEET|TAUR_BODY
 	sleeved = 'icons/roguetown/clothing/onmob/feet.dmi'
 	sleevetype = "leg"
 	bloody_icon_state = "shoeblood"
@@ -203,7 +203,7 @@
 /obj/item/clothing/shoes/roguetown/boots/otavan
 	name = "otavan leather boots"
 	desc = "Boots of outstanding craft, your fragile feet have never felt so protected and comfortable before."
-	body_parts_covered = FEET|TAIL_LAMIA
+	body_parts_covered = FEET|TAUR_BODY
 	icon_state = "fencerboots"
 	item_state = "fencerboots"
 	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT, BCLASS_TWIST)
@@ -241,7 +241,7 @@
 /obj/item/clothing/shoes/roguetown/boots/armor
 	name = "plated boots"
 	desc = "Boots forged of a set of steel plates to protect your fragile toes."
-	body_parts_covered = FEET|TAIL_LAMIA
+	body_parts_covered = FEET|TAUR_BODY
 	icon_state = "armorboots"
 	item_state = "armorboots"
 	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT, BCLASS_TWIST)
@@ -306,7 +306,7 @@
 /obj/item/clothing/shoes/roguetown/boots/armor/iron
 	name = "light plated boots"
 	desc = "Boots with iron for added protection."
-	body_parts_covered = FEET|TAIL_LAMIA
+	body_parts_covered = FEET|TAUR_BODY
 	icon_state = "armorironboots"
 	item_state = "armorironboots"
 	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT, BCLASS_TWIST)
@@ -401,7 +401,7 @@
 /obj/item/clothing/shoes/roguetown/boots/blacksteel/modern/plateboots
 	name = "blacksteel plate boots"
 	desc = "Boots forged of durable blacksteel, using a modern design."
-	body_parts_covered = FEET|TAIL_LAMIA
+	body_parts_covered = FEET|TAUR_BODY
 	icon = 'icons/roguetown/clothing/special/blkknight.dmi'
 	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/blkknight.dmi'
 	sleeved = 'icons/roguetown/clothing/special/onmob/blkknight.dmi'
@@ -419,7 +419,7 @@
 /obj/item/clothing/shoes/roguetown/boots/blacksteel/plateboots
 	name = "ancient blacksteel plate boots"
 	desc = "Boots forged of durable blacksteel."
-	body_parts_covered = FEET|TAIL_LAMIA
+	body_parts_covered = FEET|TAUR_BODY
 	icon = 'icons/roguetown/clothing/special/blkknight.dmi'
 	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/blkknight.dmi'
 	icon_state = "bkboots"
