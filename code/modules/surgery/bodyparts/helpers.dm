@@ -276,10 +276,14 @@
 	set_resting(FALSE)
 
 /mob/living/carbon/proc/taurize(taur_type = null, color = "#ffffff", markings_color = "#ffffff")
-	if(!taur_type)//we ALWAYS need to have a taur body type set when calling this
-		return
+	if(!taur_type)//do this just in case we call taurize() with no arguments on someone that has no taur body prefs
+		if(islamia(src))
+			taur_type = /obj/item/bodypart/taur/lamian_tail
+		if(isdrider(src))
+			taur_type = /obj/item/bodypart/taur/spider
 	if(client?.prefs)
 		if((TAUR_BODY in client.prefs.pref_species.species_traits))//if we call taur-ize on an existing taur (just fully_heal, basically)
+			taur_type = client.prefs.tail_type
 			color = "#"+client.prefs.tail_color
 			markings_color = "#"+client.prefs.tail_markings_color
 	for(var/X in bodyparts)

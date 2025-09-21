@@ -131,6 +131,7 @@
 
 	allowed_tail_types = list(
 		/obj/item/bodypart/taur/spider,
+		/obj/item/bodypart/taur/spider_tarantula,
 	)
 
 /datum/species/drider/check_roundstart_eligible()

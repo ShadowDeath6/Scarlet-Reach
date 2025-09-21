@@ -145,15 +145,20 @@ var/list/kick_verb
 					'sound/foley/footsteps/lamia_slither (2).ogg',
 					'sound/foley/footsteps/lamia_slither (3).ogg',
 				)
-				used_footsteps = used_footsteps.Copy()
-				used_sound = pick_n_take(used_footsteps)
-				if(used_sound == last_sound)
-					used_sound = pick(used_footsteps)
-				if(!used_sound)
-					used_sound = last_sound
-				last_sound = used_sound
 			if(isdrider(H))
-				used_sound = 'sound/foley/footsteps/spiderstep.ogg'
+				used_footsteps = list(
+					'sound/foley/footsteps/spider_step (1).ogg',
+					'sound/foley/footsteps/spider_step (2).ogg',
+					'sound/foley/footsteps/spider_step (3).ogg',
+					'sound/foley/footsteps/spider_step (4).ogg',
+					)
+			used_footsteps = used_footsteps.Copy()
+			used_sound = pick_n_take(used_footsteps)
+			if(used_sound == last_sound)
+				used_sound = pick(used_footsteps)
+			if(!used_sound)
+				used_sound = last_sound
+			last_sound = used_sound
 			volume = rand(40, 85)
 			e_range = rand(1, 3)
 			playsound(T, used_sound, "vol" = volume, "extrarange" = e_range)

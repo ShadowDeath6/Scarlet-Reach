@@ -30,7 +30,7 @@
 	var/has_tail_color = TRUE
 	var/color_blend_mode = BLEND_ADD
 	var/tail_color = null
-	var/tail_markings_color = "d4c5c5"
+	var/tail_markings_color = null
 
 /obj/item/bodypart/taur/New()
 	. = ..()
@@ -113,9 +113,15 @@ GLOBAL_LIST_INIT(tail_types, subtypesof(/obj/item/bodypart/taur))
 /obj/item/bodypart/taur/spider
 	name = "spider body"
 
-	offset_x = -16
 	tail_icon_state = "spider"
 	tail_tip_icon_state = "spider_tip"
-	tail_markings_icon_state = "spider_markings" // done by ooooooog/ShadowDeath6
-	tail_markings_tip_icon_state = "spider_tip_markings" // done by ooooooog/ShadowDeath6
+	tail_markings_icon_state = "spider_markings"
+	tail_markings_tip_icon_state = "spider_tip_markings"
 
+/obj/item/bodypart/taur/spider_tarantula
+	name = "tarantula body"
+
+	tail_icon_state = "spider_tarantula"
+	tail_tip_icon_state = "spider_tarantula_tip"
+	tail_markings_icon_state = "spider_tarantula_markings"
+	tail_markings_tip_icon_state = "spider_tarantula_tip_markings"
