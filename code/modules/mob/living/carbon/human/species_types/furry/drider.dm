@@ -14,8 +14,6 @@
 	limbs_icon_f = 'icons/roguetown/mob/bodies/f/fm.dmi' //lips
 	dam_icon = 'icons/roguetown/mob/bodies/dam/dam_male.dmi'
 	dam_icon_f = 'icons/roguetown/mob/bodies/dam/dam_female.dmi'
-//	clothes_id = "lamia"
-//	custom_clothes = TRUE
 	soundpack_m = /datum/voicepack/male
 	soundpack_f = /datum/voicepack/female
 	offset_features = list(
@@ -33,20 +31,14 @@
 	inherent_traits = list(TRAIT_LONGSTRIDER, TRAIT_WILD_EATER,TRAIT_CALTROPIMMUNE)
 	race_bonus = list(STAT_STRENGTH = 1, STAT_SPEED = -1) // SMOKINGRAWOCB
 	enflamed_icon = "widefire"
-/* I have no idea how rendering works and I can't figure it out!!
-	bodypart_overrides = list(
-		BODY_ZONE_LAMIAN_TAIL = /obj/item/bodypart/lamian_tail,
-		BODY_ZONE_L_LEG = /obj/item/bodypart/lamian_tail,
-		BODY_ZONE_R_LEG = /obj/item/bodypart/lamian_tail
-	)
-*/
+
+
 	organs = list(
 		ORGAN_SLOT_BRAIN = /obj/item/organ/brain,
 		ORGAN_SLOT_HEART = /obj/item/organ/heart,
 		ORGAN_SLOT_LUNGS = /obj/item/organ/lungs,
 		ORGAN_SLOT_EYES = /obj/item/organ/eyes,
 		ORGAN_SLOT_EARS = /obj/item/organ/ears,
-		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/lamia_forked,
 		ORGAN_SLOT_LIVER = /obj/item/organ/liver,
 		ORGAN_SLOT_STOMACH = /obj/item/organ/stomach,
 		ORGAN_SLOT_APPENDIX = /obj/item/organ/appendix,
@@ -62,10 +54,8 @@
 		/datum/customizer/bodypart_feature/accessory,
 		/datum/customizer/bodypart_feature/face_detail,
 		/datum/customizer/bodypart_feature/underwear,
-		/datum/customizer/organ/tail_feature/anthro,
 		/datum/customizer/organ/snout/lamia,
 		/datum/customizer/organ/ears/lamia,
-		/datum/customizer/organ/frills/anthro, //add elf ears
 		/datum/customizer/organ/testicles/anthro,
 		/datum/customizer/organ/wings/lamia,
 		/datum/customizer/organ/horns/lamia,
@@ -81,10 +71,6 @@
 		/datum/body_marking_set/tiger_dark,  //Delinefortune: removed TWO /datum/body_marking/ because there supposed to be /datum/body_marking_set
 	)
 
-	languages = list(
-		/datum/language/common,
-	)
-
 	body_markings = list(
 		/datum/body_marking/flushed_cheeks,
 		/datum/body_marking/eyeliner,
@@ -94,11 +80,6 @@
 		/datum/body_marking/sock,
 		/datum/body_marking/socklonger,
 		/datum/body_marking/tips,
-		/datum/body_marking/bellyscale,
-		/datum/body_marking/bellyscaleslim,
-		/datum/body_marking/bellyscalesmooth,
-		/datum/body_marking/bellyscaleslimsmooth,
-		/datum/body_marking/buttscale,
 		/datum/body_marking/belly,
 		/datum/body_marking/bellyslim,
 		/datum/body_marking/butt,
@@ -106,7 +87,6 @@
 		/datum/body_marking/tiesmall,
 		/datum/body_marking/backspots,
 		/datum/body_marking/front,
-		/datum/body_marking/drake_eyes,
 		/datum/body_marking/tonage,
 		/datum/body_marking/spotted,
 		/datum/body_marking/nose,
@@ -121,7 +101,6 @@
 		/datum/descriptor_choice/stature,
 		/datum/descriptor_choice/face,
 		/datum/descriptor_choice/face_exp,
-		/datum/descriptor_choice/skin_lamia,
 		/datum/descriptor_choice/voice,
 		/datum/descriptor_choice/prominent_one_wild,
 		/datum/descriptor_choice/prominent_two_wild,
