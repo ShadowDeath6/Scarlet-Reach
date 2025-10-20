@@ -37,6 +37,7 @@ GLOBAL_LIST_EMPTY(heretical_players)
 	//No nobility for you, being a member of the clergy means you gave UP your nobility. It says this in many of the church tutorial texts.
 	virtue_restrictions = list(
 		/datum/virtue/utility/noble,
+		/datum/virtue/utility/blueblooded,
 		/datum/virtue/combat/hollow_life,
 	)
 
@@ -45,14 +46,6 @@ GLOBAL_LIST_EMPTY(heretical_players)
 	job_subclasses = list(
 		/datum/advclass/bishop
 	)
-
-/datum/job/roguetown/priest/after_spawn(mob/living/L, mob/M, latejoin = TRUE)
-	..()
-	if(ishuman(L))
-		var/mob/living/carbon/human/H = L
-		H.advsetup = 1
-		H.invisibility = INVISIBILITY_MAXIMUM
-		H.become_blind("advsetup")
 
 /datum/advclass/bishop
 	name = "Bishop"

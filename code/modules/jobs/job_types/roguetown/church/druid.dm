@@ -24,7 +24,10 @@
 	cmode_music = 'sound/music/combat_druid.ogg'
 
 	//You're.. not REALLY a full-on church member, but being a druid implies you became a clergy-man of some sort; even if it's non-organized. So, still shouldn't be noble.
-	virtue_restrictions = list(/datum/virtue/utility/noble)
+	virtue_restrictions = list(
+		/datum/virtue/utility/noble,
+		/datum/virtue/utility/blueblooded,
+	)
 
 	job_traits = list(TRAIT_SEEDKNOW, TRAIT_OUTDOORSMAN, TRAIT_RITUALIST)
 
@@ -32,14 +35,6 @@
 	job_subclasses = list(
 		/datum/advclass/druid
 	)
-
-/datum/job/roguetown/druid/after_spawn(mob/living/L, mob/M, latejoin = TRUE)
-	..()
-	if(ishuman(L))
-		var/mob/living/carbon/human/H = L
-		H.advsetup = 1
-		H.invisibility = INVISIBILITY_MAXIMUM
-		H.become_blind("advsetup")
 
 /datum/advclass/druid
 	name = "Druid"

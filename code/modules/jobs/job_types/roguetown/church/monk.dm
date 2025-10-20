@@ -19,21 +19,16 @@
 	round_contrib_points = 2
 
 	//No nobility for you, being a member of the clergy means you gave UP your nobility. It says this in many of the church tutorial texts.
-	virtue_restrictions = list(/datum/virtue/utility/noble)
+	virtue_restrictions = list(
+		/datum/virtue/utility/noble,
+		/datum/virtue/utility/blueblooded,
+	)
 
 	job_traits = list(TRAIT_RITUALIST, TRAIT_GRAVEROBBER)
 	advclass_cat_rolls = list(CTAG_ACOLYTE = 2)
 	job_subclasses = list(
 		/datum/advclass/acolyte
 	)
-
-/datum/job/roguetown/monk/after_spawn(mob/living/L, mob/M, latejoin = TRUE)
-	..()
-	if(ishuman(L))
-		var/mob/living/carbon/human/H = L
-		H.advsetup = 1
-		H.invisibility = INVISIBILITY_MAXIMUM
-		H.become_blind("advsetup")
 
 /datum/advclass/acolyte
 	name = "Acolyte"
