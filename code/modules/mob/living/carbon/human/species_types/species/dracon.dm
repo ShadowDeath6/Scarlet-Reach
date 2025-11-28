@@ -4,6 +4,10 @@
 /datum/species/dracon
 	name = "Drakian"
 	id = "dracon"
+	is_subrace = TRUE
+	origin_default = /datum/virtue/origin/grenzelhoft
+	origin = "Grenzelhoft"
+	base_name = "Zard"
 	desc = "<b>Drakian: Destined for the Crown</b><br>\
 	A sturdy dragon-like race that lives up to 250 years, it is disputed if their ancestors were draconically-blessed zardmen or cursed by greed. \
 	They have been known to rise to positions of leadership amongst levies and petty nobility of kingdoms, \
@@ -44,7 +48,7 @@
 		ORGAN_SLOT_LUNGS = /obj/item/organ/lungs,
 		ORGAN_SLOT_EYES = /obj/item/organ/eyes,
 		ORGAN_SLOT_EARS = /obj/item/organ/ears,
-		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/lizard,
+		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/wild_tongue/lizard,
 		ORGAN_SLOT_LIVER = /obj/item/organ/liver,
 		ORGAN_SLOT_STOMACH = /obj/item/organ/stomach,
 		ORGAN_SLOT_APPENDIX = /obj/item/organ/appendix,

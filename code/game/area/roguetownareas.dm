@@ -20,6 +20,7 @@ GLOBAL_LIST_INIT(roguetown_areas_typecache, typecacheof(/area/rogue/indoors/town
 	var/tavern_area = FALSE
 	var/warden_area = FALSE
 	var/cell_area = FALSE
+	var/underdark_area = FALSE
 	var/church_area = FALSE
 	var/ceiling_protected = FALSE //Prevents tunneling into these from above
 
@@ -28,6 +29,18 @@ GLOBAL_LIST_INIT(roguetown_areas_typecache, typecacheof(/area/rogue/indoors/town
 	. = ..()
 	if((src.town_area == TRUE) && HAS_TRAIT(guy, TRAIT_GUARDSMAN) && !guy.has_status_effect(/datum/status_effect/buff/guardbuffone)) //man at arms
 		guy.apply_status_effect(/datum/status_effect/buff/guardbuffone)
+
+/area/rogue/Entered(mob/living/carbon/human/guy)
+
+	. = ..()
+	if((src.keep_area == TRUE) && HAS_TRAIT(guy, TRAIT_GUARDSMAN_NOBLE) && !guy.has_status_effect(/datum/status_effect/buff/knightbuff)) //knights
+		guy.apply_status_effect(/datum/status_effect/buff/knightbuff)
+
+/area/rogue/Entered(mob/living/carbon/human/guy)
+
+	. = ..()
+	if((src.town_area == TRUE) && HAS_TRAIT(guy, TRAIT_GUARDSMAN_NOBLE) && !guy.has_status_effect(/datum/status_effect/buff/knightbufftown)) //knights
+		guy.apply_status_effect(/datum/status_effect/buff/knightbufftown)
 
 /area/rogue/Entered(mob/living/carbon/human/guy)
 
@@ -50,8 +63,31 @@ GLOBAL_LIST_INIT(roguetown_areas_typecache, typecacheof(/area/rogue/indoors/town
 /area/rogue/Entered(mob/living/carbon/human/guy)
 
 	. = ..()
+	if(HAS_TRAIT(guy, TRAIT_UNDERDARK))
+		if((src.underdark_area == TRUE) && !guy.has_status_effect(/datum/status_effect/buff/underdark)) // Underdark races
+			guy.apply_status_effect(/datum/status_effect/buff/underdark)
+		if(GLOB.tod == "day")
+			if((src.outdoors == TRUE) && !guy.has_status_effect(/datum/status_effect/debuff/sensitivity))
+				guy.apply_status_effect(/datum/status_effect/debuff/sensitivity)
+				guy.add_stress(/datum/stressevent/sensitivity)
+
+/area/rogue/Entered(mob/living/carbon/human/guy)
+
+	. = ..()
 	if((src.church_area == TRUE) && HAS_TRAIT(guy, TRAIT_CLERGY) && !guy.has_status_effect(/datum/status_effect/buff/churchbuff)) // Templar/Priest/Churchling/Acolyte
 		guy.apply_status_effect(/datum/status_effect/buff/churchbuff)
+
+/area/rogue/Entered(mob/living/carbon/human/guy)
+
+	. = ..()
+	if((src.town_area == TRUE) && HAS_TRAIT(guy, TRAIT_DISGRACED_KNIGHT) && !guy.has_status_effect(/datum/status_effect/debuff/disgracedknight_town))
+		guy.apply_status_effect(/datum/status_effect/debuff/disgracedknight_town)
+
+/area/rogue/Entered(mob/living/carbon/human/guy)
+
+	. = ..()
+	if((src.keep_area == TRUE) && HAS_TRAIT(guy, TRAIT_DISGRACED_KNIGHT) && !guy.has_status_effect(/datum/status_effect/debuff/disgracedknight_keep))
+		guy.apply_status_effect(/datum/status_effect/debuff/disgracedknight_keep)
 
 /area/rogue/indoors
 	name = "indoors rt"
@@ -76,12 +112,17 @@ GLOBAL_LIST_INIT(roguetown_areas_typecache, typecacheof(/area/rogue/indoors/town
 	droning_sound_dusk = 'sound/music/area/banditcamp.ogg'
 	droning_sound_night = 'sound/music/area/banditcamp.ogg'
 
+/area/rogue/indoors/vampire_manor
+	name = "Vampire Manor"
+	droning_sound = 'sound/music/area/manor2.ogg'
+
 /area/rogue/indoors/cave
 	name = "latejoin cave"
 	icon_state = "cave"
 	ambientsounds = AMB_GENCAVE
 	ambientnight = AMB_GENCAVE
 	soundenv = 8
+	underdark_area = TRUE
 
 /area/rogue/indoors/cave/late/can_craft_here()
 	return FALSE
@@ -426,6 +467,7 @@ GLOBAL_LIST_INIT(roguetown_areas_typecache, typecacheof(/area/rogue/indoors/town
 /area/rogue/under/cave
 	name = "cave"
 	warden_area = TRUE
+	underdark_area = TRUE
 	icon_state = "cave"
 	ambientsounds = AMB_GENCAVE
 	ambientnight = AMB_GENCAVE
@@ -455,6 +497,7 @@ GLOBAL_LIST_INIT(roguetown_areas_typecache, typecacheof(/area/rogue/indoors/town
 	name = "cavewet"
 	icon_state = "cavewet"
 	warden_area = TRUE
+	underdark_area = TRUE
 	first_time_text = "The Undersea"
 	ambientsounds = AMB_CAVEWATER
 	ambientnight = AMB_CAVEWATER
@@ -478,6 +521,7 @@ GLOBAL_LIST_INIT(roguetown_areas_typecache, typecacheof(/area/rogue/indoors/town
 	name = "The Underdark"
 	icon_state = "cavewet"
 	warden_area = FALSE
+	underdark_area = TRUE
 	first_time_text = "The Underdark"
 	ambientsounds = AMB_CAVEWATER
 	ambientnight = AMB_CAVEWATER
@@ -1042,6 +1086,7 @@ GLOBAL_LIST_INIT(roguetown_areas_typecache, typecacheof(/area/rogue/indoors/town
 	droning_sound_dusk = null
 	droning_sound_night = null
 	converted_type = /area/rogue/outdoors/exposed/under/town
+	underdark_area = TRUE
 /area/rogue/outdoors/exposed/under/town
 	icon_state = "town"
 	droning_sound = 'sound/music/area/catacombs.ogg'

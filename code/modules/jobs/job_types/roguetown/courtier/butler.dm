@@ -3,6 +3,7 @@
 	flag = BUTLER
 	department_flag = COURTIERS
 	faction = "Station"
+	advjob_examine = TRUE
 	total_positions = 1
 	spawn_positions = 1
 	allowed_races = RACES_SECOND_CLASS_NO_GOLEM
@@ -26,7 +27,7 @@
 	)
 
 /datum/advclass/seneschal
-	traits_applied = list(TRAIT_CICERONE)
+	traits_applied = list(TRAIT_CICERONE, TRAIT_KEENEARS, TRAIT_SLEUTH, TRAIT_ROYALSERVANT) // They have Expert Sewing
 	category_tags = list(CTAG_SENESCHAL)
 
 /datum/advclass/seneschal/seneschal
@@ -52,6 +53,7 @@
 		/datum/skill/misc/stealing = SKILL_LEVEL_JOURNEYMAN,
 		/datum/skill/misc/lockpicking = SKILL_LEVEL_APPRENTICE,
 		/datum/skill/misc/climbing = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/misc/tracking = SKILL_LEVEL_JOURNEYMAN,
 	)
 
 /datum/outfit/job/roguetown/seneschal
@@ -81,7 +83,7 @@
 	beltr = /obj/item/storage/keyring/servant
 	beltl = /obj/item/storage/belt/rogue/pouch/coins/mid
 	id = /obj/item/scomstone/bad
-	if(should_wear_femme_clothes(H)) 
+	if(should_wear_femme_clothes(H))
 		armor = /obj/item/clothing/suit/roguetown/armor/silkcoat
 
 /datum/advclass/seneschal/headmaid
@@ -107,6 +109,7 @@
 		/datum/skill/misc/stealing = SKILL_LEVEL_JOURNEYMAN,
 		/datum/skill/misc/lockpicking = SKILL_LEVEL_APPRENTICE,
 		/datum/skill/misc/climbing = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/misc/tracking = SKILL_LEVEL_JOURNEYMAN,
 	)
 
 /datum/outfit/job/roguetown/seneschal/headmaid/pre_equip(mob/living/carbon/human/H)
@@ -143,6 +146,7 @@
 		/datum/skill/misc/stealing = SKILL_LEVEL_JOURNEYMAN,
 		/datum/skill/misc/lockpicking = SKILL_LEVEL_APPRENTICE,
 		/datum/skill/misc/climbing = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/misc/tracking = SKILL_LEVEL_JOURNEYMAN,
 	)
 
 /datum/outfit/job/roguetown/seneschal/chiefbutler/pre_equip(mob/living/carbon/human/H)

@@ -4,6 +4,7 @@
 /datum/species/lizardfolk
 	name = "Zardman"
 	id = "lizardfolk"
+	base_name = "Zard"
 	desc = "<b>Zardman: Children of the Wetland</b><br>\
 	Created by Abyssor’s hand they are believed to be savage, some even think them Graggarites. \
 	Native to the wetlands of the Scarlet Reach so infused with mana and crawling with undead, \
@@ -13,7 +14,6 @@
 	and individual zardmen have trickled into the cities with the promise of generous payments, rich foods and delicious ale from weaker cityfolk.<br> \
 	<span style='color: #6a8cb7;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;'><b> +1 CON | +1 END</b></span> </br>\
 	<span style='color: #6a8cb7;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;'><b> LANGUAGE: Draconic - ,s</b></span> </br>"
-	skin_tone_wording = "Skin Colors"
 	species_traits = list(EYECOLOR,LIPS,STUBBLE,MUTCOLORS)
 	possible_ages = ALL_AGES_LIST
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_MAGIC | MIRROR_PRIDE | RACE_SWAP | SLIME_EXTRACT
@@ -46,7 +46,7 @@
 		ORGAN_SLOT_LUNGS = /obj/item/organ/lungs,
 		ORGAN_SLOT_EYES = /obj/item/organ/eyes,
 		ORGAN_SLOT_EARS = /obj/item/organ/ears,
-		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/lizard,
+		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/wild_tongue/lizard,
 		ORGAN_SLOT_LIVER = /obj/item/organ/liver,
 		ORGAN_SLOT_STOMACH = /obj/item/organ/stomach,
 		ORGAN_SLOT_APPENDIX = /obj/item/organ/appendix,

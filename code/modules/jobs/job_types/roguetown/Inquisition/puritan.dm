@@ -6,7 +6,7 @@
 	total_positions = 1
 	spawn_positions = 1
 	allowed_sexes = list(MALE, FEMALE)
-	allowed_races = RACES_CHURCH_FAVORED_UP		//An incredibly bigoted organization. They would only allow races PSYDON Himself created into such an esteemed role. Aasimar are given a pass, as they consider the Ten to be saints, and Aasimar have far more direct connections to them then the other races.
+	allowed_races = RACES_INQUISITOR //An incredibly bigoted organization. They would only allow races PSYDON Himself created into such an esteemed role. Aasimar are given a pass, as they consider the Ten to be saints, and Aasimar have far more direct connections to them then the other races.
 	disallowed_races = list(
 		/datum/species/lamia,
 		/datum/species/harpy,
@@ -28,7 +28,6 @@
 
 	virtue_restrictions = list(
 		/datum/virtue/combat/hollow_life,
-		/datum/virtue/combat/vampire,
 	)
 
 	job_subclasses = list(
@@ -124,6 +123,7 @@
 		/obj/item/rogueweapon/scabbard/sheath = 1,
 		)
 
+	change_origin(H, /datum/virtue/origin/otava, "Holy order")
 
 /datum/outfit/job/roguetown/puritan/inspector/choose_loadout(mob/living/carbon/human/H)
 	. = ..()
@@ -207,6 +207,8 @@
 		/obj/item/storage/keyring/puritan = 1,
 		/obj/item/paper/inqslip/arrival/inq = 1
 		)
+
+	change_origin(H, /datum/virtue/origin/otava, "Holy order")
 
 /datum/outfit/job/roguetown/puritan/ordinator/choose_loadout(mob/living/carbon/human/H)
 	. = ..()

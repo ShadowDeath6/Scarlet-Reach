@@ -333,6 +333,11 @@
 	desc = "My home. I watch vigilantly and respond swiftly."
 	icon_state = "buff"
 
+/atom/movable/screen/alert/status_effect/buff/knightbufftown
+	name = "Vigilant Knight"
+	desc = "My home. I watch vigilantly and respond swiftly."
+	icon_state = "buff"
+
 /atom/movable/screen/alert/status_effect/buff/barkeepbuff
 	name = "Vigilant Tavernkeep"
 	desc = "My home. I watch vigilantly and respond swiftly."
@@ -351,6 +356,11 @@
 /atom/movable/screen/alert/status_effect/buff/dungeoneerbuff
 	name = "Ruthless Jailor"
 	desc = "This is my sanctuary. I can overpower any opposition that dares breach it."
+	icon_state = "buff"
+
+/atom/movable/screen/alert/status_effect/buff/underdarkbuff
+	name = "Underdark Ancestry"
+	desc = "This is where my people come from. I can find my way easily in these depths."
 	icon_state = "buff"
 
 /atom/movable/screen/alert/status_effect/buff/churchbuff
@@ -385,10 +395,25 @@
 	alert_type = /atom/movable/screen/alert/status_effect/buff/guardbuffone
 	effectedstats = list("constitution" = 1,"endurance" = 1, "speed" = 1, "perception" = 2)
 
+/datum/status_effect/buff/knightbuff
+	id = "knightbuff"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/knightbuff
+	effectedstats = list("constitution" = 1, "perception" = 1)
+	
+/datum/status_effect/buff/knightbufftown
+	id = "knightbufftown"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/knightbufftown
+	effectedstats = list("endurance" = 1, "speed" = 1, "perception" = 1) // lesser buff for being in town, lets them move around
+
 /datum/status_effect/buff/dungeoneerbuff
 	id = "dungeoneerbuff"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/dungeoneerbuff
 	effectedstats = list("constitution" = 1,"endurance" = 1, "strength" = 2)//This only works in 2 small areas on the entire map
+
+/datum/status_effect/buff/underdark
+	id = "underdarkbuff"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/underdarkbuff
+	effectedstats = list("perception" = 1)
 
 /datum/status_effect/buff/churchbuff/process()
 
@@ -404,6 +429,20 @@
 	var/area/rogue/our_area = get_area(owner)
 	if(!(our_area.town_area))
 		owner.remove_status_effect(/datum/status_effect/buff/guardbuffone)
+
+/datum/status_effect/buff/knightbuff/process()
+
+	.=..()
+	var/area/rogue/our_area = get_area(owner)
+	if(!(our_area.keep_area))
+		owner.remove_status_effect(/datum/status_effect/buff/knightbuff)
+
+/datum/status_effect/buff/knightbufftown/process()
+
+	.=..()
+	var/area/rogue/our_area = get_area(owner)
+	if(!(our_area.town_area))
+		owner.remove_status_effect(/datum/status_effect/buff/knightbufftown)
 
 /datum/status_effect/buff/wardenbuff/process()
 
@@ -434,6 +473,21 @@
 /datum/status_effect/buff/dungeoneerbuff/on_remove()
 	. = ..()
 	REMOVE_TRAIT(owner, TRAIT_CIVILIZEDBARBARIAN, id)
+
+/datum/status_effect/buff/underdark/process()
+
+	.=..()
+	var/area/rogue/our_area = get_area(owner)
+	if(!(our_area.underdark_area))
+		owner.remove_status_effect(/datum/status_effect/buff/underdark)
+
+/datum/status_effect/buff/underdark/on_apply()
+	. = ..()
+	ADD_TRAIT(owner, TRAIT_UNDERSIGHT, id)
+
+/datum/status_effect/buff/underdark/on_remove()
+	. = ..()
+	REMOVE_TRAIT(owner, TRAIT_UNDERSIGHT, id)
 
 /atom/movable/screen/alert/status_effect/buff/healing//lesser miracle
 	name = "Healing Miracle"
@@ -567,12 +621,31 @@
 	duration = -1
 	healing_on_tick = 3
 	outline_colour = "#bbbbbb"
+	var/oh_god_it_hurts = FALSE
 
 /datum/status_effect/buff/healing/necras_vow/on_apply()
 	healing_on_tick = max(owner.get_skill_level(/datum/skill/magic/holy), 3)
 	return TRUE
 
 /datum/status_effect/buff/healing/necras_vow/tick()
+	if (owner.stat > 0 && (!owner.blood_volume || owner.health < owner.crit_threshold))
+		// OH SHIT. SHE'S CASHING IN ON THE VOW!!! YOU'RE FUCKED!!!
+		if (!oh_god_it_hurts)
+			to_chat(owner, span_boldwarning("The everblack settles around you. Oblivion. Then, you hear it. You hear <i>HER</i>."))
+			to_chat(owner, span_crit("<B>\"MINE.\"</B>"))
+			owner.visible_message(span_warning("[owner]'s unconscious form suddenly arches back into a silent, rictus scream, blue motes spilling from their mouth!"))
+			oh_god_it_hurts = TRUE
+		
+		owner.adjustOxyLoss(healing_on_tick) // this is the part where she kills you.
+		var/obj/effect/temp_visual/heal/H = new /obj/effect/temp_visual/heal_rogue(get_turf(owner))
+		H.color = "#33cabc"
+		return
+	else if (oh_god_it_hurts)
+		oh_god_it_hurts = FALSE
+		to_chat(owner, span_warning("The vice-like grip around your mortal coil eases, reluctantly. Yet, you feel hollow, all the same..."))
+		qdel(src) // clear the vow if someone somehow saves us
+		return
+
 	var/obj/effect/temp_visual/heal/H = new /obj/effect/temp_visual/heal_rogue(get_turf(owner))
 	H.color = "#a5a5a5"
 	var/list/wCount = owner.get_wounds()
@@ -1341,13 +1414,18 @@
 	M.color = effect_color
 	pulse += 1
 
-/datum/status_effect/buff/parish_boon
-	id = "parish_boon"
-	alert_type = /atom/movable/screen/alert/status_effect/buff/parish_boon
-	effectedstats = list("perception" = 1, "intelligence" = 1)
-	duration = 20 MINUTES
+/datum/status_effect/buff/celerity
+	id = "celerity"
+	alert_type = /atom/movable/screen/alert/status_effect/buff
+	effectedstats = list(STATKEY_SPD = 1)
+	status_type = STATUS_EFFECT_REPLACE
 
-/atom/movable/screen/alert/status_effect/buff/parish_boon
-	name = "Boon of the Parish"
-	desc = "You lent partial aid to the local church and bear a modest share of its blessing."
-	icon_state = "buff"
+/datum/status_effect/buff/celerity/New(list/arguments)
+	effectedstats[STATKEY_SPD] = arguments[2]
+	. = ..()
+
+/datum/status_effect/buff/fotv
+	id = "fotv"
+	alert_type = /atom/movable/screen/alert/status_effect/buff
+	effectedstats = list(STATKEY_SPD = 3, STATKEY_END = 1, STATKEY_CON = 1)
+	status_type = STATUS_EFFECT_REPLACE

@@ -42,10 +42,9 @@
 	gloves = /obj/item/clothing/gloves/roguetown/angle
 	wrists = /obj/item/clothing/wrists/roguetown/bracers
 	id = /obj/item/scomstone/garrison
-	backpack_contents = list(/obj/item/rogueweapon/huntingknife/idagger/steel/special = 1, /obj/item/signal_horn = 1)
 
 	H.verbs |= /mob/proc/haltyell
-	H.verbs |= list(/mob/living/carbon/human/proc/request_outlaw, /mob/living/carbon/human/proc/request_law, /mob/living/carbon/human/proc/request_law_removal, /mob/living/carbon/human/proc/request_purge)
+	H.verbs |= list(/mob/living/carbon/human/proc/request_outlaw, /mob/living/carbon/human/proc/request_law, /mob/living/carbon/human/proc/request_law_removal, /mob/living/carbon/human/proc/request_purge, /mob/living/carbon/human/proc/fire_guard)
 
 /datum/advclass/marshal/classic
 	name = "Marshal"
@@ -78,6 +77,8 @@
 	)
 
 /datum/outfit/job/roguetown/marshal/classic/pre_equip(mob/living/carbon/human/H)
+	..()
+	H.dna.species.soundpack_m = new /datum/voicepack/male/tyrant()
 	armor = /obj/item/clothing/suit/roguetown/armor/brigandine/sheriff
 	cloak = /obj/item/clothing/cloak/stabard/surcoat/bailiff
 	backr = /obj/item/rogueweapon/mace/cudgel/justice
@@ -85,6 +86,7 @@
 	beltr = /obj/item/storage/belt/rogue/pouch/coins/rich
 	beltl = /obj/item/storage/keyring/sheriff
 	head = /obj/item/clothing/head/roguetown/chaperon/noble/bailiff
+	backpack_contents = list(/obj/item/rogueweapon/huntingknife/idagger/steel/special = 1, /obj/item/signal_horn = 1)
 
 /datum/advclass/marshal/kcommander
 	name = "Knight Commander"
@@ -117,11 +119,14 @@
 	)
 
 /datum/outfit/job/roguetown/marshal/kcommander/pre_equip(mob/living/carbon/human/H)
+	..()
+	H.dna.species.soundpack_m = new /datum/voicepack/male/tyrant()
 	armor = /obj/item/clothing/suit/roguetown/armor/brigandine/sheriff/coat
 	backr = /obj/item/rogueweapon/sword/long/oathkeeper
 	belt = /obj/item/storage/belt/rogue/leather
 	beltr = /obj/item/storage/belt/rogue/pouch/coins/rich
 	beltl = /obj/item/storage/keyring/sheriff
+	backpack_contents = list(/obj/item/rogueweapon/huntingknife/idagger/steel/special = 1, /obj/item/signal_horn = 1)
 
 /mob/living/carbon/human/proc/request_law()
 	set name = "Request Law"

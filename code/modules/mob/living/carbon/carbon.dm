@@ -78,8 +78,6 @@
 	oactive = FALSE
 	update_a_intents()
 
-	givingto = null
-
 	if(ishuman(src))
 		var/mob/living/carbon/human/H = src
 		if(H.has_status_effect(/datum/status_effect/buff/clash))
@@ -852,6 +850,10 @@
 		lighting_alpha = min(lighting_alpha, LIGHTING_PLANE_ALPHA_ZIZOVISION)
 		see_in_dark = max(see_in_dark, 8)
 
+	if(HAS_TRAIT(src, TRAIT_UNDERSIGHT))
+		lighting_alpha = min(lighting_alpha, LIGHTING_PLANE_ALPHA_MOSTLY_VISIBLE)
+		see_in_dark = max(see_in_dark, 8)
+
 	if(see_override)
 		see_invisible = see_override
 	. = ..()
@@ -1387,3 +1389,22 @@
 			to_chat(src, "<span class='warning'>[src] has removed their leash!</span>")
 			src.remove_status_effect(/datum/status_effect/leash_pet)
 
+//port of various procs used for undead from Vanderlin
+/mob/living/carbon/proc/grant_undead_eyes()
+	var/obj/item/organ/eyes/eyes = getorganslot(ORGAN_SLOT_EYES)
+	var/eyecolor = eyes.eye_color
+	var/eyesecond = eyes.second_color
+	if(eyes)
+		eyes.Remove(src,1)
+		QDEL_NULL(eyes)
+
+	eyes = new /obj/item/organ/eyes/night_vision/zombie
+	eyes.eye_color = eyecolor
+	eyes.second_color = eyesecond
+	eyes.Insert(src)
+
+/// skeletonize all limbs of a carbon mob, pass TRUE as an argument if it's lethal, FALSE if it's not.
+/mob/living/carbon/proc/skeletonize(lethal = TRUE)
+	for(var/obj/item/bodypart/B in bodyparts)
+		B.skeletonize(lethal)
+	update_body_parts()

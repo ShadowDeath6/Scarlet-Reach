@@ -41,7 +41,7 @@
 	item_state = "coif"
 	max_integrity = 125
 	flags_inv = HIDEHAIR
-	slot_flags = ITEM_SLOT_NECK|ITEM_SLOT_HEAD|ITEM_SLOT_MASK
+	slot_flags = ITEM_SLOT_NECK|ITEM_SLOT_HEAD
 	blocksound = SOFTHIT
 	body_parts_covered = NECK|HAIR|EARS|HEAD
 	armor = ARMOR_LEATHER
@@ -62,7 +62,7 @@
 	item_state = "coif" // Lacks its own sprite/grey-sprite.
 	max_integrity = 100
 	flags_inv = HIDEHAIR
-	slot_flags = ITEM_SLOT_NECK|ITEM_SLOT_HEAD|ITEM_SLOT_MASK
+	slot_flags = ITEM_SLOT_NECK|ITEM_SLOT_HEAD
 	blocksound = SOFTHIT
 	body_parts_covered = NECK|HAIR|EARS|HEAD
 	armor = ARMOR_PADDED_BAD
@@ -97,7 +97,7 @@
 	flags_inv = HIDEHAIR
 	armor = ARMOR_MAILLE
 	resistance_flags = FIRE_PROOF
-	slot_flags = ITEM_SLOT_NECK|ITEM_SLOT_HEAD|ITEM_SLOT_MASK
+	slot_flags = ITEM_SLOT_NECK|ITEM_SLOT_HEAD
 	body_parts_covered = NECK|HAIR|EARS|HEAD
 	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT)
 	adjustable = CAN_CADJUST
@@ -696,3 +696,13 @@
 		user.change_stat("fortune", -1) //how much luck stat taken away when unequipped
 		goodluckactivated = FALSE
 	return
+
+/obj/item/clothing/neck/roguetown/zcross/matthios
+	name = "amulet of matthios"
+	desc = "He was but one flame in the dark. Together, his flock shall outblaze the tyrant sun."
+	icon_state = "robbinya"
+	resistance_flags = FIRE_PROOF
+	slot_flags = ITEM_SLOT_NECK|ITEM_SLOT_HIP|ITEM_SLOT_WRISTS|ITEM_SLOT_RING
+	anvilrepair = /datum/skill/craft/armorsmithing
+	grid_width = 32
+	grid_height = 32

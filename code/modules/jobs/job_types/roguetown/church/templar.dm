@@ -31,7 +31,6 @@
 	virtue_restrictions = list(
 		/datum/virtue/utility/noble,
 		/datum/virtue/utility/blueblooded,
-		/datum/virtue/combat/vampire,
 	)
 
 /datum/job/roguetown/templar/after_spawn(mob/living/L, mob/M, latejoin = TRUE)
@@ -43,8 +42,16 @@
 		var/honorary = "Brother"
 		if(should_wear_femme_clothes(H))
 			honorary = "Sister"
+		GLOB.chosen_names -= prev_real_name
 		H.real_name = "[honorary] [prev_real_name]"
 		H.name = "[honorary] [prev_name]"
+		GLOB.chosen_names += H.real_name
+
+		for(var/X in peopleknowme)
+			for(var/datum/mind/MF in get_minds(X))
+				if(MF.known_people)
+					MF.known_people -= prev_real_name
+					H.mind.person_knows_me(MF)
 
 /datum/outfit/job/roguetown/templar
 	job_bitflag = BITFLAG_CHURCH
@@ -132,7 +139,6 @@
 
 	var/datum/devotion/C = new /datum/devotion(H, H.patron)
 	C.grant_miracles(H, cleric_tier = CLERIC_T2, passive_gain = CLERIC_REGEN_MINOR, devotion_limit = CLERIC_REQ_2)	//Capped to T2 miracles.
-	H.miracle_points = max(H.miracle_points, 3)
 
 /datum/outfit/job/roguetown/templar/monk/choose_loadout(mob/living/carbon/human/H)
 	. = ..()
@@ -230,7 +236,7 @@
 	switch(H.patron?.type)
 		if(/datum/patron/divine/astrata)
 			wrists = /obj/item/clothing/neck/roguetown/psicross/astrata
-			head = /obj/item/clothing/head/roguetown/helmet/heavy/astratan
+			head = /obj/item/clothing/head/roguetown/helmet/heavy/astratahelm
 			cloak = /obj/item/clothing/cloak/templar/astratan
 		if(/datum/patron/divine/abyssor)
 			wrists = /obj/item/clothing/neck/roguetown/psicross/abyssor
@@ -291,7 +297,6 @@
 	H.dna.species.soundpack_m = new /datum/voicepack/male/knight()
 	var/datum/devotion/C = new /datum/devotion(H, H.patron)
 	C.grant_miracles(H, cleric_tier = CLERIC_T2, passive_gain = CLERIC_REGEN_MINOR, devotion_limit = CLERIC_REQ_2)	//Capped to T2 miracles.
-	H.miracle_points = max(H.miracle_points, 3)
 
 /datum/outfit/job/roguetown/templar/crusader/choose_loadout(mob/living/carbon/human/H)
 	. = ..()
@@ -324,7 +329,7 @@
 			H.adjust_skillrank(/datum/skill/combat/polearms, 1, TRUE)
 		if("Longsword")
 			H.put_in_hands(new /obj/item/rogueweapon/sword/long(H), TRUE)
-			H.adjust_skillrank(/datum/skill/combat/swords, 1, TRUE)	
+			H.adjust_skillrank(/datum/skill/combat/swords, 1, TRUE)
 		if("Flail")
 			H.put_in_hands(new /obj/item/rogueweapon/flail(H), TRUE)
 			H.adjust_skillrank(/datum/skill/combat/whipsflails, 1, TRUE)

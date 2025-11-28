@@ -20,7 +20,10 @@
 	round_contrib_points = 3
 	social_rank = SOCIAL_RANK_YEOMAN
 
-
+	virtue_restrictions = list(
+		/datum/virtue/utility/failed_squire,
+		/datum/virtue/utility/blacksmith, // we don't want you repairing your stuff in combat, sorry...
+	)
 	outfit = /datum/outfit/job/roguetown/sergeant
 	advclass_cat_rolls = list(CTAG_SERGEANT = 20)
 
@@ -65,6 +68,9 @@
 	armor = /obj/item/clothing/suit/roguetown/armor/plate/scale
 	head = /obj/item/clothing/head/roguetown/helmet/sallet/visored
 	id = /obj/item/scomstone/garrison
+	beltl = /obj/item/quiver/bolts
+	backl = /obj/item/gun/ballistic/revolver/grenadelauncher/crossbow
+	beltr = /obj/item/rogueweapon/sword/sabre
 
 //Rare-ish anti-armor two hander sword. Kinda alternative of a bastard sword type. Could be cool.
 /datum/advclass/sergeant/sergeant
@@ -118,9 +124,11 @@
 		/obj/item/rope/chain = 1,
 		/obj/item/storage/keyring/guardsergeant = 1,
 		/obj/item/rogueweapon/scabbard/sheath = 1,
+		/obj/item/signal_horn = 1,
 	)
 	H.adjust_blindness(-3)
-	var/weapons = list("Rhomphaia","Flail & Shield","Halberd","Sabre & Crossbow")	//Bit more unique than footsman, you are a jack-of-all-trades + slightly more 'elite'.
+	//triage fix - loadout is busted, needs fix. See https://github.com/Scarlet-Reach/Scarlet-Reach/issues/1226
+/*	var/weapons = list("Rhomphaia","Flail & Shield","Halberd","Sabre & Crossbow")	//Bit more unique than footsman, you are a jack-of-all-trades + slightly more 'elite'.
 	var/weapon_choice = input("Choose your weapon.", "TAKE UP ARMS") as anything in weapons
 	H.set_blindness(0)
 	switch(weapon_choice)
@@ -138,7 +146,7 @@
 			beltr = /obj/item/quiver/bolts
 			backl = /obj/item/gun/ballistic/revolver/grenadelauncher/crossbow
 			r_hand = /obj/item/rogueweapon/sword/sabre
-			l_hand = /obj/item/rogueweapon/scabbard/sword
+			l_hand = /obj/item/rogueweapon/scabbard/sword */
 
 /obj/effect/proc_holder/spell/invoked/order
 	name = ""

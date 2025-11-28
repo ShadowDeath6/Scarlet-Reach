@@ -2,13 +2,14 @@
 	name = "Lunacy Embracer"
 	tutorial = "You have rejected and terrorized civilization in the name of nature. You run wild under the moon, a terror to the townsfolk and a champion of Dendor's wild domain."
 	allowed_sexes = list(MALE, FEMALE)
-	allowed_races = RACES_ALL_KINDS
+	allowed_races = RACES_NO_GOLEM
 	min_pq = 30 //less dogshit cryptids please 
 	disallowed_races = list(
 		/datum/species/harpy,
 	)
 	outfit = /datum/outfit/job/roguetown/wretch/lunacyembracer
 	category_tags = list(CTAG_WRETCH)
+	extra_context = "Minimum PQ Required: 30"
 
 	traits_applied = list(
 		TRAIT_NUDIST,
@@ -50,6 +51,7 @@
 		/datum/skill/craft/masonry = SKILL_LEVEL_JOURNEYMAN,
 		/datum/skill/craft/alchemy = SKILL_LEVEL_JOURNEYMAN,
 		/datum/skill/craft/cooking = SKILL_LEVEL_JOURNEYMAN,
+		/datum/skill/labor/butchering = SKILL_LEVEL_JOURNEYMAN,
 		/datum/skill/labor/fishing = SKILL_LEVEL_JOURNEYMAN,
 		/datum/skill/magic/holy = SKILL_LEVEL_JOURNEYMAN,
 	)

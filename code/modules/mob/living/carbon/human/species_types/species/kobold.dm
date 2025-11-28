@@ -4,6 +4,10 @@
 /datum/species/kobold
 	name = "Kobold"
 	id = "kobold"
+	is_subrace = TRUE
+	origin_default = /datum/virtue/origin/racial/gronn
+	origin = "Gronn"
+	base_name = "Zard"
 	desc = "<b>Kobold: Slaves of the Burrow</b><br>\
 	Collectives of kobolds once inhabited the great mountain ranges of Gronn, \
 	these tribes safe from the savage whipping winds of the plains and well defended by their terrain from mounted raiders. \
@@ -48,7 +52,7 @@
 		ORGAN_SLOT_LUNGS = /obj/item/organ/lungs,
 		ORGAN_SLOT_EYES = /obj/item/organ/eyes,
 		ORGAN_SLOT_EARS = /obj/item/organ/ears,
-		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/lizard,
+		ORGAN_SLOT_TONGUE = /obj/item/organ/tongue/wild_tongue/lizard,
 		ORGAN_SLOT_LIVER = /obj/item/organ/liver,
 		ORGAN_SLOT_STOMACH = /obj/item/organ/stomach,
 		ORGAN_SLOT_APPENDIX = /obj/item/organ/appendix,

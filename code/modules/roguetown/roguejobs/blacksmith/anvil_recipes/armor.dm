@@ -129,11 +129,11 @@
 	created_item = /obj/item/clothing/suit/roguetown/armor/plate/aalloy
 	craftdiff = 1
 
-/datum/anvil_recipe/armor/paalloy/halfplate
-	name = "Half-Plate Armour (+2 Purified Alloy, +1 Cured Leather)"
+/datum/anvil_recipe/armor/paalloy/fullplate
+	name = "Full Plate Armour (+2 Purified Alloy, +1 Cured Leather)"
 	req_bar = /obj/item/ingot/purifiedaalloy
 	additional_items = list(/obj/item/ingot/purifiedaalloy,/obj/item/ingot/purifiedaalloy,/obj/item/natural/hide/cured)
-	created_item = /obj/item/clothing/suit/roguetown/armor/plate/paalloy
+	created_item = /obj/item/clothing/suit/roguetown/armor/plate/full/paalloy // we dont have purifiedaalloy here anymore, so i think this is fine
 	craftdiff = 3
 
 /datum/anvil_recipe/armor/aalloy/chainmail
@@ -396,6 +396,13 @@
 	req_bar = /obj/item/ingot/steel
 	additional_items = list(/obj/item/ingot/steel)
 	created_item = /obj/item/clothing/head/roguetown/helmet/bascinet/wizardhelm
+	craftdiff = 3
+
+/datum/anvil_recipe/armor/steel/helmet/beakhelm
+	name = "Beak helmet (+1 Steel)"
+	req_bar = /obj/item/ingot/steel
+	additional_items = list(/obj/item/ingot/steel)
+	created_item = /obj/item/clothing/head/roguetown/helmet/heavy/beakhelm
 	craftdiff = 3
 
 /datum/anvil_recipe/armor/steel/helmet/salletv

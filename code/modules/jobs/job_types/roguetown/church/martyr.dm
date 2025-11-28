@@ -464,7 +464,6 @@
 		/datum/virtue/combat/dualwielder,
 		/datum/virtue/heretic/zchurch_keyholder,
 		/datum/virtue/combat/hollow_life,
-		/datum/virtue/combat/vampire,
 	)
 
 	advclass_cat_rolls = list(CTAG_MARTYR = 2)
@@ -514,6 +513,7 @@
 	beltr = /obj/item/storage/keyring/priest
 	beltl = /obj/item/storage/belt/rogue/pouch/coins/rich
 	backr = /obj/item/storage/backpack/rogue/satchel
+	backl = /obj/item/rogueweapon/shield/tower/metal/holysee
 	gloves = /obj/item/clothing/gloves/roguetown/chain
 	wrists = /obj/item/clothing/wrists/roguetown/bracers
 	neck = /obj/item/clothing/neck/roguetown/bevor

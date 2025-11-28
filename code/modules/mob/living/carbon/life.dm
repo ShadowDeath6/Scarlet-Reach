@@ -53,6 +53,9 @@
 
 	check_cremation()
 
+	if(HAS_TRAIT(src, TRAIT_IN_FRENZY))
+		handle_automated_frenzy()
+
 /mob/living/carbon/handle_random_events()//BP/WOUND BASED PAIN
 	if(HAS_TRAIT(src, TRAIT_NOPAIN))
 		return
@@ -123,10 +126,16 @@
 				next_smell = world.time + 30 SECONDS
 				T.pollution.smell_act(src)
 
-/mob/living/proc/handle_inwater(turf/onturf, extinguish = TRUE, force_drown = FALSE)
+/mob/living/proc/handle_inwater(turf/open/water/W, extinguish = TRUE, force_drown = FALSE)
 	if(!extinguish)
 		return
-	extinguish_mob()
+	if(is_floor_hazard_immune())
+		return
+	if(lying || W.water_level == 3)
+		SoakMob(FULL_BODY)
+	else
+		if(W.water_level == 2)
+			SoakMob(BELOW_CHEST)
 
 /mob/living/carbon/handle_inwater(turf/onturf, extinguish = TRUE, force_drown = FALSE)
 	..()
@@ -562,11 +571,13 @@ GLOBAL_LIST_INIT(ballmer_windows_me_msg, list("Yo man, what if, we like, uh, put
 /mob/living/carbon/proc/handle_sleep()
 	if (!client) // not really relevant to NPCs at the moment
 		return
-
-	if(HAS_TRAIT(src, TRAIT_NOSLEEP) && !(mobility_flags & MOBILITY_STAND))
-		energy_add(5)
-		if(mind?.has_antag_datum(/datum/antagonist/vampirelord/lesser))
-			energy_add(10)
+	if(HAS_TRAIT(src, TRAIT_NOSLEEP))
+		if(!(mobility_flags & MOBILITY_STAND))
+			energy_add(5)
+		if(mind?.has_antag_datum(/datum/antagonist/vampire))
+			if(!(mobility_flags & MOBILITY_STAND))
+				energy_add(10)
+			energy_add(4)
 		return
 	//Healing while sleeping in a bed
 	if(IsSleeping())
@@ -628,9 +639,9 @@ GLOBAL_LIST_INIT(ballmer_windows_me_msg, list("Yo man, what if, we like, uh, put
 				var/armor_blocked = FALSE
 				if(ishuman(src) && stat == CONSCIOUS)
 					var/mob/living/carbon/human/H = src
-					if(H.head && H.head.armor?.blunt > 70)
+					if(H.head && H.head.armor?.blunt > 70 && !(HAS_TRAIT(H.head.armor, TRAIT_NODROP)))
 						armor_blocked = TRUE
-					if(H.wear_armor && (H.wear_armor.armor_class in list(ARMOR_CLASS_HEAVY, ARMOR_CLASS_MEDIUM)))
+					if(H.wear_armor && (H.wear_armor.armor_class in list(ARMOR_CLASS_HEAVY, ARMOR_CLASS_MEDIUM)) && !(HAS_TRAIT(H.wear_armor, TRAIT_NODROP)))
 						armor_blocked = TRUE
 					if(armor_blocked && !fallingas)
 						to_chat(src, span_warning("I can't sleep like this. My armor is burdening me."))

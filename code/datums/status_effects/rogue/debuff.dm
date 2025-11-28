@@ -530,6 +530,44 @@
 	icon_state = "debuff"
 	color ="#7a0606"
 
+// Disgraced Knight debuff for town buff cancellation: -1 END, -1 SPE, -1 PER
+/datum/status_effect/debuff/disgracedknight_town
+	id = "Disgraced Knight (Town)!"
+	alert_type = /atom/movable/screen/alert/status_effect/debuff/disgracedknight_town
+	effectedstats = list("endurance" = -1, "speed" = -1, "perception" = -1)
+	duration = 999 MINUTES
+
+/atom/movable/screen/alert/status_effect/debuff/disgracedknight_town
+	name = "Disgraced Knight!"
+	desc = "I have been stripped of my honor and knighthood!"
+	icon_state = "muscles"
+	color = "#6d1313"
+
+/datum/status_effect/debuff/disgracedknight_town/process()
+	.=..()
+	var/area/rogue/our_area = get_area(owner)
+	if(!(our_area.town_area))
+		owner.remove_status_effect(/datum/status_effect/debuff/disgracedknight_town)
+
+// Disgraced Knight debuff for keep buff cancellation: -1 CON, -1 PER
+/datum/status_effect/debuff/disgracedknight_keep
+	id = "Disgraced Knight (Keep)!"
+	alert_type = /atom/movable/screen/alert/status_effect/debuff/disgracedknight_keep
+	effectedstats = list("constitution" = -1, "perception" = -1)
+	duration = 999 MINUTES
+
+/atom/movable/screen/alert/status_effect/debuff/disgracedknight_keep
+	name = "Disgraced Knight!"
+	desc = "I have been stripped of my honor and knighthood!"
+	icon_state = "muscles"
+	color = "#6d1313"
+
+/datum/status_effect/debuff/disgracedknight_keep/process()
+	.=..()
+	var/area/rogue/our_area = get_area(owner)
+	if(!(our_area.keep_area))
+		owner.remove_status_effect(/datum/status_effect/debuff/disgracedknight_keep)
+
 /datum/status_effect/debuff/hereticsermon
 	id = "Heretic on sermon!"
 	alert_type = /atom/movable/screen/alert/status_effect/debuff/hereticsermon
@@ -560,16 +598,23 @@
 	desc = "Something has chilled me to the bone! It's hard to move."
 	icon_state = "muscles"
 
-/datum/status_effect/debuff/sunspurn
-	id = "Sunspurn"
-	alert_type =  /atom/movable/screen/alert/status_effect/debuff/sunspurn
-	effectedstats = list("strength" = -2, "endurance" = -3, "constitution" = -3)
-	duration = 1 MINUTES
+/datum/status_effect/debuff/sensitivity
+	id = "Sunlight Sensitivity"
+	alert_type =  /atom/movable/screen/alert/status_effect/debuff/sensitivity
+	effectedstats = list("perception" = -1)
 
-/atom/movable/screen/alert/status_effect/debuff/sunspurn
-	name = "Sunspurned"
-	desc = "Astrata spurns me! I feel so weak..."
-	icon_state = "muscles"
+/atom/movable/screen/alert/status_effect/debuff/sensitivity
+	name = "Sunlight Sensitivity"
+	desc = "The sunlight is too much for your sensitive eyes!"
+	icon_state = "debuff"
+
+/datum/status_effect/debuff/sensitivity/process()
+
+	.=..()
+	var/area/rogue/our_area = get_area(owner)
+	if(!(our_area.outdoors) || GLOB.tod != "day")
+		owner.remove_status_effect(/datum/status_effect/debuff/sensitivity)
+		owner.remove_stress(/datum/stressevent/sensitivity)
 
 ///////////////////////
 /// CLIMBING STUFF ///
@@ -638,6 +683,17 @@
 	desc = ""
 	icon_state = "muscles"
 
+/datum/status_effect/debuff/mesmerised
+	id = "mesmerised"
+	alert_type = /atom/movable/screen/alert/status_effect/debuff/mesmerised
+	effectedstats = list(STATKEY_STR = -2, STATKEY_LCK = -2, STATKEY_PER = -2, STATKEY_SPD = -2)
+	duration = 30 SECONDS
+
+/atom/movable/screen/alert/status_effect/debuff/mesmerised
+	name = "Mesmerised"
+	desc = span_warning("Their beauty is otherwordly..")
+	icon_state = "acid"
+
 /////////////////////////
 ///HARPY FLIGHT STUFF///
 ///////////////////////
@@ -672,6 +728,7 @@
 	harpy.add_movespeed_modifier(MOVESPEED_ID_SPECIES, TRUE, 100, override=TRUE, multiplicative_slowdown = harpy.dna.species.speedmod)
 	harpy.apply_status_effect(/datum/status_effect/debuff/flight_sound_loop)
 	ADD_TRAIT(harpy, TRAIT_SPELLCOCKBLOCK, ORGAN_TRAIT)
+	harpy.flying = TRUE
 	init_signals()
 
 /datum/status_effect/debuff/harpy_flight/tick()
@@ -713,6 +770,7 @@
 	remove_signals()
 	animate(harpy)
 	REMOVE_TRAIT(harpy, TRAIT_SPELLCOCKBLOCK, ORGAN_TRAIT)
+	harpy.flying = FALSE
 	if(harpy.is_holding_item_of_type(/obj/item/rogueweapon/huntingknife/idagger/harpy_talons))
 		for(var/obj/item/rogueweapon/huntingknife/idagger/harpy_talons/talons in harpy.held_items)
 			harpy.dropItemToGround(talons, TRUE)
@@ -838,23 +896,18 @@
 ///HARPY FLIGHT STUFF END///
 ///////////////////////////
 
-/datum/status_effect/debuff/quest_lock
-	id = "quest_lock"
-	alert_type = /atom/movable/screen/alert/status_effect/debuff/quest_lock
-	duration = 20 MINUTES
+/datum/status_effect/debuff/specialcd
+	id = "specialcd"
+	alert_type = /atom/movable/screen/alert/status_effect/debuff/specialcd
+	duration = 30 SECONDS
+	status_type = STATUS_EFFECT_UNIQUE
 
-/atom/movable/screen/alert/status_effect/debuff/quest_lock
-	name = "Edict of the Ten"
-	desc = "A sliver of sacred favor clings to you. Followers of the Ten will not enlist your aid in their routine."
+/datum/status_effect/debuff/specialcd/on_creation(mob/living/new_owner, new_dur)
+	if(new_dur)
+		duration = new_dur
+	return ..()
+
+/atom/movable/screen/alert/status_effect/debuff/specialcd
+	name = "Special Manouevre Cooldown"
+	desc = "I used it. I must wait."
 	icon_state = "debuff"
-
-/datum/status_effect/debuff/silver_curse
-	id = "silver_curse"
-	alert_type = /atom/movable/screen/alert/status_effect/debuff/silver_curse
-	effectedstats = list("strength" = -2,"perception" = -2,"intelligence" = -2, "constitution" = -2, "endurance" = -2, "speed" = -2)
-	duration = 45 SECONDS
-
-/atom/movable/screen/alert/status_effect/debuff/silver_curse
-	name = "Silver Curse"
-	desc = "My BANE!"
-	icon_state = "hunger3"
