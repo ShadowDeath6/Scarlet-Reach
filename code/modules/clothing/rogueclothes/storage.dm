@@ -596,3 +596,10 @@
 		var/obj/item/bomb/smoke/K = new()
 		knives += K
 	update_icon()
+
+/obj/item/storage/belt/rogue/leather/ogre
+	name = "giant belt"
+	desc = "When you have to tighten a belt of this size, best start keeping your tastiest allies close."
+	sleeved = 'icons/roguetown/clothing/onmob/32x64/ogre_onmob.dmi'
+	mob_overlay_icon = 'icons/roguetown/clothing/onmob/32x64/ogre_onmob.dmi'
+	icon_state = "ogre_belt"

@@ -19,10 +19,14 @@
 		src.STACON = 6
 		src.STAPER = 10
 		src.STASPD = 16
+		update_move_intent_slowdown() // Apply speed changes
 
 		AddSpell(new /obj/effect/proc_holder/spell/self/foxclaws)
-		real_name = "Vernard ([stored_mob.real_name])" //So we don't get a random name
 		faction += "wolfs" // Foxes have the same faction code-wise so leaving it for now
+		if (src.client.prefs?.wildshape_name)
+			real_name = "vernard ([stored_mob.real_name])"
+		else
+			real_name = "vernard"
 
 // FOX SPECIES DATUM //
 /datum/species/shapefox
