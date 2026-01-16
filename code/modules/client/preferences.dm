@@ -293,7 +293,6 @@ GLOBAL_LIST_EMPTY(chosen_names)
 	if(new_race.allowed_tail_types)
 		tail_type = pick(new_race.allowed_tail_types)
 	virtue_origin = new pref_species.origin_default
-	tail_type = /obj/item/bodypart/lamian_tail/lamian_tail
 	if(virtue_origin.uniquefaith)
 		selected_patron = GLOB.patronlist[virtue_origin.uniquefaith[1].godhead]
 	else
@@ -534,7 +533,7 @@ GLOBAL_LIST_EMPTY(chosen_names)
 					dat += "<b>[pref_species.skin_tone_wording]: </b><a href='?_src_=prefs;preference=s_tone;task=input'>Change</a>"
 				dat += "<br>"
 
-			if((MUTCOLORS in pref_species.species_traits) && !(TAUR_BODY in pref_species.species_traits) || (MUTCOLORS_PARTSONLY in pref_species.species_traits) && !(TAUR_BODY in pref_species.species_traits) !(HARPY in pref_species.species_traits))
+			if((MUTCOLORS in pref_species.species_traits) && !(TAUR_BODY in pref_species.species_traits) || (MUTCOLORS_PARTSONLY in pref_species.species_traits) && !(TAUR_BODY in pref_species.species_traits) && !(HARPY in pref_species.species_traits))
 
 				dat += "<b>Mutant Color #1:</b><span style='border: 1px solid #161616; background-color: #[features["mcolor"]];'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <a href='?_src_=prefs;preference=mutant_color;task=input'>Change</a><BR>"
 				dat += "<b>Mutant Color #2:</b><span style='border: 1px solid #161616; background-color: #[features["mcolor2"]];'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <a href='?_src_=prefs;preference=mutant_color2;task=input'>Change</a><BR>"

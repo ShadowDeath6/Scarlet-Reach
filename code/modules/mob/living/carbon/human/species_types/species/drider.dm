@@ -10,8 +10,8 @@
 	species_traits = list(EYECOLOR, LIPS, HAIR, TAUR_BODY, OLDGREY, MUTCOLORS)
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_MAGIC | MIRROR_PRIDE | RACE_SWAP | SLIME_EXTRACT
 	possible_ages = ALL_AGES_LIST
-	limbs_icon_m = 'icons/roguetown/mob/bodies/m/mt.dmi' // lips
-	limbs_icon_f = 'icons/roguetown/mob/bodies/f/fm.dmi' //lips
+	limbs_icon_m = 'icons/roguetown/mob/bodies/m/human.dmi' // lips
+	limbs_icon_f = 'icons/roguetown/mob/bodies/f/human.dmi' //lips
 	dam_icon = 'icons/roguetown/mob/bodies/dam/dam_male.dmi'
 	dam_icon_f = 'icons/roguetown/mob/bodies/dam/dam_female.dmi'
 	soundpack_m = /datum/voicepack/male
