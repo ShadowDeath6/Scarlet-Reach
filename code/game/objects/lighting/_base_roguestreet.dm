@@ -9,22 +9,24 @@
 	bulb_power = 1
 	max_integrity = 0
 	pass_flags = LETPASSTHROW
-
+	light_system = STATIC_LIGHT
 /obj/machinery/light/roguestreet/midlamp
 	icon = 'icons/roguetown/misc/64x64.dmi'
 	icon_state = "midlamp1"
 	base_state = "midlamp"
+	light_color = "#56ff0d" //roguetown use defines challenge: as yet uncompleted
 	pixel_x = -16
 	density = TRUE
 
 /obj/machinery/light/roguestreet/proc/lights_out()
 	on = FALSE
-	set_light(0)
+	set_light(l_on = FALSE)
 	update_icon()
 	addtimer(CALLBACK(src, PROC_REF(lights_on)), 5 MINUTES)
 
 /obj/machinery/light/roguestreet/proc/lights_on()
 	on = TRUE
+	set_light(l_on = TRUE)
 	update()
 	update_icon()
 

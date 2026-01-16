@@ -58,7 +58,7 @@
 	name = "mace"
 	desc = "Helps anyone fall asleep."
 	icon_state = "mace"
-	icon = 'icons/roguetown/weapons/32.dmi'
+	icon = 'icons/roguetown/weapons/blunt32.dmi'
 	item_state = "mace_greyscale"
 	lefthand_file = 'icons/mob/inhands/weapons/melee_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/weapons/melee_righthand.dmi'
@@ -79,6 +79,7 @@
 	icon_angle_wielded = 50
 	pickup_sound = 'modular_helmsguard/sound/sheath_sounds/draw_blunt.ogg'
 	sheathe_sound = 'sound/items/wood_sharpen.ogg'
+	special = /datum/special_intent/ground_smash
 
 /obj/item/rogueweapon/mace/equipped(mob/user, slot, initial = FALSE)
 	pickup_sound = pick("modular_helmsguard/sound/sheath_sounds/draw_blunt.ogg", "modular_helmsguard/sound/sheath_sounds/draw_mace.ogg", "modular_helmsguard/sound/sheath_sounds/draw_blunt2.ogg")
@@ -139,13 +140,26 @@
 	name = "silver war hammer"
 	desc = "A light war hammer forged of silver."
 	icon_state = "silverhammer"
-	force = 24
+	force = 18
+	force_wielded = 20
+	minstr = 9
+	wdefense = 5
 	gripped_intents = null
 	possible_item_intents = list(/datum/intent/mace/strike, /datum/intent/mace/smash, /datum/intent/effect/daze)
-	wdefense = 4
 	smeltresult = /obj/item/ingot/silver
 	smelt_bar_num = 2
 	is_silver = TRUE
+
+/obj/item/rogueweapon/mace/silver/ComponentInitialize()
+	AddComponent(\
+		/datum/component/silverbless,\
+		pre_blessed = BLESSING_NONE,\
+		silver_type = SILVER_TENNITE,\
+		added_force = 0,\
+		added_blade_int = 100,\
+		added_int = 50,\
+		added_def = 2,\
+	)
 
 /obj/item/rogueweapon/mace/silver/getonmobprop(tag)
 	. = ..()
@@ -208,24 +222,50 @@
 	grid_width = 32
 	grid_height = 96
 
+/obj/item/rogueweapon/mace/cudgel/shellrungu
+	name = "shell rungu"
+	desc = "A ceremonial rungu carved out of clam shell. Not intended for combat. Its used in various Sea and Coastal Elven rituals and ceremonies."
+	icon = 'icons/roguetown/gems/gem_shell.dmi'
+	icon_state = "rungu_shell"
+
+	max_integrity = 75
+	sellprice = 35
+
 /obj/item/rogueweapon/mace/cudgel/psy
 	name = "psydonian handmace"
 	desc = "A shorthanded mace, a convenient sleeping aid, or a means to root out heresy. It's all in the wrist."
+	icon_state = "psyflangedmace"
+	force = 20
+	force_wielded = 20
+	minstr = 9
+	wdefense = 5
 	wbalance = WBALANCE_SWIFT
 	blade_dulling = DULLING_SHAFT_REINFORCED
 	resistance_flags = FIRE_PROOF
-	icon_state = "psyflangedmace"
-	wdefense = 2
+	is_silver = TRUE
+	smeltresult = /obj/item/ingot/silver
 
 /obj/item/rogueweapon/mace/cudgel/psy/ComponentInitialize()
-	// +3 force, +100 blade int, +50 int, +1 def, make silver
-	AddComponent(/datum/component/psyblessed, FALSE, 3, 100, 50, 1, TRUE)	
-
-/obj/item/rogueweapon/mace/cudgel/psy/preblessed
+	AddComponent(\
+		/datum/component/silverbless,\
+		pre_blessed = BLESSING_NONE,\
+		silver_type = SILVER_PSYDONIAN,\
+		added_force = 0,\
+		added_blade_int = 100,\
+		added_int = 50,\
+		added_def = 1,\
+	)
 
 /obj/item/rogueweapon/mace/cudgel/psy/preblessed/ComponentInitialize()
-	// PREBLESS IT +3 force, +100 blade int, +50 int, +1 def, make silver
-	AddComponent(/datum/component/psyblessed, TRUE, 3, 100, 50, 1, TRUE)
+	AddComponent(\
+		/datum/component/silverbless,\
+		pre_blessed = BLESSING_PSYDONIAN,\
+		silver_type = SILVER_PSYDONIAN,\
+		added_force = 0,\
+		added_blade_int = 100,\
+		added_int = 50,\
+		added_def = 1,\
+	)
 
 /obj/item/rogueweapon/mace/cudgel/psy/old
 	name = "old psydonian handmace"
@@ -233,9 +273,6 @@
 	force = 20
 	wbalance = WBALANCE_NORMAL
 	icon_state = "opsyflangedmace"
-
-/obj/item/rogueweapon/mace/cudgel/psy/old/ComponentInitialize()
-	return
 
 /obj/item/rogueweapon/mace/cudgel/copper
 	name = "copper bludgeon"
@@ -275,6 +312,7 @@
 	desc = "This wooden sword is great for training."
 	force = 5
 	force_wielded = 8
+	icon = 'icons/roguetown/weapons/swords32.dmi'
 	icon_state = "wsword"
 	//dropshrink = 0.75
 	possible_item_intents = list(/datum/intent/mace/strike/wood)
@@ -353,6 +391,7 @@
 	//dropshrink = 0.75
 	wlength = WLENGTH_LONG
 	w_class = WEIGHT_CLASS_BULKY
+	walking_stick = TRUE
 	associated_skill = /datum/skill/combat/maces
 	smeltresult = /obj/item/ash
 	swingsound = BLUNTWOOSH_MED
@@ -433,26 +472,44 @@
 	sharpness = IS_SHARP
 	icon = 'icons/roguetown/weapons/64.dmi'
 	minstr = 15
+	item_flags = GIANT_WEAPON
 	slot_flags = ITEM_SLOT_BACK
 
-
 /obj/item/rogueweapon/mace/goden/psymace
-	name = "ornate mace"
+	name = "psydonian mace"
 	desc = "An ornate mace, plated in a ceremonial veneer of silver. Even the unholy aren't immune to discombobulation."
 	icon_state = "psymace"
-	force = 25
-	force_wielded = 32
+	force = 20
+	force_wielded = 25
+	minstr = 12
+	wdefense = 6
 	wbalance = WBALANCE_HEAVY
 	dropshrink = 0.75
 	smelt_bar_num = 2
+	is_silver = TRUE
+	smeltresult = /obj/item/ingot/silver
 
 /obj/item/rogueweapon/mace/goden/psymace/ComponentInitialize()
-	. = ..()								//+3 force, +50 int, +1 def, make silver
-	AddComponent(/datum/component/psyblessed, FALSE, 3, FALSE, 50, 1, TRUE)
+	AddComponent(\
+		/datum/component/silverbless,\
+		pre_blessed = BLESSING_NONE,\
+		silver_type = SILVER_PSYDONIAN,\
+		added_force = 0,\
+		added_blade_int = 0,\
+		added_int = 50,\
+		added_def = 1,\
+	)
 
 /obj/item/rogueweapon/mace/goden/psymace/preblessed/ComponentInitialize()
-	. = ..()								//Pre-blessed, +3 force, +50 int, +1 def, make silver
-	AddComponent(/datum/component/psyblessed, TRUE, 3, FALSE, 50, 1, TRUE)
+	AddComponent(\
+		/datum/component/silverbless,\
+		pre_blessed = BLESSING_NONE,\
+		silver_type = SILVER_PSYDONIAN,\
+		added_force = 0,\
+		added_blade_int = 0,\
+		added_int = 50,\
+		added_def = 1,\
+	)
 
 /obj/item/rogueweapon/mace/spiked
 	icon_state = "spiked_club"
@@ -532,3 +589,78 @@
 	penfactor = 80
 	damfactor = 0.9
 	item_d_type = "stab"
+
+/obj/item/rogueweapon/mace/cudgel/ogre
+	name = "Head Knockah"
+	desc = "A bell ringer that's been repurposed by a crafty set of hands, its size can only be wielded effectively by a giant."
+	force = 25
+	icon = 'icons/roguetown/weapons/64.dmi'
+	icon_state = "ogre_cudgel"
+	minstr = 13
+	item_flags = GIANT_WEAPON
+	pixel_y = -16
+	pixel_x = -16
+	bigboy = TRUE
+
+//Mauls. Woe. Most characters will not be able to engage with this, beyond hobbling.
+//Why? The unique strength lockout. The minimum strength is not a suggestion.
+/obj/item/rogueweapon/mace/maul
+	force = 12 //Don't one-hand this.
+	force_wielded = 32 //-3 compared to grand mace(steel goden). Better intents.
+	possible_item_intents = list(/datum/intent/mace/strike)
+	gripped_intents = list(/datum/intent/mace/strike, /datum/intent/mace/smash, /datum/intent/effect/daze, /datum/intent/effect/hobble)
+	name = "maul"
+	desc = "Who would need something this large? It looks like it was made for tearing down walls, rather than men."
+	icon_state = "sledge"
+	icon = 'icons/roguetown/weapons/64.dmi'
+	wlength = WLENGTH_LONG
+	swingsound = BLUNTWOOSH_HUGE
+	slot_flags = null//No.
+	smelt_bar_num = 2
+	minstr = 13
+	wdefense = 3
+	demolition_mod = 1.25 //Oh, yes...
+	pixel_y = -16
+	pixel_x = -16
+	inhand_x_dimension = 64
+	inhand_y_dimension = 64
+	dropshrink = 0.6
+	bigboy = TRUE
+	gripsprite = TRUE
+	minstr_req = TRUE //You MUST have the required strength. No exceptions.
+
+/obj/item/rogueweapon/mace/maul/getonmobprop(tag)
+	. = ..()
+	if(tag)
+		switch(tag)
+			if("gen")
+				return list("shrink" = 0.6,"sx" = -7,"sy" = 2,"nx" = 7,"ny" = 3,"wx" = -2,"wy" = 1,"ex" = 1,"ey" = 1,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = -38,"sturn" = 37,"wturn" = 30,"eturn" = -30,"nflip" = 0,"sflip" = 8,"wflip" = 8,"eflip" = 0)
+			if("wielded")
+				return list("shrink" = 0.6,"sx" = 5,"sy" = -3,"nx" = -5,"ny" = -2,"wx" = -5,"wy" = -1,"ex" = 3,"ey" = -2,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = 7,"sturn" = -7,"wturn" = 16,"eturn" = -22,"nflip" = 8,"sflip" = 0,"wflip" = 8,"eflip" = 0)
+
+/obj/item/rogueweapon/mace/maul/grand
+	name = "grand maul"
+	desc = "You could probably crack a man's spine just by tapping them with this. \
+	Only a lunatic would carry something so heavy, however."
+	icon_state = "cross"
+	force_wielded = 34 // -1 compared to grand mace.
+	smeltresult = /obj/item/ingot/steel
+	minstr = 14
+	wdefense_wbonus = 4 // from 6
+	smelt_bar_num = 3
+
+//Intent for the maul.
+/datum/intent/effect/hobble
+	name = "hobbling strike"
+	desc = "A heavy strike aimed at the legs to cripple movement."
+	icon_state = "incrack"//Temp. Just so it's easy to differentiate.
+	attack_verb = list("hobbles")
+	animname = "strike"
+	hitsound = list('sound/combat/hits/blunt/shovel_hit3.ogg')
+	swingdelay = 6
+	damfactor = 0.8
+	penfactor = BLUNT_DEFAULT_PENFACTOR
+	clickcd = CLICK_CD_HEAVY
+	item_d_type = "blunt"
+	intent_effect = /datum/status_effect/debuff/hobbled
+	target_parts = list(BODY_ZONE_L_LEG, BODY_ZONE_R_LEG) //Intentionally leaving out feet. If you know, you know.

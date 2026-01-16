@@ -5,6 +5,11 @@
 		if(check_rights_for(C, R_ADMIN))
 			to_chat(C, msg)
 
+/proc/spawn_message_admins(msg)
+	msg = "<span class=\"admin\"><span class=\"prefix\">ADMIN LOG:</span> <span class=\"message linkify\">[msg]</span></span>"
+	for(var/client/C in GLOB.admins)
+		if(check_rights_for(C, R_ADMIN) && (C.prefs.admin_chat_toggles & CHAT_ADMINSPAWN))
+			to_chat(C, msg)
 
 /proc/relay_msg_admins(msg)
 	msg = "<span class=\"admin\"><span class=\"prefix\">RELAY:</span> <span class=\"message linkify\">[msg]</span></span>"
@@ -247,7 +252,7 @@
 	if(!check_rights())
 		return
 
-	M.fully_heal(admin_revive = TRUE)
+	M.fully_heal(admin_revive = TRUE, break_restraints = TRUE)
 	message_admins(span_danger("Admin [key_name_admin(usr)] healed [key_name_admin(M)]!"))
 	log_admin("[key_name(usr)] healed [key_name(M)].")
 

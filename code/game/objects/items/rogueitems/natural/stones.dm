@@ -157,7 +157,7 @@ GLOBAL_LIST_INIT(stone_personality_descs, list(
 		/datum/crafting_recipe/roguetown/survival/stonespear,
 		/datum/crafting_recipe/roguetown/survival/stonesword,
 		/datum/crafting_recipe/roguetown/survival/pot,
-		/datum/crafting_recipe/roguetown/survival/net,
+		//datum/crafting_recipe/roguetown/survival/net,
 		)
 
 	AddElement(
@@ -323,6 +323,8 @@ GLOBAL_LIST_INIT(stone_personality_descs, list(
 		user.visible_message("<span class='info'>[user] chisels the stone into a block.</span>")
 		if(do_after(user, work_time))
 			new /obj/item/natural/stoneblock(get_turf(src.loc))
+			if(HAS_TRAIT(user, TRAIT_MASTER_MASON)) //double the amount for any in a stone worker role
+				new /obj/item/natural/stoneblock(get_turf(src.loc))
 			new /obj/effect/decal/cleanable/debris/stony(get_turf(src))
 			playsound(src.loc, pick('sound/combat/hits/onrock/onrock (1).ogg', 'sound/combat/hits/onrock/onrock (2).ogg', 'sound/combat/hits/onrock/onrock (3).ogg', 'sound/combat/hits/onrock/onrock (4).ogg'), 100)
 			qdel(src)
@@ -330,6 +332,15 @@ GLOBAL_LIST_INIT(stone_personality_descs, list(
 		return
 	else if(istype(W, /obj/item/rogueweapon/chisel/assembly))
 		to_chat(user, span_warning("You most use both hands to chisel blocks."))
+	else if(user.used_intent.type == /datum/intent/wing/shred && !user.cmode || user.used_intent.type == /datum/intent/wing/cut && !user.cmode)
+		playsound(src.loc, pick('sound/items/sharpen_long1.ogg','sound/items/sharpen_long2.ogg'), 100, TRUE)
+		user.visible_message(span_notice("[user] sharpens [W]!"))
+		W.add_bintegrity(12, user)
+		if(prob(35))
+			var/datum/effect_system/spark_spread/S = new()
+			var/turf/front = get_step(user,user.dir)
+			S.set_up(1, 1, front)
+			S.start()
 	else
 		..()
 
@@ -356,7 +367,7 @@ GLOBAL_LIST_INIT(stone_personality_descs, list(
 				M.reagents.add_reagent(/datum/reagent/consumable/nutriment, magic_power*1.2)
 				var/healydoodle_again = magic_power+1
 				M.apply_status_effect(/datum/status_effect/buff/rockmuncher_lesser, healydoodle_again)
-				playsound(get_turf(src), 'modular_azurepeak/sound/spellbooks/icicle.ogg', 100)
+				playsound(src, 'modular_azurepeak/sound/spellbooks/icicle.ogg', 100)
 				qdel(src)
 				if(M == user)
 					user.visible_message(span_danger("[user] eats [src]!"), span_danger("I devour [src]!"))
@@ -420,7 +431,7 @@ GLOBAL_LIST_INIT(stone_personality_descs, list(
 			var/obj/item/S = new /obj/item/natural/stone(src.loc)
 			S.pixel_x = rand(25,-25)
 			S.pixel_y = rand(25,-25)
-		GLOB.scarlet_round_stats[STATS_ROCKS_MINED]++
+		record_round_statistic(STATS_ROCKS_MINED)
 	qdel(src)
 
 /obj/item/natural/rock/take_damage(damage_amount, damage_type = BRUTE, damage_flag = 0, sound_effect = 1, attack_dir)
@@ -462,6 +473,10 @@ GLOBAL_LIST_INIT(stone_personality_descs, list(
 			new /obj/item/natural/stoneblock(get_turf(src.loc))
 			new /obj/item/natural/stoneblock(get_turf(src.loc))
 			new /obj/item/natural/stoneblock(get_turf(src.loc))
+			if(HAS_TRAIT(user, TRAIT_MASTER_MASON)) //double the amount for any in a stone worker role
+				new /obj/item/natural/stoneblock(get_turf(src.loc))
+				new /obj/item/natural/stoneblock(get_turf(src.loc))
+				new /obj/item/natural/stoneblock(get_turf(src.loc))
 			new /obj/effect/decal/cleanable/debris/stony(get_turf(src))
 			playsound(src.loc, pick('sound/combat/hits/onrock/onrock (1).ogg', 'sound/combat/hits/onrock/onrock (2).ogg', 'sound/combat/hits/onrock/onrock (3).ogg', 'sound/combat/hits/onrock/onrock (4).ogg'), 100)
 			user.mind.add_sleep_experience(/datum/skill/craft/masonry, (user.STAINT*0.5))
@@ -540,7 +555,7 @@ GLOBAL_LIST_INIT(stone_personality_descs, list(
 				stackcount -= clamp(stackcount, 2, 4)
 				user.put_in_hands(B)
 		for(var/obj/item/natural/stoneblock/F in get_turf(src))
-			playsound(get_turf(user.loc), 'sound/foley/stone_scrape.ogg', 100)
+			playsound(user, 'sound/foley/stone_scrape.ogg', 100)
 			qdel(F)
 
 //................ Stone block stack	............... //
@@ -573,14 +588,15 @@ GLOBAL_LIST_INIT(stone_personality_descs, list(
 
 /obj/structure/roguerock/attackby(obj/item/W, mob/living/user, params)
 	. = ..()
+	var/stonetotal = 4
+	if(HAS_TRAIT(user, TRAIT_MASTER_MASON)) //double the amount for any in a stone worker role
+		stonetotal += stonetotal
 	if( user.used_intent.type == /datum/intent/chisel )
 		playsound(src.loc, pick('sound/combat/hits/onrock/onrock (1).ogg', 'sound/combat/hits/onrock/onrock (2).ogg', 'sound/combat/hits/onrock/onrock (3).ogg', 'sound/combat/hits/onrock/onrock (4).ogg'), 100)
 		user.visible_message("<span class='info'>[user] chisels the rock into blocks.</span>")
 		if(do_after(user, 10 SECONDS))
-			new /obj/item/natural/stoneblock(get_turf(src.loc))
-			new /obj/item/natural/stoneblock(get_turf(src.loc))
-			new /obj/item/natural/stoneblock(get_turf(src.loc))
-			new /obj/item/natural/stoneblock(get_turf(src.loc))
+			for(var/i=1, i<=stonetotal, ++i)
+				new /obj/item/natural/stoneblock(get_turf(src.loc))
 			new /obj/effect/decal/cleanable/debris/stony(get_turf(src))
 			playsound(src.loc, pick('sound/combat/hits/onrock/onrock (1).ogg', 'sound/combat/hits/onrock/onrock (2).ogg', 'sound/combat/hits/onrock/onrock (3).ogg', 'sound/combat/hits/onrock/onrock (4).ogg'), 100)
 			user.mind.add_sleep_experience(/datum/skill/craft/masonry, (user.STAINT*1))

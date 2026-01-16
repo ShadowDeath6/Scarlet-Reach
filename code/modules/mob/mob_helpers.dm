@@ -137,8 +137,6 @@
 		if(rand(1,20)==20)
 			if(newletter==" ")
 				newletter="...huuuhhh..."
-			if(newletter==".")
-				newletter=" *BURP*."
 		switch(rand(1,20))
 			if(1)
 				newletter+="'"
@@ -248,9 +246,7 @@
 		var/letter = text[i]
 		if(prob(chance))
 			if(replace_characters)
-				letter = ""
-			for(var/j in 1 to rand(0, 2))
-				letter += pick("#","@","*","&","%","$","/", "<", ">", ";","*","*","*","*","*","*","*")
+				letter = "*"
 		. += letter
 
 
@@ -405,11 +401,17 @@
 			if(numb > possible_a_intents.len)
 				return
 			else
+				var/obj/item/held_item = get_active_held_item()
+				if(held_item)
+					held_item.saved_intent_index = numb
+				else
+					if(active_hand_index == 1)
+						l_ua_index = numb
+					else
+						r_ua_index = numb
 				if(active_hand_index == 1)
-					l_ua_index = numb
 					l_index = numb
 				else
-					r_ua_index = numb
 					r_index = numb
 				a_intent = possible_a_intents[numb]
 		else
@@ -427,6 +429,7 @@
 		hud_used.action_intent.switch_intent(r_index,l_index,oactive)
 
 /mob/proc/update_a_intents()
+	stop_attack()
 	possible_a_intents.Cut()
 	possible_offhand_intents.Cut()
 	var/list/intents = list()
@@ -439,9 +442,9 @@
 			intents = Masteritem.alt_intents
 	else
 		if(active_hand_index == 1)
-			r_index = r_ua_index
-		else
 			l_index = l_ua_index
+		else
+			r_index = r_ua_index
 		intents = base_intents.Copy()
 	for(var/defintent in intents)
 		if(Masteritem)
@@ -457,9 +460,9 @@
 			intents = Masteritem.alt_intents
 	else
 		if(active_hand_index == 1)
-			l_index = l_ua_index
-		else
 			r_index = r_ua_index
+		else
+			l_index = l_ua_index
 		intents = base_intents.Copy()
 	for(var/defintent in intents)
 		if(Masteritem)
@@ -471,17 +474,25 @@
 			hud_used.action_intent.update_icon(possible_a_intents,possible_offhand_intents,oactive)
 		else
 			hud_used.action_intent.update_icon(possible_offhand_intents,possible_a_intents,oactive)
-	if(active_hand_index == 1)
-		if(l_index <= possible_a_intents.len)
-			rog_intent_change(l_index)
+	var/obj/item/active_item = get_active_held_item()
+	if(active_item && active_item.saved_intent_index > 0 && active_item.saved_intent_index <= possible_a_intents.len)
+		if(active_hand_index == 1)
+			l_index = active_item.saved_intent_index
 		else
-			rog_intent_change(1)
+			r_index = active_item.saved_intent_index
+	if(active_hand_index == 1)
+		if(l_index > possible_a_intents.len)
+			l_index = 1
+		if(r_index > possible_offhand_intents.len)
+			r_index = 1
+		rog_intent_change(l_index)
 		rog_intent_change(r_index, 1)
 	else
-		if(r_index <= possible_a_intents.len)
-			rog_intent_change(r_index)
-		else
-			rog_intent_change(1)
+		if(r_index > possible_a_intents.len)
+			r_index = 1
+		if(l_index > possible_offhand_intents.len)
+			l_index = 1
+		rog_intent_change(r_index)
 		rog_intent_change(l_index, 1)
 
 /mob/verb/mmb_intent_change(input as text)
@@ -555,7 +566,6 @@
 	if(hud_used)
 		hud_used.quad_intents?.switch_intent(input)
 		hud_used.give_intent?.switch_intent(input)
-	givingto = null
 
 /mob/verb/def_intent_change(input as num)
 	set name = "def-change"
@@ -613,6 +623,7 @@
 	on_cmode()
 
 /mob/proc/on_cmode()
+	SEND_SIGNAL(src, COMSIG_COMBAT_MODE)
 	return
 
 /mob
@@ -876,13 +887,6 @@
 		message_admins("No ghosts were willing to take control of [ADMIN_LOOKUPFLW(M)])")
 		return FALSE
 
-///Is the mob a flying mob
-/mob/proc/is_flying(mob/M = src)
-	if(M.movement_type & FLYING)
-		return 1
-	else
-		return 0
-
 ///Clicks a random nearby mob with the source from this mob
 /mob/proc/click_random_mob()
 	var/list/nearby_mobs = list()
@@ -975,6 +979,20 @@
 	else if(job)
 		var/datum/job/J = SSjob.GetJob(job)
 		if(!J)
+			// Fallback: try mind.assigned_role if mob.job lookup failed
+			if(mind?.assigned_role)
+				J = SSjob.GetJob(mind.assigned_role)
+			if(!J)
+				return "unknown"
+		used_title = J.title
+		if(J.f_title && (pronouns == SHE_HER || pronouns == THEY_THEM_F))
+			used_title = J.f_title
+		if(J.advjob_examine)
+			used_title = advjob
+	else if(mind?.assigned_role)
+		// No mob.job set, but mind.assigned_role exists - use that
+		var/datum/job/J = SSjob.GetJob(mind.assigned_role)
+		if(!J)
 			return "unknown"
 		used_title = J.title
 		if(J.f_title && (pronouns == SHE_HER || pronouns == THEY_THEM_F))
@@ -982,3 +1000,25 @@
 		if(J.advjob_examine)
 			used_title = advjob
 	return used_title
+
+///Is the passed in mob a ghost with admin powers, doesn't check for AI interact like isAdminGhost() used to
+/proc/isAdminObserver(mob/user)
+	if(!user) //Are they a mob? Auto interface updates call this with a null src
+		return
+	if(!user.client) // Do they have a client?
+		return
+	if(!isobserver(user)) // Are they a ghost?
+		return
+	if(!check_rights_for(user.client, R_ADMIN)) // Are they allowed?
+		return
+	return TRUE
+
+///Returns TRUE/FALSE on whether the mob is an Admin Ghost AI.
+///This requires this snowflake check because AI interact gives the access to the mob's client, rather
+///than the mob like everyone else, and we keep it that way so they can't accidentally give someone Admin AI access.
+/proc/isAdminGhostAI(mob/user)
+	if(!isAdminObserver(user))
+		return FALSE
+	if(!HAS_TRAIT_FROM(user.client, TRAIT_AI_ACCESS, ADMIN_TRAIT)) // Do they have it enabled?
+		return FALSE
+	return TRUE

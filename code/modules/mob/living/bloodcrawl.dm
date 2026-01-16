@@ -43,11 +43,11 @@
 	var/turf/mobloc = get_turf(loc)
 
 	visible_message(span_warning("[src] sinks into the pool of blood!"))
-	playsound(get_turf(src), 'sound/blank.ogg', 50, TRUE, -1)
+	playsound(src, 'sound/blank.ogg', 50, TRUE, -1)
 	// Extinguish, unbuckle, stop being pulled, set our location into the
 	// dummy object
 	var/obj/effect/dummy/phased_mob/slaughter/holder = new /obj/effect/dummy/phased_mob/slaughter(mobloc)
-	ExtinguishMob()
+	extinguish_mob()
 
 	// Keep a reference to whatever we're pulling, because forceMove()
 	// makes us stop pulling
@@ -71,8 +71,6 @@
 
 	if(victim.stat == CONSCIOUS)
 		visible_message(span_warning("[victim] kicks free of the blood pool just before entering it!"), null, span_notice("I hear splashing and struggling."))
-	else if(victim.reagents && victim.reagents.has_reagent(/datum/reagent/consumable/ethanol/demonsblood, needs_metabolizing = TRUE))
-		visible_message(span_warning("Something prevents [victim] from entering the pool!"), span_warning("A strange force is blocking [victim] from entering!"), span_notice("I hear a splash and a thud."))
 	else
 		victim.forceMove(src)
 		victim.emote("scream")
@@ -93,13 +91,13 @@
 	var/sound = 'sound/blank.ogg'
 
 	for(var/i in 1 to 3)
-		playsound(get_turf(src),sound, 50, TRUE)
+		playsound(src,sound, 50, TRUE)
 		sleep(30)
 
 	if(!victim)
 		return FALSE
 
-	if(victim.reagents && victim.reagents.has_reagent(/datum/reagent/consumable/ethanol/devilskiss, needs_metabolizing = TRUE))
+	if(victim.reagents)
 		to_chat(src, span_warning("<b>AAH! THEIR FLESH! IT BURNS!</b>"))
 		adjustBruteLoss(25) //I can't use adjustHealth() here because bloodcrawl affects /mob/living and adjustHealth() only affects simple mobs
 		var/found_bloodpool = FALSE
@@ -140,7 +138,7 @@
 	ADD_TRAIT(src, TRAIT_NODROP, ABSTRACT_ITEM_TRAIT)
 
 /mob/living/proc/exit_blood_effect(obj/effect/decal/cleanable/B)
-	playsound(get_turf(src), 'sound/blank.ogg', 50, TRUE, -1)
+	playsound(src, 'sound/blank.ogg', 50, TRUE, -1)
 	//Makes the mob have the color of the blood pool it came out of
 	var/newcolor = rgb(149, 10, 10)
 	if(istype(B, /obj/effect/decal/cleanable/xenoblood))

@@ -23,14 +23,18 @@
 	var/allmig_reward = 0
 
 /mob/living/carbon/human/Life()
-//	set invisibility = 0
 	if (notransform)
+		return
+
+	if(!client && mode == NPC_AI_SLEEP)
 		return
 
 	. = ..()
 
 	if (QDELETED(src))
 		return 0
+
+	SEND_SIGNAL(src, COMSIG_HUMAN_LIFE)
 
 	if(. && (mode != NPC_AI_OFF))
 		handle_ai()
@@ -40,7 +44,7 @@
 
 	if(mind)
 		mind.sleep_adv.add_stress_cycle(get_stress_amount())
-		for(var/datum/antagonist/A in mind.antag_datums)
+		for(var/datum/antagonist/A as anything in mind.antag_datums)
 			A.on_life(src)
 
 	if(mode == NPC_AI_OFF)
@@ -97,6 +101,10 @@
 	if(sexcon && client?.prefs?.sexable)
 		sexcon.process_sexcon(1 SECONDS)
 
+	if(world.time > next_tempo_cull)
+		cull_tempo_list()
+		next_tempo_cull = world.time + TEMPO_CULL_DELAY
+
 	if(stat != DEAD)
 		return 1
 
@@ -107,7 +115,7 @@
 		return
 
 	if(mind)
-		for(var/datum/antagonist/A in mind.antag_datums)
+		for(var/datum/antagonist/A as anything in mind.antag_datums)
 			A.on_life(src)
 
 	. = ..()
@@ -131,22 +139,6 @@
 
 	dna.species.handle_environment(src)
 
-///FIRE CODE
-/mob/living/carbon/human/handle_fire()
-	. = ..()
-	if(.) //if the mob isn't on fire anymore
-		return
-
-	if(dna)
-		. = dna.species.handle_fire(src) //do special handling based on the mob's species. TRUE = they are immune to the effects of the fire.
-
-	if(!last_fire_update)
-		last_fire_update = fire_stacks
-	if((fire_stacks + divine_fire_stacks > 10 && last_fire_update <= 10) || (fire_stacks + divine_fire_stacks <= 10 && last_fire_update > 10))
-		last_fire_update = fire_stacks + divine_fire_stacks
-		update_fire()
-
-
 /mob/living/carbon/human/proc/get_thermal_protection()
 	var/thermal_protection = 0 //Simple check to estimate how protected we are against multiple temperatures
 	if(wear_armor)
@@ -158,12 +150,16 @@
 	thermal_protection = round(thermal_protection)
 	return thermal_protection
 
-/mob/living/carbon/human/IgniteMob()
+/mob/living/carbon/human/ignite_mob()
 	//If have no DNA or can be Ignited, call parent handling to light user
 	//If firestacks are high enough
-	if(!dna || dna.species.CanIgniteMob(src))
+	if(!dna || dna.species.Canignite_mob(src))
 		if(!on_fire)
-			if(fire_stacks + divine_fire_stacks > 10)
+			var/datum/status_effect/fire_handler/fire_stacks/fire_status = has_status_effect(/datum/status_effect/fire_handler/fire_stacks)
+			var/datum/status_effect/fire_handler/fire_stacks/sunder_status = has_status_effect(/datum/status_effect/fire_handler/fire_stacks/sunder)
+			var/datum/status_effect/fire_handler/fire_stacks/divine_status = has_status_effect(/datum/status_effect/fire_handler/fire_stacks/divine)
+			var/datum/status_effect/fire_handler/fire_stacks/sunder/blessed/blessed_sunder = has_status_effect(/datum/status_effect/fire_handler/fire_stacks/sunder/blessed)
+			if(fire_status?.stacks + sunder_status?.stacks + divine_status?.stacks + blessed_sunder?.stacks > 10)
 				Immobilize(30)
 				emote("firescream", TRUE)
 			else
@@ -171,8 +167,8 @@
 		return ..()
 	. = FALSE //No ignition
 
-/mob/living/carbon/human/ExtinguishMob()
-	if(!dna || !dna.species.ExtinguishMob(src))
+/mob/living/carbon/human/extinguish_mob()
+	if(!dna || !dna.species.extinguish_mob(src))
 		last_fire_update = null
 		..()
 

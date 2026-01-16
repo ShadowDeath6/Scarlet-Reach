@@ -2,6 +2,7 @@
 	name = "Force them to suck"
 	require_grab = TRUE
 	stamina_cost = 1.0
+	category = SEX_CATEGORY_PENETRATE
 	user_sex_part = SEX_PART_COCK
 	target_sex_part = SEX_PART_JAWS
 
@@ -43,12 +44,13 @@
 /datum/sex_action/force_blowjob/on_perform(mob/living/carbon/human/user, mob/living/carbon/human/target)
 	user.visible_message(user.sexcon.spanify_force("[user] [user.sexcon.get_generic_force_adjective()] forces [target] to suck [user.p_their()] cock."))
 	target.make_sucking_noise()
-	do_thrust_animate(target, user)
+	target.sexcon.do_thrust_animate(user)
 
 	user.sexcon.perform_sex_action(user, 2, 4, TRUE)
 	if(user.sexcon.check_active_ejaculation())
 		user.visible_message(span_love("cums into [target]'s throat!"))
 		user.sexcon.cum_into(oral = TRUE, splashed_user = target) // give facial status effect for the target, considering this was rough throat sex
+		werewolf_sex_infect_attempt(user, target)
 
 	user.sexcon.perform_sex_action(target, 0, 7, FALSE)
 	if(!user.sexcon.considered_limp())

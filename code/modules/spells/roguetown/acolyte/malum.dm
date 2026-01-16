@@ -1,5 +1,6 @@
 /obj/effect/proc_holder/spell/invoked/vigorousexchange
 	name = "Vigorous Exchange"
+	desc = "Return energy to your target."
 	overlay_state = "vigorousexchange"
 	releasedrain = 0
 	chargedrain = 0
@@ -19,9 +20,13 @@
 	charging_slowdown = 3
 	chargedloop = /datum/looping_sound/invokegen
 	devotion_cost = 30
-	
+
+/obj/effect/proc_holder/spell/invoked/vigorousexchange/kazengun
+	invocation = "Through flame and ash, let vigor rise, by Mamuke’s hand, let strength reprise!"
+
 /obj/effect/proc_holder/spell/invoked/heatmetal
 	name = "Heat Metal"
+	desc = "Call upon Malum to smelt the target object into a usable ingot, if it can be smelted."
 	overlay_state = "heatmetal"
 	releasedrain = 30
 	chargedrain = 0
@@ -43,8 +48,12 @@
 	chargedloop = /datum/looping_sound/invokegen
 	devotion_cost = 40
 
+/obj/effect/proc_holder/spell/invoked/heatmetal/kazengun
+	invocation = "With heat I wield, with flame I claim, Let metal serve in Mamuke's name!"
+
 /obj/effect/proc_holder/spell/invoked/hammerfall
 	name = "Hammerfall"
+	desc = "Invoke Malum's hammer to crush a target area, damaging structures and potentially knocking over those in its radius."
 	overlay_state = "Hammerfall"
 	releasedrain = 30
 	chargedrain = 0
@@ -66,8 +75,14 @@
 	chargedloop = /datum/looping_sound/invokegen
 	devotion_cost = 80
 
+/obj/effect/proc_holder/spell/invoked/hammerfall/kazengun
+	invocation = "By molten might and hammer's weight, in Mamuke’s flame, the earth shall quake!"
+
+/*
+
 /obj/effect/proc_holder/spell/invoked/craftercovenant
 	name = "The Crafter’s Covenant"
+	desc = "Offer valuables to Malum for a potential reward based on their price."
 	overlay_state = "craftercovenant"
 	releasedrain = 30
 	chargedrain = 0
@@ -88,6 +103,9 @@
 	charging_slowdown = 3
 	chargedloop = /datum/looping_sound/invokegen
 	devotion_cost = 100
+
+*/
+
 
 /obj/effect/proc_holder/spell/invoked/heatmetal/cast(list/targets, mob/user = usr)
 	. = ..()
@@ -121,7 +139,7 @@
 
 /proc/handle_living_entity(mob/target, mob/user, list/nosmeltore)
 	var/obj/item/targeteditem = get_targeted_item(user, target)
-	if (!targeteditem || targeteditem.smeltresult == /obj/item/ash || target.anti_magic_check(TRUE,TRUE)) 
+	if (!targeteditem || targeteditem.smeltresult == /obj/item/ash || target.anti_magic_check(TRUE,TRUE))
 		show_visible_message(user, "After their incantation, [user] points at [target] but it seems to have no effect.", "After your incantation, you point at [target] but it seems to have no effect.")
 		return
 	if (istype(targeteditem, /obj/item/rogueweapon/tongs))
@@ -146,7 +164,7 @@
             if(target.get_item_by_slot(SLOT_ARMOR))
                 target_item = target.get_item_by_slot(SLOT_ARMOR)
             else if (target.get_item_by_slot(SLOT_SHIRT))
-                target_item = target.get_item_by_slot(SLOT_SHIRT)    
+                target_item = target.get_item_by_slot(SLOT_SHIRT)
         if (BODY_ZONE_PRECISE_NECK)
             target_item = target.get_item_by_slot(SLOT_NECK)
         if (BODY_ZONE_PRECISE_R_EYE)
@@ -187,7 +205,7 @@
 	target.dropItemToGround(targeteditem)
 	show_visible_message(target, "[target]'s [targeteditem.name] glows brightly, searing their flesh.", "Your [targeteditem.name] glows brightly, It burns!")
 	target.emote("painscream")
-	playsound(target.loc, 'sound/misc/frying.ogg', 100, FALSE, -1)
+	playsound(target, 'sound/misc/frying.ogg', 100, FALSE, -1)
 	sparks.set_up(1, 1, target.loc)
 	sparks.start()
 
@@ -207,7 +225,7 @@
 	var/obj/item/armor = target.get_item_by_slot(SLOT_ARMOR)
 	var/obj/item/shirt = target.get_item_by_slot(SLOT_SHIRT)
 	var/armor_can_heat = armor && armor.smeltresult && armor.smeltresult != /obj/item/ash
-	var/shirt_can_heat = shirt && shirt.smeltresult && shirt.smeltresult != /obj/item/ash // Full damage if no shirt 
+	var/shirt_can_heat = shirt && shirt.smeltresult && shirt.smeltresult != /obj/item/ash // Full damage if no shirt
 	var/damage_to_apply = 20 // How much damage should your armor burning you should do.
 	if (user.zone_selected == BODY_ZONE_CHEST)
 		if (armor_can_heat && (!shirt_can_heat && shirt))
@@ -221,7 +239,7 @@
 	apply_damage_if_covered(target, list(BODY_ZONE_L_LEG, BODY_ZONE_R_LEG), targeteditem, GROIN|LEGS|FEET, damage_to_apply)
 	apply_damage_if_covered(target, list(BODY_ZONE_HEAD), targeteditem, HEAD|HAIR|NECK|NOSE|MOUTH|EARS|EYES, damage_to_apply)
 	show_visible_message(target, "[target]'s [targeteditem.name] glows brightly, searing their flesh.", "My [targeteditem.name] glows brightly, It burns!")
-	playsound(target.loc, 'sound/misc/frying.ogg', 100, FALSE, -1)
+	playsound(target, 'sound/misc/frying.ogg', 100, FALSE, -1)
 
 /proc/apply_damage_if_covered(mob/living/carbon/target, list/body_zones, obj/item/clothing/targeteditem, mask, damage)
 	var/datum/effect_system/spark_spread/sparks = new()
@@ -240,7 +258,7 @@
 	. = ..()
 	var/const/starminatoregen = 500 // How much stamina should the spell give back to the caster.
 	var/mob/target = targets[1]
-	if (!iscarbon(target)) 
+	if (!iscarbon(target))
 		return
 	if (target == user)
 		target.energy_add(starminatoregen)
@@ -249,6 +267,8 @@
 		user.energy_add(-(starminatoregen * 2))
 		target.energy_add(starminatoregen * 2)
 		show_visible_message(target, "As [user] intones the incantation, vibrant flames swirl around them, a dance of energy flowing towards [target].", "As [user] intones the incantation, vibrant flames swirl around them, a dance of energy flowing towards you. You feel refreshed")
+
+/*
 
 /obj/effect/proc_holder/spell/invoked/craftercovenant/cast(list/targets, mob/user = usr)
 	. = ..()
@@ -346,6 +366,8 @@ var/global/list/anvil_recipe_prices[][]
 	..()
 	initialize_anvil_recipe_prices() // Precompute recipe prices on startup
 
+*/
+
 /obj/effect/proc_holder/spell/invoked/hammerfall/cast(list/targets, mob/user = usr)
 	var/turf/fallzone = null
 	var/const/damage = 250 //Structural damage the spell does. At 250, it would take 4 casts (8 minutes and 320 devotion) to destroy a normal door.
@@ -371,7 +393,7 @@ var/global/list/anvil_recipe_prices[][]
 			shaken.apply_effect(1 SECONDS, EFFECT_IMMOBILIZE, 0)
 			show_visible_message(shaken, null, "The ground quakes but I manage to keep my footing.")
 		else
-			shaken.apply_effect(1 SECONDS, EFFECT_KNOCKDOWN, 0)		
+			shaken.apply_effect(1 SECONDS, EFFECT_KNOCKDOWN, 0)
 			show_visible_message(shaken, null, "The ground quakes, making me fall over.")
 	for (var/obj/structure/damaged in view(radius, fallzone))
 		if(!istype(damaged, /obj/structure/flora/newbranch))
@@ -402,6 +424,9 @@ var/global/list/anvil_recipe_prices[][]
 	miracle = TRUE
 	devotion_cost = 15
 
+/obj/effect/proc_holder/spell/invoked/malum_flame_rogue/kazengun
+	name = "Mamuke's Flame"
+
 /obj/effect/proc_holder/spell/invoked/malum_flame_rogue/cast(list/targets, mob/user = usr)
 	. = ..()
 	if(isliving(targets[1]))
@@ -409,8 +434,8 @@ var/global/list/anvil_recipe_prices[][]
 		user.visible_message("<font color='yellow'>[user] points at [L]!</font>")
 		if(L.anti_magic_check(TRUE, TRUE))
 			return FALSE
-		L.adjust_divine_fire_stacks(1)
-		L.IgniteMob()
+		L.adjust_fire_stacks(1, /datum/status_effect/fire_handler/fire_stacks/divine)
+		L.ignite_mob()
 		return TRUE
 
 	// Spell interaction with ignitable objects (burn wooden things, light torches up)

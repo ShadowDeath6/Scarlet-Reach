@@ -43,6 +43,16 @@
 	return
 #endif
 
+/obj/item/clothing/under/roguetown/MiddleClick(mob/user)
+	var/mob/living/carbon/H = user
+	if(!ishuman(user))
+		return
+	if(flags_inv & HIDETAIL)
+		flags_inv &= ~HIDETAIL
+	else
+		flags_inv |= HIDETAIL
+	H.update_inv_pants()
+
 /obj/item/clothing/under/roguetown/tights
 	name = "tights"
 	desc = "A pair of form-fitting tights."
@@ -87,6 +97,12 @@
 /obj/item/clothing/under/roguetown/tights/sailor
 	name = "sailor's pants"
 	icon_state = "sailorpants"
+
+/obj/item/clothing/under/roguetown/tights/explorerpants
+	name = "explorer's pants"
+	desc = "Practical and modest, you hope that it will survive the next cavedive."
+	icon_state = "explorerpants"
+	item_state = "explorerpants"
 
 /obj/item/clothing/under/roguetown/webs
 	name = "webbing"
@@ -246,6 +262,29 @@
 	item_state = "leathertights"
 	salvage_result = /obj/item/natural/hide/cured
 
+/obj/item/clothing/under/roguetown/trou/formal
+	name = "formal trousers"
+	desc = "A formal pair of trousers."
+	icon = 'icons/roguetown/clothing/pants.dmi'
+	icon_state = "butlerpants"
+	item_state = "butlerpants"
+	mob_overlay_icon = 'icons/roguetown/clothing/onmob/pants.dmi'
+	detail_tag = "_detail"
+	sleeved = 'icons/roguetown/clothing/onmob/helpers/sleeves_maids.dmi'
+	slot_flags = ITEM_SLOT_PANTS
+	salvage_result = /obj/item/natural/cloth
+	detail_color = CLOTHING_BLACK
+
+/obj/item/clothing/under/roguetown/trou/formal/shorts
+	name = "trouser shorts"
+	desc = "A pair of formal trouser shorts, fit for any strapping young lad."
+	icon = 'icons/roguetown/clothing/pants.dmi'
+	icon_state = "butlershorts"
+	item_state = "butlershorts"
+	mob_overlay_icon = 'icons/roguetown/clothing/onmob/pants.dmi'
+	slot_flags = ITEM_SLOT_PANTS
+	detail_color = CLOTHING_BLACK
+
 /obj/item/clothing/under/roguetown/skirt
 	name = "skirt"
 	desc = "Long, flowing, and modest."
@@ -274,6 +313,12 @@
 
 /obj/item/clothing/under/roguetown/skirt/brown
 	color = CLOTHING_BROWN
+
+/obj/item/clothing/under/roguetown/skirt/desert
+	name = "desert skirt"
+	desc = "At least it cools me off, but what of the modesty?"
+	icon_state = "desertskirt"
+	item_state = "desertskirt"
 
 /obj/item/clothing/under/roguetown/chainlegs
 	name = "steel chain chausses"
@@ -397,13 +442,13 @@
 	icon_state = "graggarplatelegs"
 	armor = ARMOR_ASCENDANT
 	max_integrity = 400 // Good good resistances, but less crit resist than the other ascendant armors. In trade, we can take off our pants to repair, and they are medium rather than heavy.
-	armor = ARMOR_CLASS_MEDIUM
+	armor_class = ARMOR_CLASS_MEDIUM
 
 /obj/item/clothing/under/roguetown/platelegs/graggar/pickup(mob/living/user)
 	if(!HAS_TRAIT(user, TRAIT_HORDE))
 		to_chat(user, "<font color='red'>UNWORTHY HANDS TOUCHING THIS ARMOR, CEASE OR BE RENDED ASUNDER!</font>")
 		user.adjust_fire_stacks(5)
-		user.IgniteMob()
+		user.ignite_mob()
 		user.Stun(40)
 	..()
 
@@ -605,13 +650,13 @@
 	flags_inv = HIDECROTCH
 
 // new knight captain drip
-/obj/item/clothing/under/roguetown/platelegs/captain
-	name = "captain's chausses"
-	desc = "Cuisses made of plated steel, offering additional protection against blunt force. These are specially fitted for the captain."
-	icon_state = "capplateleg"
-	item_state = "capplateleg"
-	icon = 'icons/roguetown/clothing/special/captain.dmi'
-	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/captain.dmi'
+/obj/item/clothing/under/roguetown/platelegs/champion
+	name = "champion's chausses"
+	desc = "Cuisses made of plated steel, offering additional protection against blunt force. These are specially fitted for the champion."
+	icon_state = "champplateleg"
+	item_state = "champplateleg"
+	icon = 'icons/roguetown/clothing/special/champion.dmi'
+	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/champion.dmi'
 
 /obj/item/clothing/under/roguetown/carapacelegs
 	name = "carapace chausses"
@@ -635,3 +680,20 @@
 	name = "carapace plated skirt"
 	icon_state = "carapace_skirt"
 	item_state = "carapace_skirt"
+
+/obj/item/clothing/under/roguetown/tights/ogre
+	name = "giant pants"
+	desc = "These pants provide a vital service to society"
+	sleeved = 'icons/roguetown/clothing/onmob/helpers/32x64/ogre_onmob_sleeves.dmi'
+	mob_overlay_icon = 'icons/roguetown/clothing/onmob/32x64/ogre_onmob.dmi'
+	icon_state = "ogre_pants"
+	allowed_race = OGRE_RACE_TYPES
+	max_integrity = 250
+
+/obj/item/clothing/under/roguetown/chainlegs/ogre
+	name = "giant chain chausses"
+	desc = "The amount of chainmail used for these could make a regular sized hauberk for a humble town guard."
+	sleeved = 'icons/roguetown/clothing/onmob/helpers/32x64/ogre_onmob_sleeves.dmi'
+	mob_overlay_icon = 'icons/roguetown/clothing/onmob/32x64/ogre_onmob.dmi'
+	icon_state = "ogre_chain"
+	allowed_race = OGRE_RACE_TYPES

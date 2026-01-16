@@ -4,6 +4,7 @@
 	icon = 'modular_hearthstone/icons/obj/items/clothes/stockings.dmi'
 	icon_state = "stockings"
 	resistance_flags = FLAMMABLE
+	w_class = WEIGHT_CLASS_TINY
 	obj_flags = CAN_BE_HIT
 	break_sound = 'sound/foley/cloth_rip.ogg'
 	blade_dulling = DULLING_CUT
@@ -16,6 +17,7 @@
 	var/covers_breasts = FALSE
 	sewrepair = TRUE
 	salvage_result = /obj/item/natural/cloth
+	throw_speed = 0.5
 
 /obj/item/legwears/attack(mob/M, mob/user, def_zone)
 	if(ishuman(M))
@@ -102,3 +104,14 @@
 
 /obj/item/legwears/fishnet/purple
 	color = "#664357"
+
+//thigh highs
+
+/obj/item/legwears/thigh
+	name = "Thigh highs"
+	desc = "A legwear popular among wenches."
+	icon_state = "thigh"
+
+/obj/item/legwears/thigh/random/Initialize()
+	. = ..()
+	color = pick("#e6e5e5", CLOTHING_BLACK, CLOTHING_BLUE, "#6F0000", "#664357")

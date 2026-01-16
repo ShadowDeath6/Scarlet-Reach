@@ -3,22 +3,6 @@
 ///////////////////////////////////////
 
 
-//spooky recipes
-
-/datum/recipe/sugarcookie/spookyskull
-	reagents_list = list(/datum/reagent/consumable/flour = 5, /datum/reagent/consumable/sugar = 5, /datum/reagent/consumable/milk = 5)
-	items = list(
-		/obj/item/reagent_containers/food/snacks/egg,
-	)
-	result = /obj/item/reagent_containers/food/snacks/sugarcookie/spookyskull
-
-/datum/recipe/sugarcookie/spookycoffin
-	reagents_list = list(/datum/reagent/consumable/flour = 5, /datum/reagent/consumable/sugar = 5, /datum/reagent/consumable/coffee = 5)
-	items = list(
-		/obj/item/reagent_containers/food/snacks/egg,
-	)
-	result = /obj/item/reagent_containers/food/snacks/sugarcookie/spookycoffin
-
 //////////////////////////////
 //Spookoween trapped closets//
 //////////////////////////////
@@ -224,7 +208,7 @@
 		LoseAggro()
 		return
 	if(M.stat == DEAD)
-		playsound(M.loc, 'sound/spookoween/insane_low_laugh.ogg', 100, TRUE)
+		playsound(M, 'sound/spookoween/insane_low_laugh.ogg', 100, TRUE)
 		qdel(src)
 		return
 	playsound(M, pick('sound/spookoween/scary_horn.ogg','sound/spookoween/scary_horn2.ogg', 'sound/spookoween/scary_horn3.ogg'), 100, TRUE)

@@ -18,6 +18,7 @@
 	target_mobtypes = list(/mob/living/carbon/human, /mob/living/carbon/monkey)
 	time = 10 SECONDS
 	surgery_flags = SURGERY_BLOODY | SURGERY_INCISED | SURGERY_CLAMPED | SURGERY_RETRACTED | SURGERY_BROKEN
+	surgery_flags_blocked = SURGERY_CONSTRUCT
 	skill_min = SKILL_LEVEL_EXPERT
 	preop_sound = 'sound/surgery/organ2.ogg'
 	success_sound = 'sound/surgery/organ1.ogg'
@@ -32,11 +33,7 @@
 	if(!H)
 		to_chat(user, "[target] is missing their heart!")
 		return FALSE
-	if(!target.mind)
-		to_chat(user, "[target]'s heart is inert.")
-		return FALSE
-	if(HAS_TRAIT(target, TRAIT_NECRAS_VOW))
-		to_chat(user, "[target] has pledged a vow to Necra. This will not work.")
+	if(!target.check_revive(user))
 		return FALSE
 
 /datum/surgery_step/infuse_lux/preop(mob/user, mob/living/target, target_zone, obj/item/tool, datum/intent/intent)
@@ -75,6 +72,7 @@
 				"[user] tries to infuse [target] with lux, but it refuses to take.")
 			target.visible_message(span_danger("[target]'s body convulses violently, rejecting the light!"), span_warning("Something is terribly wrong..."))
 			return FALSE
+	target.setOxyLoss(0)
 	if(!target.revive(full_heal = FALSE))
 		display_results(user, target, span_notice("The lux refuses to meld with [target]'s heart. Their damage must be too severe still."),
 			"[user] works the lux into [target]'s innards, but nothing happens.",
@@ -97,8 +95,9 @@
 		"[user] works the lux into [target]'s innards.",
 		"[user] works the lux into [target]'s innards.")
 	target.emote("breathgasp")
+	target.setOxyLoss(150)
 	target.Jitter(100)
-	GLOB.scarlet_round_stats[STATS_LUX_REVIVALS]++
+	record_round_statistic(STATS_LUX_REVIVALS)
 	target.update_body()
 	target.visible_message(span_notice("[target] is dragged back from Necra's hold!"), span_green("I awake from the void."))
 	qdel(tool)

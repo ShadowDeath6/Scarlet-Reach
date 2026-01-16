@@ -101,6 +101,9 @@ h1.alert, h2.alert	{color: #c9c1ba;font-family: Pterra, TrueType;}
 .hierophant_warning		{color: #660099;	font-style: italic;}
 .purple					{color: #5e2d79;}
 .holoparasite			{color: #35333a;}
+.astrata				{color: #FFD700;}
+.astratabig				{color: #FFD700;	font-weight: bold;	font-size: 180%;}
+.astrataextreme			{color: #FFD700;	font-weight: bold;	font-size: 220%;}
 .beautifulmasc			{color: #083eab;}
 .beautifulfem			{color: #d70a74;}
 .beautifulnb			{color: #9656c9;}
@@ -149,6 +152,8 @@ h1.alert, h2.alert	{color: #c9c1ba;font-family: Pterra, TrueType;}
 .etruscan				{font-family: "Feronia", "Pterra"; font-size: 100%;}
 .gronnic				{font-family: "Jorvik Informal", "Pterra"; font-size: 100%;}
 .aavnic					{font-family: "Romeodn", "Pterra"; font-size: 100%;}
+.abyssal				{font-family: "Achilles", "Pterra"; font-size: 110%;}
+.machina				{color: #ff6600; font-family: "Verdana", "Verdana"; font-size: 115%;}
 
 .torture				{color: #42ff20}
 

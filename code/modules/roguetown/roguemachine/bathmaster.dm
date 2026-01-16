@@ -12,12 +12,11 @@
 	layer = BELOW_OBJ_LAYER
 	var/list/held_items = list()
 	var/locked = FALSE
-	var/budget = 0
 	var/upgrade_flags
 	var/current_cat = "1"
 	var/lockid = "nightman"
 	var/list/categories = list(
-		"Alcohols", 
+		"Alcohols",
 		"Drugs",
 		"Exotic Apparel",
 		"Instruments",
@@ -90,7 +89,7 @@
 			if(!(upgrade_flags & UPGRADE_NOTAX))
 				SStreasury.give_money_treasury(tax_amt, "brassface import tax")
 				record_featured_stat(FEATURED_STATS_TAX_PAYERS, human_mob, tax_amt)
-				GLOB.scarlet_round_stats[STATS_TAXES_COLLECTED] += tax_amt
+				record_round_statistic(STATS_TAXES_COLLECTED, tax_amt)
 		else
 			say("Not enough!")
 			return
@@ -101,8 +100,7 @@
 			new pathi(get_turf(M))
 	if(href_list["change"])
 		if(budget > 0)
-			budget2change(budget, usr)
-			budget = 0
+			withdrawbudget(usr)
 	if(href_list["changecat"])
 		current_cat = href_list["changecat"]
 	if(href_list["secrets"])
@@ -243,10 +241,10 @@ SUBSYSTEM_DEF(BMtreasury)
 
 		for(var/obj/structure/closet/closet in bathbrick.contents)
 			for(var/obj/item/item in closet)
-				amt_to_generate += add_to_vault(item)	
+				amt_to_generate += add_to_vault(item)
 
 	brassface.budget += round(amt_to_generate, 1) // goes directly into BRASSFACE rather than into any account.
-	send_ooc_note("Income from smuggling hoard to the BRASSFACE: +[amt_to_generate]", job = "Nightmaster")
+	send_ooc_note("Income from smuggling hoard to the BRASSFACE: +[amt_to_generate]; [brassface.budget] total", job = "Nightmaster")
 
 
 /datum/controller/subsystem/BMtreasury/Destroy()

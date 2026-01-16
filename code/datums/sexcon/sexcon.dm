@@ -43,7 +43,12 @@
 	var/using_zones = list()
 	/// Cache body parts used for accessibility check
 	var/access_zone_bitfield = SEX_ZONE_NULL
+	/// Menu based variables
+	var/action_category = SEX_CATEGORY_MISC
+	/// Show progress bar
+	var/show_progress = 1
 	/// Knot based variables
+	var/do_knot_action = FALSE
 	var/knotted_status = KNOTTED_NULL // knotted state and used to prevent multiple knottings when we do not handle that case
 	var/knotted_part = SEX_PART_NULL // which orifice was knotted (bitflag)
 	var/knotted_part_partner = SEX_PART_NULL // which orifice was knotted on partner (bitflag)
@@ -65,7 +70,7 @@
 	//receiving = list()
 	. = ..()
 
-/proc/do_thrust_animate(atom/movable/user, atom/movable/target, pixels = 4, time = 2.7)
+/datum/sex_controller/proc/do_thrust_animate(atom/movable/target, pixels = 4, time = 2.7)
 	var/oldx = user.pixel_x
 	var/oldy = user.pixel_y
 	var/target_x = oldx
@@ -73,6 +78,10 @@
 	var/dir = get_dir(user, target)
 	if(user.loc == target.loc)
 		dir = user.dir
+	if(speed > SEX_SPEED_MID)
+		time -= 0.25
+	if(force < SEX_FORCE_MID)
+		pixels -= 1
 	switch(dir)
 		if(NORTH)
 			target_y += pixels
@@ -265,7 +274,7 @@
 		playsound(target, pick(list('sound/misc/mat/mouthend (1).ogg','sound/misc/mat/mouthend (2).ogg')), 100, FALSE, ignore_walls = FALSE)
 	else
 		playsound(target, 'sound/misc/mat/endin.ogg', 50, TRUE, ignore_walls = FALSE)
-	if(user != target)
+	if(user != target && do_knot_action)
 		knot_try()
 	if(splashed_user && !splashed_user.sexcon.knotted_status)
 		var/status_type = !oral ? /datum/status_effect/facial/internal : /datum/status_effect/facial
@@ -275,6 +284,35 @@
 		else
 			splashed_type.refresh_cum()
 	after_ejaculation()
+
+	//EVIL ASS LEVELDRAIN
+	if(HAS_TRAIT(user, TRAIT_DEPRAVED) && user.cmode)
+		var/datum/status_effect/buff/baothasbanquet/boost_buff = user.has_status_effect(/datum/status_effect/buff/baothasbanquet)
+		if(boost_buff)
+			boost_buff.tier_up(target)
+		else
+			boost_buff = user.apply_status_effect(/datum/status_effect/buff/baothasbanquet)
+			boost_buff.poor_bastards += target
+		var/datum/status_effect/debuff/baothadrained/drain_debuff = target.has_status_effect(/datum/status_effect/debuff/baothadrained)
+		if(drain_debuff)
+			drain_debuff.tier_up()
+		else
+			target.apply_status_effect(/datum/status_effect/debuff/baothadrained)
+		target.playsound_local(user, 'sound/misc/mat/lvldown.ogg', 100)
+	if(HAS_TRAIT(target, TRAIT_DEPRAVED) && target.cmode)
+		var/datum/status_effect/buff/baothasbanquet/boost_buff = target.has_status_effect(/datum/status_effect/buff/baothasbanquet)
+		if(boost_buff)
+			boost_buff.tier_up(user)
+		else
+			boost_buff = target.apply_status_effect(/datum/status_effect/buff/baothasbanquet)
+			boost_buff.poor_bastards += user
+		var/datum/status_effect/debuff/baothadrained/drain_debuff = user.has_status_effect(/datum/status_effect/debuff/baothadrained)
+		if(drain_debuff)
+			drain_debuff.tier_up()
+		else
+			user.apply_status_effect(/datum/status_effect/debuff/baothadrained)
+		user.playsound_local(user, 'sound/misc/mat/lvldown.ogg', 100)
+		
 	if(!oral)
 		after_intimate_climax()
 
@@ -329,7 +367,7 @@
 	user.emote("sexmoanhvy", forced = TRUE)
 	user.playsound_local(user, 'sound/misc/mat/end.ogg', 100)
 	last_ejaculation_time = world.time
-	GLOB.scarlet_round_stats[STATS_PLEASURES]++
+	record_round_statistic(STATS_PLEASURES)
 
 /datum/sex_controller/proc/after_intimate_climax()
 	if(user == target)
@@ -344,6 +382,9 @@
 			target.mob_timers["cumtri"] = world.time
 			target.adjust_triumphs(1)
 			to_chat(target, span_love("Our loving is a true TRIUMPH!"))
+			
+	if(ishuman(user) && ishuman(target) && user.client && target.client)
+		eora_register_consensual_pair(user, target)					
 
 /datum/sex_controller/proc/just_ejaculated()
 	return (last_ejaculation_time + 2 SECONDS >= world.time)
@@ -362,6 +403,8 @@
 
 /datum/sex_controller/proc/handle_charge(dt)
 	if(user.has_flaw(/datum/charflaw/addiction/lovefiend))
+		dt *= 2
+	if(HAS_TRAIT(user, TRAIT_DEPRAVED))
 		dt *= 2
 	adjust_charge(dt * CHARGE_RECHARGE_RATE)
 	if(is_spent())
@@ -421,6 +464,9 @@
 	if(user.stat == DEAD)
 		arousal_amt = 0
 		pain_amt = 0
+
+	if(HAS_TRAIT(user, TRAIT_DEPRAVED))
+		pain_amt *= 0.66
 
 	if(!arousal_frozen)
 		adjust_arousal(arousal_amt)
@@ -602,20 +648,29 @@
 	var/force_name = get_force_string()
 	var/speed_name = get_speed_string()
 	var/manual_arousal_name = get_manual_arousal_string()
-	if(!user.getorganslot(ORGAN_SLOT_PENIS))
-		dat += "<center><a href='?src=[REF(src)];task=speed_down'>\<</a> [speed_name] <a href='?src=[REF(src)];task=speed_up'>\></a> ~|~ <a href='?src=[REF(src)];task=force_down'>\<</a> [force_name] <a href='?src=[REF(src)];task=force_up'>\></a></center>"
-	else
-		dat += "<center><a href='?src=[REF(src)];task=speed_down'>\<</a> [speed_name] <a href='?src=[REF(src)];task=speed_up'>\></a> ~|~ <a href='?src=[REF(src)];task=force_down'>\<</a> [force_name] <a href='?src=[REF(src)];task=force_up'>\></a> ~|~ <a href='?src=[REF(src)];task=manual_arousal_down'>\<</a> [manual_arousal_name] <a href='?src=[REF(src)];task=manual_arousal_up'>\></a></center>"
-	dat += "<center>| <a href='?src=[REF(src)];task=toggle_finished'>[do_until_finished ? "UNTIL IM FINISHED" : "UNTIL I STOP"]</a> |</center>"
-	dat += "<center><a href='?src=[REF(src)];task=set_arousal'>SET AROUSAL</a> | <a href='?src=[REF(src)];task=freeze_arousal'>[arousal_frozen ? "UNFREEZE AROUSAL" : "FREEZE AROUSAL"]</a></center>"
+	dat += "<center><a href='?src=[REF(src)];task=speed_down'>\<</a> [speed_name] <a href='?src=[REF(src)];task=speed_up'>\></a> ~|~ <a href='?src=[REF(src)];task=force_down'>\<</a> [force_name] <a href='?src=[REF(src)];task=force_up'>\></a>"
+	if(user.getorganslot(ORGAN_SLOT_PENIS))
+		dat += " ~|~ <a href='?src=[REF(src)];task=manual_arousal_down'>\<</a> [manual_arousal_name] <a href='?src=[REF(src)];task=manual_arousal_up'>\></a>"
+	dat += "</center><center><a href='?src=[REF(src)];task=toggle_finished'>[do_until_finished ? "UNTIL IM FINISHED" : "UNTIL I STOP"]</a>"
+	if(current_action && !desire_stop)
+		var/datum/sex_action/action = SEX_ACTION(current_action)
+		if(action.knot_on_finish && knot_penis_type())
+			if(do_knot_action)
+				dat += " | <a href='?src=[REF(src)];task=toggle_knot'><font color='#d146f5'>USING KNOT</font></a>"
+			else
+				dat += " | <a href='?src=[REF(src)];task=toggle_knot'><font color='#eac8de'>NOT USING KNOT</font></a>"
+	dat += "</center><center><a href='?src=[REF(src)];task=set_arousal'>SET AROUSAL</a> | <a href='?src=[REF(src)];task=freeze_arousal'>[arousal_frozen ? "UNFREEZE AROUSAL" : "FREEZE AROUSAL"]</a></center>"
 	if(target == user)
 		dat += "<center>Doing unto yourself</center>"
 	else
 		dat += "<center>Doing unto [target]'s</center>"
-	if(current_action)
+	if(current_action && !desire_stop)
 		dat += "<center><a href='?src=[REF(src)];task=stop'>Stop</a></center>"
 	else
 		dat += "<br>"
+	dat += "<center><a href='?src=[REF(src)];task=category_misc'>[action_category == SEX_CATEGORY_MISC ? "<font color='#eac8de'>OTHER</font>" : "OTHER"]</a> | "
+	dat += "<a href='?src=[REF(src)];task=category_hands'>[action_category == SEX_CATEGORY_HANDS ? "<font color='#eac8de'>HANDS</font>" : "HANDS"]</a> | "
+	dat += "<a href='?src=[REF(src)];task=category_penetrate'>[action_category == SEX_CATEGORY_PENETRATE ? "<font color='#eac8de'>PENETRATE</font>" : "PENETRATE"]</a></center>"
 	dat += "<table width='100%'><td width='50%'></td><td width='50%'></td><tr>"
 	var/i = 0
 	var/user_is_incapacitated = user.incapacitated()
@@ -624,6 +679,8 @@
 		target.sexcon.update_all_accessible_body_zones()
 	for(var/action_type in GLOB.sex_actions)
 		var/datum/sex_action/action = SEX_ACTION(action_type)
+		if(!(action_category&action.category))
+			continue
 		if(!action.shows_on_menu(user, target))
 			continue
 		dat += "<td>"
@@ -680,6 +737,14 @@
 		if("freeze_arousal")
 			if(aphrodisiac == 1)
 				arousal_frozen = !arousal_frozen
+		if("category_misc")
+			action_category = SEX_CATEGORY_MISC
+		if("category_hands")
+			action_category = SEX_CATEGORY_HANDS
+		if("category_penetrate")
+			action_category = SEX_CATEGORY_PENETRATE
+		if("toggle_knot")
+			do_knot_action = !do_knot_action
 	show_ui()
 
 /datum/sex_controller/proc/try_stop_current_action()
@@ -722,13 +787,14 @@
 	// Do action loop
 	var/performed_action_type = current_action
 	var/datum/sex_action/action = SEX_ACTION(current_action)
+	show_progress = 1
 	action.on_start(user, target)
 	while(TRUE)
 		if(!isnull(target.client) && target.client.prefs.sexable == FALSE) //Vrell - Needs changed to let me test sex mechanics solo
 			break
 		if(!user.stamina_add(action.stamina_cost * get_stamina_cost_multiplier()))
 			break
-		if(!do_after(user, (action.do_time / get_speed_multiplier()), target = target))
+		if(!do_after(user, (action.do_time / get_speed_multiplier()), target = target, progress = show_progress))
 			break
 		if(current_action == null || performed_action_type != current_action)
 			break
@@ -806,15 +872,9 @@
 /datum/sex_controller/proc/get_force_pleasure_multiplier(passed_force, giving)
 	switch(passed_force)
 		if(SEX_FORCE_LOW)
-			if(giving)
-				return 0.8
-			else
-				return 0.8
+			return 0.8
 		if(SEX_FORCE_MID)
-			if(giving)
-				return 1.2
-			else
-				return 1.2
+			return 1.2
 		if(SEX_FORCE_HIGH)
 			if(giving)
 				return 1.6
@@ -901,6 +961,102 @@
 			return "<span class='love_high'>[string]</span>"
 		if(SEX_FORCE_EXTREME)
 			return "<span class='love_extreme'>[string]</span>"
+
+/datum/sex_controller/proc/can_zodomize()
+	//Only thing we're currently checking for.
+	var/obj/item/organ/vagina/vag = user.getorganslot(ORGAN_SLOT_VAGINA)
+	if(vag && vag.monohole)
+		return FALSE
+	if(user.construct && !user.getorganslot(ORGAN_SLOT_VAGINA) && !user.getorganslot(ORGAN_SLOT_PENIS))
+		return FALSE
+	return TRUE
+
+/proc/werewolf_sex_infect_attempt(mob/living/carbon/human/top, mob/living/carbon/human/bottom)
+
+	if(!top || !bottom || !top.mind || !bottom.mind)
+		return
+
+	var/datum/antagonist/werewolf/WWtop
+	var/datum/antagonist/werewolf/WWbottom
+	var/infection_probability = 40
+	if(top.mind.has_antag_datum(/datum/antagonist/werewolf))
+		WWtop = top.mind.has_antag_datum(/datum/antagonist/werewolf/)
+
+	if(bottom.mind.has_antag_datum(/datum/antagonist/werewolf))
+		WWbottom = bottom.mind.has_antag_datum(/datum/antagonist/werewolf/)
+
+	if(WWtop && WWbottom)
+		return
+
+	if(WWtop && WWtop.transformed && !WWbottom)
+		if(prob(infection_probability))
+			bottom.werewolf_infect_attempt()
+			return
+
+	if(WWbottom && WWbottom.transformed && !WWtop)
+		if(prob(infection_probability))
+			top.werewolf_infect_attempt()
+			return
+
+/datum/status_effect/buff/baothasbanquet
+	id = "baothasbanquet"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/baothasbanquet
+	effectedstats = list("strength" = 1, "intelligence" = 1, "perception" = 1 , "speed" = 1, "endurance" = 1, "constitution" = 1)
+	duration = 30 MINUTES
+	var/tier = 1
+	var/list/poor_bastards = list()
+
+/atom/movable/screen/alert/status_effect/buff/baothasbanquet
+	name = "Baotha's Banquet (I)"
+	desc = "I feel invigorated after partaking in another's energy."
+	icon_state = "baothasbanquet"
+
+/datum/status_effect/buff/baothasbanquet/proc/tier_up(var/mob/living/poor_sod)
+	refresh()
+	if(poor_sod in poor_bastards)
+		return
+	poor_bastards += poor_sod
+	if(tier < 3)
+		on_remove()
+		tier++
+		switch(tier)
+			if(2)
+				effectedstats = list("strength" = 2, "intelligence" = 2, "perception" = 2 , "speed" = 2, "endurance" = 2, "constitution" = 2)
+				linked_alert.name = "Baotha's Banquet (II)"
+				linked_alert.desc = "The strength of others nourishes me!"
+			if(3)
+				effectedstats = list("strength" = 3, "intelligence" = 3, "perception" = 3 , "speed" = 3, "endurance" = 3, "constitution" = 3)
+				linked_alert.name = "Baotha's Banquet (III)"
+				linked_alert.desc = "This power is ADDICTING!"
+		on_apply()
+
+/datum/status_effect/debuff/baothadrained
+	id = "baothadrained"
+	alert_type = /atom/movable/screen/alert/status_effect/debuff/baothadrained
+	effectedstats = list("strength" = -1, "intelligence" = -1, "perception" = -1 , "speed" = -1, "endurance" = -1, "constitution" = -1)
+	duration = 30 MINUTES
+	var/tier = 1
+
+/atom/movable/screen/alert/status_effect/debuff/baothadrained
+	name = "Vitality Drained (I)"
+	desc = "That was exhausting..."
+	icon_state = "baothadrained"
+
+/datum/status_effect/debuff/baothadrained/proc/tier_up()
+	refresh()
+	if(tier < 3)
+		on_remove()
+		tier++
+		switch(tier)
+			if(2)
+				effectedstats = list("strength" = -2, "intelligence" = -2, "perception" = -2 , "speed" = -2, "endurance" = -2, "constitution" = -2)
+				linked_alert.name = "Vitality Drained (II)"
+				linked_alert.desc = "That really took it out of me..."
+			if(3)
+				effectedstats = list("strength" = -3, "intelligence" = -3, "perception" = -3 , "speed" = -3, "endurance" = -3, "constitution" = -3)
+				linked_alert.name = "Vitality Drained (III)"
+				linked_alert.desc = "I feel like I lost a part of myself..."
+		on_apply()
 
 #undef SEX_ZONE_NULL
 #undef SEX_ZONE_GROIN

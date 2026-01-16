@@ -7,6 +7,7 @@
 	base_state = "oven"
 	density = FALSE
 	on = FALSE
+	light_system = MOVABLE_LIGHT
 	var/list/food = list()
 	var/maxfood = 5
 	var/donefoods = FALSE
@@ -36,7 +37,7 @@
 			donefoods = FALSE
 			W.forceMove(src)
 			food += W
-			playsound(get_turf(src.loc), 'sound/items/wood_sharpen.ogg', 50) // neu cooking
+			playsound(src.loc, 'sound/items/wood_sharpen.ogg', 50) // neu cooking
 			user.visible_message(span_warning("[user] puts something in the oven."))
 			need_underlay_update = TRUE
 			update_icon()
@@ -98,6 +99,7 @@
 		if(EAST)
 			pixel_x = -32
 	icon_state = "[base_state][on]"
+	set_light(on) //kind of a kludge but i don't really know how best to fix this
 
 	if(on)
 		var/burning

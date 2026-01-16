@@ -348,6 +348,19 @@
 	grid_height = 64
 	grid_width = 64
 
+/obj/item/clothing/armor/gambeson/tailcoat
+	name = "tailcoat"
+	desc = "A finely-sewn tailcoat often worn by those on the brink of the upper echelons of Astratan caste."
+	icon = 'icons/roguetown/clothing/armor.dmi'
+	icon_state = "butlercoat"
+	item_state = "butlercoat"
+	mob_overlay_icon = 'icons/roguetown/clothing/onmob/armor.dmi'
+	detail_tag = "_detail"
+	sleeved = 'icons/roguetown/clothing/onmob/helpers/sleeves_maids.dmi'
+	detail_color = CLOTHING_BLACK
+	slot_flags = ITEM_SLOT_ARMOR
+	armor = ARMOR_PADDED
+
 /obj/item/clothing/suit/roguetown/armor/leather/vest/winterjacket/update_icon()
 	cut_overlays()
 	if(get_detail_tag())
@@ -382,17 +395,6 @@
 	desc = "More form over function, this armor is fit for demonstration of might rather than open combat. The aged gilding slowly tarnishes away."
 	icon_state = "shadowplate"
 	item_state = "shadowplate"
-
-//................ Corset.................... //
-/obj/item/clothing/suit/roguetown/armor/corset
-	slot_flags = ITEM_SLOT_ARMOR|ITEM_SLOT_SHIRT
-	name = "corset"
-	desc = "A leather binding to constrict one's figure... and lungs."
-	icon_state = "corset"
-	armor_class = ARMOR_CLASS_LIGHT
-	body_parts_covered = CHEST
-	grid_height = 64
-	grid_width = 32
 
 /obj/item/clothing/suit/roguetown/armor/gambeson/lord
 	name = "arming jacket"
@@ -846,6 +848,37 @@
 	item_state = "ornatehauberk"
 	max_integrity = 350
 
+/obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/matthios
+	name = "gilded hauberk"
+	desc = "All that glimmers is gold; yet only shining stars shalt break the mold.."
+	color = "#ffc960"
+
+/obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/matthios/Initialize()
+	. = ..()
+	AddComponent(/datum/component/cursed_item, TRAIT_COMMIE, "ARMOR")
+
+//
+
+/obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/zizo
+	name = "darksteel hauberk"
+	desc = "The rings crackle with unkempt magicka, yearning to enamor the enlightened with darksteel might."
+	color = "#c1b18d"
+
+/obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/zizo/Initialize()
+	. = ..()
+	AddComponent(/datum/component/cursed_item, TRAIT_CABAL, "ARMOR")
+
+//
+
+/obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/graggar
+	name = "vicious hauberk"
+	desc = "The blessing of a Martyr is nothing, when put before the Sinistar's rage."
+	color = "#ddc0a7"
+
+/obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/graggar/Initialize()
+	. = ..()
+	AddComponent(/datum/component/cursed_item, TRAIT_HORDE, "ARMOR", "RENDERED ASUNDER")
+
 /obj/item/clothing/suit/roguetown/armor/chainmail/bikini
 	name = "chainmail corslet"	// corslet, from the old French 'cors' or bodice, with the diminutive 'let', used to describe lightweight military armor since 1500. Chosen here to replace 'bikini', an extreme anachronism.
 	desc = "For the daring, affording maille's protection with light weight."
@@ -1014,14 +1047,6 @@
 	max_integrity = 150
 	smeltresult = /obj/item/ingot/aalloy
 
-
-/obj/item/clothing/suit/roguetown/armor/plate/paalloy
-	name = "ancient half-plate"
-	desc = "Plate formed out of ancient alloys. Aeon's grasp has been lifted from it."
-	icon_state = "ancientplate"
-	item_state = "ancientplate"
-	smeltresult = /obj/item/ingot/aaslag
-
 /obj/item/clothing/suit/roguetown/armor/plate/fluted
 	name = "fluted half-plate"
 	desc = "A sturdily made fluted half-plate armour-set, complete with pauldrons and shoulder-guards. \
@@ -1042,11 +1067,23 @@
 	icon_state = "graggarplate"
 	armor = ARMOR_CUIRASS
 
+/obj/item/clothing/suit/roguetown/armor/plate/fluted/graggar/equipped(mob/living/user, slot)
+	. = ..()
+	if(slot != SLOT_ARMOR)
+		return
+
+	user.apply_status_effect(/datum/status_effect/buff/motive)
+
+/obj/item/clothing/suit/roguetown/armor/plate/fluted/graggar/dropped(mob/living/carbon/human/user)
+	. = ..()
+	if(istype(user) && user.wear_armor == src)
+		user.remove_status_effect(/datum/status_effect/buff/motive)
+
 /obj/item/clothing/suit/roguetown/armor/plate/fluted/graggar/pickup(mob/living/user)
 	if(!HAS_TRAIT(user, TRAIT_HORDE))
 		to_chat(user, "<font color='red'>UNWORTHY HANDS TOUCHING THIS ARMOR, CEASE OR BE RENDED ASUNDER!</font>")
 		user.adjust_fire_stacks(5)
-		user.IgniteMob()
+		user.ignite_mob()
 		user.Stun(40)
 	..()
 
@@ -1138,6 +1175,12 @@
 		return
 	qdel(src)
 
+/obj/item/clothing/suit/roguetown/armor/plate/full/paalloy
+	name = "ancient full-plate" //why was this half plate?
+	desc = "Plate formed out of ancient alloys. Aeon's grasp has been lifted from it."
+	icon_state = "ancientplate"
+	item_state = "ancientplate"
+	smeltresult = /obj/item/ingot/aaslag
 
 /obj/item/clothing/suit/roguetown/armor/plate/full/bikini
 	slot_flags = ITEM_SLOT_ARMOR
@@ -1154,7 +1197,7 @@
 	smeltresult = /obj/item/ingot/steel
 	smelt_bar_num = 3
 
-/obj/item/clothing/suit/roguetown/armor/heartfelt/lord
+/obj/item/clothing/suit/roguetown/armor/heartfelt
 	slot_flags = ITEM_SLOT_ARMOR
 	name = "coat of armor"
 	desc = "A lordly coat of armor."
@@ -1173,22 +1216,35 @@
 	smelt_bar_num = 4
 
 /obj/item/clothing/suit/roguetown/armor/heartfelt/hand
-	slot_flags = ITEM_SLOT_ARMOR
-	name = "coat of armor"
-	desc = "A lordly coat of armor."
-	body_parts_covered = COVERAGE_FULL
 	icon_state = "heartfelt_hand"
 	item_state = "heartfelt_hand"
+
+/obj/item/clothing/suit/roguetown/armor/heartfelt/knight
+	icon = 'icons/roguetown/clothing/special/blkknight.dmi'
+	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/blkknight.dmi'
+	sleeved = 'icons/roguetown/clothing/special/onmob/blkknight.dmi'
+	icon_state = "bkarmor"
+	item_state = "bkarmor"
+	color = "#550000"
+
+/obj/item/clothing/suit/roguetown/armor/brigandine/heartfelt //Using brigandine for fancy coloring
+	slot_flags = ITEM_SLOT_ARMOR
+	name = "heartfeltian brigandine"
+	desc = "Lightweight composite armour made according to an Etruscan tradition. It's a high-quality arched plate cuirass sewn with dyed leather and fitted with a wide skirt at the bottom to cover the thighs."
+	icon_state = "brigandine"
+	blocksound = SOFTHIT
+	body_parts_covered = COVERAGE_FULL
 	armor = ARMOR_PLATE
 	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT, BCLASS_TWIST)
 	allowed_sex = list(MALE, FEMALE)
 	nodismemsleeves = TRUE
-	blocking_behavior = null
-	max_integrity = 400
+	max_integrity = 300
 	anvilrepair = /datum/skill/craft/armorsmithing
 	smeltresult = /obj/item/ingot/steel
-	armor_class = ARMOR_CLASS_HEAVY
-	smelt_bar_num = 4
+	equip_delay_self = 4 SECONDS
+	armor_class = ARMOR_CLASS_MEDIUM // Medium to not give them heavy armor training
+	sleeved_detail = FALSE
+	boobed_detail = FALSE
 
 /obj/item/clothing/suit/roguetown/armor/plate/otavan
 	name = "otavan half-plate"
@@ -1388,6 +1444,7 @@
 	icon_state = "inqcoat"
 	item_state = "inqcoat"
 	sleevetype = "shirt"
+	sewrepair = TRUE
 	max_integrity = 300
 	anvilrepair = /datum/skill/craft/armorsmithing
 	equip_delay_self = 4 SECONDS
@@ -1451,7 +1508,7 @@
 	armor = ARMOR_PLATE_BSTEEL
 	allowed_race = CLOTHED_RACES_TYPES
 	blocking_behavior = null
-	max_integrity = 400
+	max_integrity = 650
 	smeltresult = /obj/item/ingot/blacksteel
 	equip_delay_self = 12 SECONDS
 	unequip_delay_self = 12 SECONDS
@@ -1471,7 +1528,7 @@
 	armor = ARMOR_PLATE_BSTEEL
 	allowed_race = CLOTHED_RACES_TYPES
 	blocking_behavior = null
-	max_integrity = 400
+	max_integrity = 650
 	smeltresult = /obj/item/ingot/blacksteel
 	equip_delay_self = 12 SECONDS
 	unequip_delay_self = 12 SECONDS
@@ -1612,13 +1669,13 @@
 // this robe spawns on a role that offers no leg protection nor further upgrades to the loadout, in exchange for better roundstart gear
 
 // new knight captain drip
-/obj/item/clothing/suit/roguetown/armor/captain
-	name = "captain's brigandine"
-	desc = "A coat with plates specifically tailored and forged for the captain of Scarlet Reach."
-	icon_state = "capplate"
-	icon = 'icons/roguetown/clothing/special/captain.dmi'
-	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/captain.dmi'
-	sleeved = 'icons/roguetown/clothing/special/onmob/captain.dmi'
+/obj/item/clothing/suit/roguetown/armor/champion
+	name = "champion's brigandine"
+	desc = "A coat with plates specifically tailored and forged for the champion of Scarlet Reach."
+	icon_state = "champplate"
+	icon = 'icons/roguetown/clothing/special/champion.dmi'
+	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/champion.dmi'
+	sleeved = 'icons/roguetown/clothing/special/onmob/champion.dmi'
 	detail_tag = "_detail"
 	detail_color = CLOTHING_BLUE
 	blocksound = SOFTHIT
@@ -1634,18 +1691,18 @@
 	max_integrity = 500
 	prevent_crits = list(BCLASS_BLUNT, BCLASS_TWIST, BCLASS_PICK, BCLASS_SMASH, BCLASS_CUT, BCLASS_CHOP)
 	
-/obj/item/clothing/suit/roguetown/armor/captain/lordcolor(primary,secondary)
+/obj/item/clothing/suit/roguetown/armor/champion/lordcolor(primary,secondary)
 	detail_color = primary
 	update_icon()
 
-/obj/item/clothing/suit/roguetown/armor/captain/Initialize()
+/obj/item/clothing/suit/roguetown/armor/champion/Initialize()
 	. = ..()
 	if(GLOB.lordprimary)
 		lordcolor(GLOB.lordprimary,GLOB.lordsecondary)
 	else
 		GLOB.lordcolor += src
 
-/obj/item/clothing/suit/roguetown/armor/captain/Destroy()
+/obj/item/clothing/suit/roguetown/armor/champion/Destroy()
 	GLOB.lordcolor -= src
 	return..()
 	
@@ -1687,3 +1744,69 @@
 	flags_inv = HIDEBOOB
 	max_integrity = 200
 	equip_delay_self = 30
+
+/obj/item/clothing/suit/roguetown/armor/velvetcoat
+	name = "velvet coat"
+	desc = "A velvet coat made from the finest fabrics."
+	icon_state = "velvetcoat"
+	detail_tag = "_detail"
+	altdetail_tag = "_detailalt"
+	detail_color = CLOTHING_WHITE
+	allowed_race = NON_DWARVEN_RACE_TYPES
+	slot_flags = ITEM_SLOT_ARMOR|ITEM_SLOT_CLOAK
+	break_sound = 'sound/foley/cloth_rip.ogg'
+	drop_sound = 'sound/foley/dropsound/cloth_drop.ogg'
+	sewrepair = TRUE
+	grid_width = 64
+	grid_height = 64
+
+/obj/item/clothing/suit/roguetown/armor/velvetcoat/Initialize()
+	. = ..()		
+	update_icon()
+
+/obj/item/clothing/suit/roguetown/armor/velvetcoat/update_icon()
+	cut_overlays()
+	if(get_detail_tag())
+		var/mutable_appearance/pic = mutable_appearance(icon(icon, "[icon_state][detail_tag]"))
+		pic.appearance_flags = RESET_COLOR
+		if(get_detail_color())
+			pic.color = get_detail_color()
+		add_overlay(pic)
+
+/obj/item/clothing/suit/roguetown/armor/velvetcoat/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
+
+//Kazengun
+
+/obj/item/clothing/suit/roguetown/armor/haori
+	name = "haori"
+	desc = "A traditional jacket meant to be worn over a kimono."
+	icon_state = "haori"
+	color = CLOTHING_BLACK
+	slot_flags = ITEM_SLOT_ARMOR|ITEM_SLOT_CLOAK
+	break_sound = 'sound/foley/cloth_rip.ogg'
+	drop_sound = 'sound/foley/dropsound/cloth_drop.ogg'
+	sewrepair = TRUE
+	r_sleeve_status = SLEEVE_NORMAL
+	l_sleeve_status = SLEEVE_NORMAL
+
+/obj/item/clothing/suit/roguetown/armor/haori/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
+
+/obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/ogre
+	name = "giant hauberk"
+	desc = "A gigantic chainmail shirt, absurd to even think it would fit someone of normal size."
+	sleeved = 'icons/roguetown/clothing/onmob/helpers/32x64/ogre_onmob_sleeves.dmi'
+	mob_overlay_icon = 'icons/roguetown/clothing/onmob/32x64/ogre_onmob.dmi'
+	icon_state = "ogre_maille"
+	allowed_race = OGRE_RACE_TYPES
+
+/obj/item/clothing/suit/roguetown/armor/plate/half/ogre
+	name = "giant cuirass"
+	desc = "An absurdly large piece of armor, meant for an absurdly large man."
+	mob_overlay_icon = 'icons/roguetown/clothing/onmob/32x64/ogre_onmob.dmi'
+	icon_state = "ogre_cuirass"
+	max_integrity = 600 // wow these guys are super weak
+	allowed_race = OGRE_RACE_TYPES

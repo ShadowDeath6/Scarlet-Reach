@@ -67,9 +67,13 @@
 /obj/item/psydonmusicbox/examine(mob/user)
 	. = ..()
 	if(HAS_TRAIT(usr, TRAIT_INQUISITION))
-		desc = "A relic from the bowels of the Otavan cathedral's thaumaturgical workshops. Fourteen souls of heretics, all bound together, they will scream and protect us from magicks. It would be wise to not teach the heretics of its true nature, to only bring it to bear in dire circumstances."
+		. += "A relic from the bowels of the Otavan cathedral's thaumaturgical workshops. Fourteen souls of heretics, all bound together, they will scream and protect us from magicks. It would be wise to not teach the heretics of its true nature, to only bring it to bear in dire circumstances."
 	else
-		desc = "A cranked music box, it has the seal of the Otavan Inquisition on the side. It carries a somber feeling to it..."
+		. += "A cranked music box, it has the seal of the Otavan Inquisition on the side. It carries a somber feeling to it..."
+		if(isliving(user))
+			var/mob/living/L = user
+			if(L.has_status_effect(/datum/status_effect/buff/churnernegative))
+				. += span_userdanger("DESTROY IT!")
 
 /obj/item/psydonmusicbox/attack_self(mob/living/user)
 	. = ..()
@@ -96,6 +100,15 @@
 	if(soundloop)
 		QDEL_NULL(soundloop)
 	src.visible_message(span_cult("A great deluge of souls escapes the shattered box!"))
+	for (var/mob/living/carbon/human/H in hearers(7, src))
+		if (!H.client)
+			continue
+		if(!HAS_TRAIT(H, TRAIT_INQUISITION))
+			if(H?.patron?.type == /datum/patron/old_god)
+				H.add_stress(/datum/stressevent/soulchurnerdestroyed_psydon)
+			else
+				H.add_stress(/datum/stressevent/soulchurnerdestroyed)
+				to_chat(H, (span_hypnophrase("\"Thank you.\"")))
 	return ..()
 
 /obj/item/psydonmusicbox/update_icon()
@@ -362,13 +375,13 @@ Inquisitorial armory down here
 			if(H.patron?.type == /datum/patron/old_god)	//Psydonites get VERY depressed seeing an artifact get turned into an ulapool caber.
 				H.add_stress(/datum/stressevent/syoncalamity)
 	if(isitem(A) && on && user.used_intent.type == /datum/intent/bless)
-		var/datum/component/psyblessed/CP = A.GetComponent(/datum/component/psyblessed)
+		var/datum/component/silverbless/CP = A.GetComponent(/datum/component/silverbless)
 		if(CP)
-			if(!CP.is_blessed)
+			if(!CP.is_blessed && (CP.silver_type & SILVER_PSYDONIAN))
 				playsound(user, 'sound/magic/censercharging.ogg', 100)
 				user.visible_message(span_info("[user] holds \the [src] over \the [A]..."))
 				if(do_after(user, 50, target = A))
-					CP.try_bless()
+					CP.try_bless(BLESSING_PSYDONIAN)
 					new /obj/effect/temp_visual/censer_dust(get_turf(A))
 			else
 				to_chat(user, span_info("It has already been blessed."))
@@ -388,78 +401,6 @@ Inquisitorial armory down here
 
 		else
 			to_chat(user, span_warning("They do not share our faith."))
-
-/datum/component/psyblessed
-	var/is_blessed
-	var/pre_blessed
-	var/added_force
-	var/added_blade_int
-	var/added_int
-	var/added_def
-	var/silver
-
-/datum/component/psyblessed/Initialize(preblessed = FALSE, force, blade_int, int, def, makesilver)
-	if(!istype(parent, /obj/item/rogueweapon))
-		return COMPONENT_INCOMPATIBLE
-	RegisterSignal(parent, COMSIG_PARENT_EXAMINE, PROC_REF(on_examine))
-	RegisterSignal(parent, COMSIG_ITEM_OBJFIX, PROC_REF(on_fix))
-	pre_blessed = preblessed
-	added_force = force
-	added_blade_int = blade_int
-	added_int = int
-	added_def = def
-	silver = makesilver
-	if(pre_blessed)
-		apply_bless()
-		
-/datum/component/psyblessed/proc/on_examine(datum/source, mob/user, list/examine_list)
-	if(!is_blessed)
-		examine_list += span_info("<font color = '#cfa446'>This object may be blessed by the lingering shard of COMET SYON. Until then, its impure alloying of silver-and-steel cannot blight inhumen foes on its own.</font>")
-	if(is_blessed)
-		examine_list += span_info("<font color = '#46bacf'>This object has been blessed by COMET SYON.</font>")
-		if(silver)
-			examine_list += span_info("It has been imbued with <b>silver</b>.")
-
-/datum/component/psyblessed/proc/try_bless()
-	if(!is_blessed)
-		apply_bless()
-		play_effects()
-		return TRUE
-	else
-		return FALSE
-
-/datum/component/psyblessed/proc/play_effects()
-	if(isitem(parent))
-		var/obj/item/I = parent
-		playsound(I, 'sound/magic/holyshield.ogg', 100)
-		I.visible_message(span_notice("[I] glistens with power as dust of COMET SYON lands upon it!"))
-
-/datum/component/psyblessed/proc/apply_bless()
-	if(isitem(parent))
-		var/obj/item/I = parent
-		is_blessed = TRUE
-		I.force += added_force
-		if(I.force_wielded)
-			I.force_wielded += added_force
-		if(I.max_blade_int)
-			I.max_blade_int += added_blade_int
-			I.blade_int = I.max_blade_int
-		I.max_integrity += added_int
-		I.obj_integrity = I.max_integrity
-		I.wdefense += added_def
-		if(silver)
-			I.is_silver = silver
-			I.smeltresult = /obj/item/ingot/silver
-		I.name = "blessed [I.name]"
-		I.AddComponent(/datum/component/metal_glint)
-
-// This is called right after the object is fixed and all of its force / wdefense values are reset to initial. We re-apply the relevant bonuses.
-/datum/component/psyblessed/proc/on_fix()
-	var/obj/item/rogueweapon/I = parent
-	I.force += added_force
-	if(I.force_wielded)
-		I.force_wielded += added_force
-	I.wdefense += added_def
 
 /obj/effect/temp_visual/censer_dust
 	icon = 'icons/effects/effects.dmi'
@@ -640,11 +581,9 @@ Inquisitorial armory down here
 					cursedblood = 3
 				if(M.mind.has_antag_datum(/datum/antagonist/werewolf/lesser, FALSE))
 					cursedblood = 2
-				if(M.mind.has_antag_datum(/datum/antagonist/vampire/lesser, FALSE))
-					cursedblood = 1
 				if(M.mind.has_antag_datum(/datum/antagonist/vampire, FALSE))
 					cursedblood = 2
-				if(M.mind.has_antag_datum(/datum/antagonist/vampirelord))
+				if(M.mind.has_antag_datum(/datum/antagonist/vampire))
 					cursedblood = 3
 			update_icon()
 			takeblood(M, user)
@@ -840,7 +779,7 @@ Inquisitorial armory down here
 		if(lastcarrier.pulling)
 			lastcarrier.stop_pulling()
 	if(break_sound)
-		playsound(get_turf(src), break_sound, 80, TRUE)
+		playsound(src, break_sound, 80, TRUE)
 	update_icon()
 	to_chat(M, "The [src] SNAPS...!")
 	name = "\proper snapped seizing garrote"
@@ -881,7 +820,7 @@ Inquisitorial armory down here
 	if(wielded)
 		ungrip(user, FALSE)
 		active = FALSE
-		playsound(loc, 'sound/items/garroteshut.ogg', 65, TRUE)
+		playsound(src, 'sound/items/garroteshut.ogg', 65, TRUE)
 
 /obj/item/inqarticles/garrote/attack_self(mob/user)
 	if(obj_broken)
@@ -893,14 +832,14 @@ Inquisitorial armory down here
 		active = FALSE
 		if(user.pulling)
 			user.stop_pulling()
-		playsound(loc, 'sound/items/garroteshut.ogg', 65, TRUE)
+		playsound(src, 'sound/items/garroteshut.ogg', 65, TRUE)
 		wipeslate(user)
 		return
 	if(gripped_intents)
 		wield(user, FALSE)
 		active = TRUE
 		if(wielded)
-			playsound(loc, pick('sound/items/garrote.ogg', 'sound/items/garrote2.ogg'), 65, TRUE)
+			playsound(src, pick('sound/items/garrote.ogg', 'sound/items/garrote2.ogg'), 65, TRUE)
 			return
 
 /obj/item/inqarticles/garrote/equipped(mob/living/carbon/human/user, slot)
@@ -956,7 +895,7 @@ Inquisitorial armory down here
 		if(user.pulling)
 			user.stop_pulling(FALSE)
 		if(HAS_TRAIT(target, TRAIT_GRABIMMUNE))
-			playsound(loc, pick('sound/items/garrote.ogg', 'sound/items/garrote2.ogg'), 65, TRUE)
+			playsound(src, pick('sound/items/garrote.ogg', 'sound/items/garrote2.ogg'), 65, TRUE)
 			user.visible_message(span_danger("[target] slips past [user]'s attempt to [src] them!"))
 			return
 		// THROAT TARGET RESTRICTION. HEAVILY REQUESTED.	
@@ -967,7 +906,7 @@ Inquisitorial armory down here
 			to_chat(user, span_warning("They already have one wrapped around their throat."))
 			return	
 		victim = target	
-		playsound(loc, 'sound/items/garrotegrab.ogg', 100, TRUE)
+		playsound(src, 'sound/items/garrotegrab.ogg', 100, TRUE)
 		ADD_TRAIT(user, TRAIT_NOTIGHTGRABMESSAGE, TRAIT_GENERIC)
 		ADD_TRAIT(user, TRAIT_NOSTRUGGLE, TRAIT_GENERIC)
 		ADD_TRAIT(target, TRAIT_GARROTED, TRAIT_GENERIC)
@@ -996,7 +935,7 @@ Inquisitorial armory down here
 		user.stamina_add(rand(4, 8))
 		var/mob/living/carbon/C = victim
 		// if(get_location_accessible(C, BODY_ZONE_PRECISE_NECK))
-		playsound(loc, pick('sound/items/garrotechoke1.ogg', 'sound/items/garrotechoke2.ogg', 'sound/items/garrotechoke3.ogg', 'sound/items/garrotechoke4.ogg', 'sound/items/garrotechoke5.ogg'), 100, TRUE)
+		playsound(src, pick('sound/items/garrotechoke1.ogg', 'sound/items/garrotechoke2.ogg', 'sound/items/garrotechoke3.ogg', 'sound/items/garrotechoke4.ogg', 'sound/items/garrotechoke5.ogg'), 100, TRUE)
 		if(prob(40) && !HAS_TRAIT(C, TRAIT_NOBREATH))
 			C.emote("choke")
 		C.adjustOxyLoss(choke_damage)

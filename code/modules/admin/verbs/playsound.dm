@@ -114,7 +114,7 @@
 
 	log_admin("[key_name(src)] played a local sound [S]")
 	message_admins("[key_name_admin(src)] played a local sound [S]")
-	playsound(get_turf(src.mob), S, 50, FALSE, FALSE)
+	playsound(src.mob, S, 50, FALSE, FALSE)
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Play Local Sound") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/play_local_sound_variable(S as sound)
@@ -130,7 +130,7 @@
 
 	log_admin("[key_name(src)] played a local sound [S]")
 	message_admins("[key_name_admin(src)] played a local sound [S]")
-	playsound(get_turf(src.mob), S, dist, FALSE, FALSE)
+	playsound(src.mob, S, dist, FALSE, FALSE)
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Play Local Sound") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/play_web_sound()
@@ -207,11 +207,14 @@
 			for(var/m in GLOB.player_list)
 				var/mob/M = m
 				var/client/C = M.client
-				if((C.prefs.toggles & SOUND_MIDI) && C.chatOutput && !C.chatOutput.broken && C.chatOutput.loaded)
+				if(C.prefs.toggles & SOUND_MIDI)
+					// Stops playing lobby music and admin loaded music automatically.
+					SEND_SOUND(C, sound(null, channel = CHANNEL_LOBBYMUSIC))
+					SEND_SOUND(C, sound(null, channel = CHANNEL_ADMIN))
 					if(!stop_web_sounds)
-						C.chatOutput.sendMusic(web_sound_url, music_extra_data)
+						C.tgui_panel?.play_music(web_sound_url, music_extra_data)
 					else
-						C.chatOutput.stopMusic()
+						C.tgui_panel?.stop_music()
 
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Play Internet Sound")
 
@@ -238,8 +241,7 @@
 	for(var/mob/M in GLOB.player_list)
 		SEND_SOUND(M, sound(null))
 		var/client/C = M.client
-		if(C && C.chatOutput && !C.chatOutput.broken && C.chatOutput.loaded)
-			C.chatOutput.stopMusic()
+		C?.tgui_panel?.stop_music()
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Stop All Playing Sounds") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 GLOBAL_LIST_INIT(ambience_files, list(
@@ -264,10 +266,3 @@ GLOBAL_LIST_INIT(ambience_files, list(
 	'sound/music/area/townstreets.ogg'
 	))
 
-/client/verb/preload_sounds()
-	set category = "Options"
-	set name = "Preload Ambience"
-
-	for(var/music in GLOB.ambience_files)
-		mob.playsound_local(mob, music, 0.1)
-		sleep(10)

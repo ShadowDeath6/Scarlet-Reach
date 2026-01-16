@@ -14,14 +14,16 @@
 		You command a position of a fool, envious of the position your superiors have upon you. \
 		Your cheap tricks and illusions of intelligence will only work for so long, \
 		and someday you'll find yourself at the end of something sharper than you."
-	outfit = /datum/outfit/job/roguetown/jester
+	outfit = /datum/outfit/job/jester
 	display_order = JDO_JESTER
+	job_traits = list(TRAIT_TEMPO)
 	give_bank_account = TRUE
 	min_pq = -4 //silly jesters are funny so low PQ requirement
 	max_pq = null
 	round_contrib_points = 2
+	social_rank = SOCIAL_RANK_NOBLE
 
-/datum/outfit/job/roguetown/jester/pre_equip(mob/living/carbon/human/H)
+/datum/outfit/job/jester/pre_equip(mob/living/carbon/human/H)
 	..()
 	shoes = /obj/item/clothing/shoes/roguetown/jester
 	pants = /obj/item/clothing/under/roguetown/tights
@@ -31,14 +33,16 @@
 	beltl = /obj/item/storage/belt/rogue/pouch
 	head = /obj/item/clothing/head/roguetown/jester
 	neck = /obj/item/clothing/neck/roguetown/coif
-	H.adjust_skillrank(/datum/skill/combat/knives, 3, TRUE)
-	H.adjust_skillrank(/datum/skill/misc/reading, 4, TRUE)
-	H.adjust_skillrank(/datum/skill/misc/sneaking, 4, TRUE)
-	H.adjust_skillrank(/datum/skill/misc/stealing, 5, TRUE)
-	H.adjust_skillrank(/datum/skill/misc/climbing, 4, TRUE)
-	H.adjust_skillrank(/datum/skill/misc/athletics, 5, TRUE) //a showman like no other. you need to be fit to perform.
+	H.adjust_skillrank(/datum/skill/combat/knives, rand(1,4), TRUE)
+	H.adjust_skillrank(/datum/skill/misc/reading, rand(0,1), TRUE) // might just be an illiterate fuck, more likely than not
+	H.adjust_skillrank(/datum/skill/misc/sneaking, rand(1,6), TRUE)
+	H.adjust_skillrank(/datum/skill/misc/stealing, rand(1,6), TRUE)
+	H.adjust_skillrank(/datum/skill/misc/climbing, rand(2,6), TRUE)
+	H.adjust_skillrank(/datum/skill/misc/athletics, rand(4,6), TRUE) //a showman like no other. you need to be fit to perform.
 	H.adjust_skillrank(/datum/skill/misc/music, rand(1,6), TRUE)
-	H.adjust_skillrank(/datum/skill/misc/lockpicking, 2, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/unarmed, rand(1,5), TRUE) // is this a good idea? Probably not, but the idea of a master fighter jester with 20 str is too good to pass on, this can only go well
+	H.adjust_skillrank(/datum/skill/combat/wrestling, rand(1,5), TRUE)
+	H.adjust_skillrank(/datum/skill/misc/lockpicking, rand(1,4), TRUE)
 	H.adjust_skillrank(/datum/skill/craft/cooking, rand(1,3), TRUE)
 	H.STASTR = rand(1, 21)
 	H.STAEND = rand(1, 21)

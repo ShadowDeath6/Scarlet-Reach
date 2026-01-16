@@ -5,7 +5,7 @@
 	icon_state = "incut"
 	blade_class = BCLASS_CUT
 	attack_verb = list("cuts", "slashes")
-	hitsound = list('sound/combat/hits/bladed/smallslash (1).ogg', 'sound/combat/hits/bladed/smallslash (2).ogg', 'sound/combat/hits/bladed/smallslash (3).ogg')
+	hitsound = list('sound/combat/hits/bladed/genchop (1).ogg', 'sound/combat/hits/bladed/genchop (2).ogg', 'sound/combat/hits/bladed/genchop (3).ogg')
 	animname = "cut"
 	penfactor = 20
 	chargetime = 0
@@ -17,7 +17,7 @@
 	blade_class = BCLASS_CHOP
 	attack_verb = list("chops", "hacks")
 	animname = "chop"
-	hitsound = list('sound/combat/hits/bladed/genchop (1).ogg', 'sound/combat/hits/bladed/genchop (2).ogg', 'sound/combat/hits/bladed/genchop (3).ogg')
+	hitsound = list('sound/combat/hits/bladed/wpn_impact_blunt2hand_flesh_01.ogg', 'sound/combat/hits/bladed/wpn_impact_blunt2hand_flesh_02.ogg', 'sound/combat/hits/bladed/wpn_impact_blunt2hand_flesh_03.ogg')
 	penfactor = 35
 	swingdelay = 10
 	clickcd = 14
@@ -32,6 +32,11 @@
 /datum/intent/axe/chop/battle
 	damfactor = 1.2 //36 on battleaxe
 	penfactor = 40
+
+/datum/intent/axe/chop/battle/halberd
+	damfactor = 1.3
+	swingdelay = 12
+	penfactor = 20
 
 /datum/intent/axe/cut/battle
 	penfactor = 25
@@ -59,7 +64,7 @@
 	name = "stone axe"
 	desc = "A rough stone axe. Badly balanced."
 	icon_state = "stoneaxe"
-	icon = 'icons/roguetown/weapons/32.dmi'
+	icon = 'icons/roguetown/weapons/axes32.dmi'
 	item_state = "axe"
 	lefthand_file = 'icons/mob/inhands/weapons/rogue_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/weapons/rogue_righthand.dmi'
@@ -78,6 +83,7 @@
 	resistance_flags = FLAMMABLE
 	pickup_sound = 'modular_helmsguard/sound/sheath_sounds/draw_polearm.ogg'
 	sheathe_sound = 'sound/items/wood_sharpen.ogg'
+	special = /datum/special_intent/axe_swing
 
 
 /obj/item/rogueweapon/stoneaxe/equipped(mob/user, slot, initial = FALSE)
@@ -210,6 +216,7 @@
 	smeltresult = /obj/item/ingot/iron
 	gripped_intents = list(/datum/intent/axe/cut,/datum/intent/axe/chop, /datum/intent/sword/peel)
 	wdefense = 2
+	item_flags = PEASANT_WEAPON
 
 
 
@@ -228,7 +235,7 @@
 	name = "Tidecleaver"
 	desc = "An axe made in image and inspiration of the rumored Tidecleaver, an axe capable of parting the ocean itself. The steel hums the crash of waves."
 	icon_state = "abyssoraxe"
-	icon = 'icons/roguetown/weapons/32.dmi'
+	icon = 'icons/roguetown/weapons/axes32.dmi'
 	max_integrity = 400 // higher int than usual
 
 //Pickaxe-axe ; Technically both a tool and a weapon, but it goes here due to weapon function. Subtype of woodcutter axe, mostly a weapon.
@@ -241,6 +248,7 @@
 	smeltresult = /obj/item/ingot/steel
 	wlength = WLENGTH_NORMAL
 	toolspeed = 2
+	item_flags = NONE
 
 /obj/item/rogueweapon/stoneaxe/woodcut/wardenpick
 	name = "Wardens' axe"
@@ -253,6 +261,7 @@
 	smeltresult = /obj/item/ingot/steel
 	wlength = WLENGTH_NORMAL
 	toolspeed = 2
+	item_flags = NONE
 
 
 /obj/item/rogueweapon/stoneaxe/handaxe/equipped(mob/user, slot, initial = FALSE)
@@ -369,28 +378,63 @@
 	name = "silver war axe"
 	desc = "A one-handed war axe forged of silver."
 	icon_state = "silveraxe"
-	force = 24
+	force = 15
+	force_wielded = 21
 	possible_item_intents = list(/datum/intent/axe/cut,/datum/intent/axe/chop, /datum/intent/axe/bash)
-	minstr = 6
+	minstr = 11
 	max_blade_int = 400
 	smeltresult = /obj/item/ingot/silver
 	gripped_intents = null
-	wdefense = 4
+	wdefense = 5
 	is_silver = TRUE
+	item_flags = NONE
+	blade_dulling = DULLING_SHAFT_METAL
+
+/obj/item/rogueweapon/stoneaxe/woodcut/silver/ComponentInitialize()
+	AddComponent(\
+		/datum/component/silverbless,\
+		pre_blessed = BLESSING_NONE,\
+		silver_type = SILVER_TENNITE,\
+		added_force = 0,\
+		added_blade_int = 50,\
+		added_int = 50,\
+		added_def = 2,\
+	)
 
 /obj/item/rogueweapon/stoneaxe/battle/psyaxe
-	name = "ornate war axe"
+	name = "psydonian war axe"
 	desc = "An ornate battle axe, plated in a ceremonial veneer of silver. The premiere instigator of conflict against elven attachees."
 	icon_state = "psyaxe"
-	smeltresult = /obj/item/ingot/steel
+	force = 20
+	force_wielded = 25
+	minstr = 11
+	wdefense = 6
+	blade_dulling = DULLING_SHAFT_METAL
+	is_silver = TRUE
+	smeltresult = /obj/item/ingot/silver
 
 /obj/item/rogueweapon/stoneaxe/battle/psyaxe/ComponentInitialize()
-	. = ..()								//+3 force, +50 blade int, +50 int, +1 def, make silver
-	AddComponent(/datum/component/psyblessed, FALSE, 3, 50, 50, 1, TRUE)
+	AddComponent(\
+		/datum/component/silverbless,\
+		pre_blessed = BLESSING_NONE,\
+		silver_type = SILVER_PSYDONIAN,\
+		added_force = 0,\
+		added_blade_int = 50,\
+		added_int = 50,\
+		added_def = 1,\
+	)
 
 /obj/item/rogueweapon/stoneaxe/battle/psyaxe/preblessed/ComponentInitialize()
 	. = ..()								//Pre-blessed, +3 force, +50 blade int, +50 int, +1 def, make silver
-	AddComponent(/datum/component/psyblessed, TRUE, 3, 50, 50, 1, TRUE)
+	AddComponent(\
+		/datum/component/silverbless,\
+		pre_blessed = BLESSING_NONE,\
+		silver_type = SILVER_PSYDONIAN,\
+		added_force = 0,\
+		added_blade_int = 50,\
+		added_int = 50,\
+		added_def = 1,\
+	)
 
 /obj/item/rogueweapon/stoneaxe/battle/steppesman
 	name = "aavnic valaška"
@@ -424,6 +468,7 @@
 	bigboy = TRUE
 	gripsprite = TRUE
 	wlength = WLENGTH_GREAT
+	walking_stick = TRUE
 	w_class = WEIGHT_CLASS_BULKY
 	slot_flags = ITEM_SLOT_BACK
 	equip_delay_self = 2.5 SECONDS
@@ -491,8 +536,27 @@
 	if(!HAS_TRAIT(user, TRAIT_HORDE))
 		to_chat(user, "<font color='red'>UNWORTHY HANDS TOUCHING THIS AXE, CEASE OR BE PUNISHED!</font>")
 		user.adjust_fire_stacks(5)
-		user.IgniteMob()
+		user.ignite_mob()
 		user.Stun(40)
+	..()
+
+
+/obj/item/rogueweapon/greataxe/steel/doublehead/graggar/ogre
+	name = "executioner's folly"
+	desc = "Attempts have been made to cut off an ogre's head. Those who try forget how easily they break their chains, and how thick their necks are."
+	icon_state = "ogre_axe"
+	force = 20
+	force_wielded = 40
+	icon = 'icons/roguetown/weapons/64.dmi'
+	max_blade_int = 200
+	item_flags = GIANT_WEAPON
+
+/obj/item/rogueweapon/greataxe/steel/doublehead/graggar/ogre/pickup(mob/living/user)
+	if(!HAS_TRAIT(user, TRAIT_HORDE))
+		to_chat(user, "<font color='red'>WEAK HANDS CANNOT HANDLE MY STRENGTH. BE PUNISHED.</font>")
+		user.adjust_fire_stacks(5)
+		user.ignite_mob()
+		user.Stun(10)
 	..()
 
 ////////////////////////////////////////
@@ -505,7 +569,8 @@
 	icon_state = "minotaurgreataxe"
 	force = 20							//Same as Graggar axe, only cus it's rare enough. Plus has the high strength req and crap starting-shaft.
 	force_wielded = 40
-	minstr = 15							//Boo-womp
+	minstr = 15						//Boo-womp
+	item_flags = GIANT_WEAPON
 	max_blade_int = 175
 
 /obj/item/rogueweapon/stoneaxe/woodcut/troll
@@ -517,4 +582,7 @@
 	max_integrity = 150					//50% less than normal axe
 	max_blade_int = 300
 	minstr = 13							//Heavy, but still good.
+	item_flags = GIANT_WEAPON
 	wdefense = 3						//Slightly better than norm, has 6 defense 2 handing it.
+
+// end mob stuff

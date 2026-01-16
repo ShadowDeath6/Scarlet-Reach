@@ -159,24 +159,25 @@
 			L.visible_message(span_warning("[L] spasms violently upon touching the water!"), span_danger("The water... it burns me!"))
 			L.adjustFireLoss(25)
 			return
-		if(!(L.mobility_flags & MOBILITY_STAND) || water_level == 3)
-			L.SoakMob(FULL_BODY)
-		else
-			if(water_level == 2)
-				L.SoakMob(BELOW_CHEST)
-		if(water_overlay)
-			if(water_level > 1 && !istype(oldLoc, type))
-				playsound(AM, 'sound/foley/waterenter.ogg', 100, FALSE)
+		if(!(L.movement_type & FLYING))
+			if(!(L.mobility_flags & MOBILITY_STAND) || water_level == 3)
+				L.SoakMob(FULL_BODY)
 			else
-				playsound(AM, pick('sound/foley/watermove (1).ogg','sound/foley/watermove (2).ogg'), 100, FALSE)
-			if(istype(oldLoc, type) && (get_dir(src, oldLoc) != SOUTH))
-				water_overlay.layer = ABOVE_MOB_LAYER
-				water_overlay.plane = GAME_PLANE_UPPER
-			else
-				spawn(6)
-					if(AM.loc == src)
-						water_overlay.layer = ABOVE_MOB_LAYER
-						water_overlay.plane = GAME_PLANE_UPPER
+				if(water_level == 2)
+					L.SoakMob(BELOW_CHEST)
+			if(water_overlay)
+				if(water_level > 1 && !istype(oldLoc, type))
+					playsound(AM, 'sound/foley/waterenter.ogg', 100, FALSE)
+				else
+					playsound(AM, pick('sound/foley/watermove (1).ogg','sound/foley/watermove (2).ogg'), 100, FALSE)
+				if(istype(oldLoc, type) && (get_dir(src, oldLoc) != SOUTH))
+					water_overlay.layer = ABOVE_MOB_LAYER
+					water_overlay.plane = water_overlay.plane = GAME_PLANE_HIGHEST
+				else
+					spawn(6)
+						if(AM.loc == src)
+							water_overlay.layer = ABOVE_MOB_LAYER
+							water_overlay.plane = GAME_PLANE_HIGHEST
 		if(!istype(L, /mob/living/carbon/human/species/skeleton))
 			return
 		if(!istype(src, /turf/open/water/sewer))
@@ -250,7 +251,8 @@
 	if(L.stat != CONSCIOUS)
 		return
 	if(do_after(L, 25, target = src))
-		var/list/waterl = list(/datum/reagent/water = 5)
+		var/list/waterl = list()
+		waterl[water_reagent] = 5
 		var/datum/reagents/reagents = new()
 		reagents.add_reagent_list(waterl)
 		reagents.trans_to(L, reagents.total_volume, transfered_by = user, method = INGEST)
@@ -275,8 +277,10 @@
 
 /turf/open/water/get_slowdown(mob/user)
 	var/returned = slowdown
-	returned = returned - (user.get_skill_level(/datum/skill/misc/swimming))
-	return max(returned, 0)
+	returned = max(returned - (user.get_skill_level(/datum/skill/misc/swimming)), 0)
+	if(HAS_TRAIT(user, TRAIT_SLOW_SWIMMER))
+		returned += 3
+	return returned
 
 //turf/open/water/Initialize()
 //	dir = pick(NORTH,SOUTH,WEST,EAST)

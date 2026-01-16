@@ -2,13 +2,14 @@
 	name = "Ride them anally"
 	stamina_cost = 1.0
 	aggro_grab_instead_same_tile = FALSE
+	category = SEX_CATEGORY_PENETRATE
 	user_sex_part = SEX_PART_ANUS
 	target_sex_part = SEX_PART_COCK
 
 /datum/sex_action/anal_ride_sex/shows_on_menu(mob/living/carbon/human/user, mob/living/carbon/human/target)
 	if(user == target)
 		return FALSE
-	if(!target.getorganslot(ORGAN_SLOT_PENIS))
+	if(!target.getorganslot(ORGAN_SLOT_PENIS) || !user.sexcon.can_zodomize())
 		return FALSE
 	return TRUE
 
@@ -30,13 +31,14 @@
 /datum/sex_action/anal_ride_sex/on_perform(mob/living/carbon/human/user, mob/living/carbon/human/target)
 	user.visible_message(user.sexcon.spanify_force("[user] [user.sexcon.get_generic_force_adjective()] rides [target]."))
 	playsound(target, 'sound/misc/mat/segso.ogg', 50, TRUE, -2, ignore_walls = FALSE)
-	do_thrust_animate(user, target)
+	user.sexcon.do_thrust_animate(target)
 
 	target.sexcon.perform_sex_action(target, 2, 0, TRUE)
 	if(target.sexcon.check_active_ejaculation())
 		target.visible_message(span_love("[target] cums into [user]'s butt!"))
 		target.sexcon.cum_into(splashed_user = user)
 		target.virginity = FALSE
+		werewolf_sex_infect_attempt(target, user)
 
 	if(target.sexcon.considered_limp())
 		target.sexcon.perform_sex_action(user, 1.2, 4, FALSE)

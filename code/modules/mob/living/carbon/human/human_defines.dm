@@ -61,8 +61,8 @@
 	var/obj/item/belt = null
 	var/obj/item/beltl = null
 	var/obj/item/beltr = null
-	var/obj/item/wear_ring = null
-	var/obj/item/wear_wrists = null
+	var/obj/item/clothing/wear_ring = null
+	var/obj/item/clothing/wear_wrists = null
 	var/obj/item/r_store = null
 	var/obj/item/l_store = null
 	var/obj/item/s_store = null
@@ -77,7 +77,11 @@
 
 	var/list/datum/bioware = list()
 
-	var/static/list/can_ride_typecache = typecacheof(list(/mob/living/carbon/human, /mob/living/simple_animal/hostile/rogue/ghost/wraith))
+	var/static/list/can_ride_typecache = typecacheof(list(
+		/mob/living/carbon/human,
+		/mob/living/simple_animal/hostile,
+		/mob/living/carbon/human/species/goblin,
+	))
 	var/lastpuke = 0
 	var/last_fire_update
 	var/account_id
@@ -96,6 +100,18 @@
 
 	var/canseebandits = FALSE
 
+	//Familytree datum
+	//I dont know how to do UI huds so this will have to do for now.
+	var/family_UI = FALSE
+	var/mob/living/carbon/spouse_mob
+	var/image/spouse_indicator
+	var/setspouse
+	var/gender_choice_pref = ANY_GENDER
+	var/familytree_pref = FAMILY_NONE
+	var/datum/heritage/family_datum
+	var/list/temp_ui_list = list()
+	var/xenophobe = FALSE
+
 	var/marriedto
 
 	var/has_stubble = TRUE
@@ -106,12 +122,17 @@
 	var/funeral = FALSE // Whether the body has received rites or not.
 
 	var/datum/devotion/devotion = null // Used for cleric_holder for priests
+	var/datum/family_member/family_member_datum
 
 	var/headshot_link = null
 	var/flavortext = null
 	var/flavortext_display = null
 	var/ooc_notes = null
 	var/ooc_notes_display = null
+	var/rumour = null
+	var/rumour_display = null
+	var/gossip = null
+	var/gossip_display = null
 	var/ooc_extra_link
 	var/ooc_extra
 	var/is_legacy = FALSE
@@ -124,7 +145,8 @@
 	/datum/rmb_intent/strong,\
 	/datum/rmb_intent/swift,\
 	/datum/rmb_intent/riposte,\
-	/datum/rmb_intent/weak)
+	/datum/rmb_intent/weak,\
+	/datum/rmb_intent/omni)
 
 	rot_type = /datum/component/rot/corpse
 
@@ -136,5 +158,19 @@
 	/// Whether our FOV cone is overridden to be hidden. Simple bool.
 	var/viewcone_override
 
+	/// Ref to orison-like sunder object
+	var/sunder_light_obj = null
+
 	// adds a flag that if we were skeletonized not because we are super dead and rotted, our face can be shown
 	var/ritual_skeletonization = FALSE // ritualcircles.dm path of rituos, prevents the ritual target's name always being unknown ingame. used in human_helpers.dm if( !O || (HAS_TRAIT(src, TRAIT_DISFIGURED)) || !real_name || (O.skeletonized && !ritual_skeletonization && !mind?.has_antag_datum(/datum/antagonist/lich)))
+
+/// used to do stuff with the guys we summoned
+	var/list/summons_under = list()
+
+	/// Assoc list of culinary preferences of the mob
+	var/list/culinary_preferences = list()
+
+	/// List of mobs that have attacked us. Only relevant to someone with TRAIT_TEMPO.
+	var/list/tempo_attackers = list()
+
+	var/next_tempo_cull

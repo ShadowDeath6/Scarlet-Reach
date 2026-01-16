@@ -222,6 +222,20 @@
 	affected_bodyparts = CHEST
 	default_color = "555555"
 
+/datum/body_marking/bigtonage // for 32x64 mobs
+	icon = 'icons/mob/body_markings/other_markings.dmi'
+	name = "Big tonage"
+	icon_state = "bigtonage"
+	affected_bodyparts = CHEST
+	default_color = "555555"
+
+/datum/body_marking/muscles // for 32x32 mobs
+	icon = 'icons/mob/body_markings/other_markings.dmi'
+	name = "muscular"
+	icon_state = "muscular"
+	affected_bodyparts = CHEST
+	default_color = "555555"
+
 /datum/body_marking/drake_eyes
 	icon = 'icons/mob/body_markings/other_markings.dmi'
 	name = "Drake Eyes"
@@ -375,3 +389,17 @@
 	icon_state = "bun_s"
 	default_color = "FFFFFF"
 	affected_bodyparts = HEAD
+
+/datum/body_marking/harpy_feet_claws
+	icon = 'icons/mob/body_markings/harpy_markings.dmi'
+	name = "Feet Claws"
+	icon_state = "hclaw"
+	affected_bodyparts = LEG_LEFT | LEG_RIGHT
+	default_color = DEFAULT_SECONDARY
+
+/datum/body_marking/harpy_leg
+	icon = 'icons/mob/body_markings/harpy_markings.dmi'
+	name = "Avian Leg Color Override"
+	icon_state = "hleg"
+	affected_bodyparts = LEG_LEFT | LEG_RIGHT
+	default_color = DEFAULT_SECONDARY

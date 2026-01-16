@@ -1,6 +1,7 @@
 /datum/sex_action/blowjob
 	name = "Suck them off"
 	check_same_tile = FALSE
+	category = SEX_CATEGORY_PENETRATE
 	user_sex_part = SEX_PART_JAWS
 	target_sex_part = SEX_PART_COCK
 
@@ -28,7 +29,7 @@
 /datum/sex_action/blowjob/on_perform(mob/living/carbon/human/user, mob/living/carbon/human/target)
 	user.visible_message(user.sexcon.spanify_force("[user] [user.sexcon.get_generic_force_adjective()] sucks [target]'s cock..."))
 	user.make_sucking_noise()
-	do_thrust_animate(user, target)
+	user.sexcon.do_thrust_animate(target)
 
 	user.sexcon.perform_sex_action(target, 2, 0, TRUE)
 	if(!target.sexcon.considered_limp())
@@ -36,6 +37,7 @@
 	if(target.sexcon.check_active_ejaculation())
 		target.visible_message(span_love("[target] cums into [user]'s mouth!"))
 		target.sexcon.cum_into(oral = TRUE)
+		werewolf_sex_infect_attempt(target, user)
 
 /datum/sex_action/blowjob/on_finish(mob/living/carbon/human/user, mob/living/carbon/human/target)
 	user.visible_message(span_warning("[user] stops sucking [target]'s cock ..."))

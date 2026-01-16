@@ -50,6 +50,20 @@
 	GLOB.traveltiles -= src
 	. = ..()
 
+
+/obj/structure/fluff/traveltile/proc/return_connected_turfs()
+	if(!aportalgoesto)
+		return list()
+
+	var/list/travels = list()
+	for(var/obj/structure/fluff/traveltile/travel in shuffle(GLOB.traveltiles))
+		if(travel == src)
+			continue
+		if(travel.aportalid != aportalgoesto)
+			continue
+		travels |= get_turf(travel)
+	return travels
+
 /obj/structure/fluff/traveltile/attack_ghost(mob/dead/observer/user)
 	if(!aportalgoesto)
 		return
@@ -129,7 +143,7 @@
 /obj/structure/fluff/traveltile/proc/perform_travel(obj/structure/fluff/traveltile/T, mob/living/L)
 	if(!L.restrained(ignore_grab = TRUE)) // heavy-handedly prevents using prisoners to metagame camp locations. pulledby would stop this but prisoners can also be kicked/thrown into the tile repeatedly
 		for(var/mob/living/carbon/human/H in hearers(6,src))
-			if(!HAS_TRAIT(H, required_trait) && !HAS_TRAIT(H, TRAIT_BLIND))
+			if(!H.IsUnconscious() && H.stat == CONSCIOUS && !HAS_TRAIT(H, TRAIT_PARALYSIS) && !HAS_TRAIT(H, required_trait) && !HAS_TRAIT(H, TRAIT_BLIND))
 				to_chat(H, "<b>I watch [L.name? L : "someone"] go through a well-hidden entrance.</b>")
 				if(!(H.m_intent == MOVE_INTENT_SNEAK))
 					to_chat(L, "<b>[H.name ? H : "Someone"] watches me pass through the entrance.</b>")
@@ -150,13 +164,15 @@
 	// leashes automatically handle "reattachment" to the "master" so we can just move them
 
 	// handle unknotting
-	if(L.sexcon.knotted_status)
-		L.sexcon.knot_remove()
+	if(ishuman(L))
+		var/mob/living/carbon/human/knot_haver = L
+		if(knot_haver.sexcon.knotted_status)
+			knot_haver.sexcon.knot_remove()
 
 	L.recent_travel = world.time
 	if(pullingg)
-		if(isliving(pullingg)) // also check if pulled mob is knotted
-			var/mob/living/H = pullingg
+		if(ishuman(pullingg)) // also check if pulled mob is knotted
+			var/mob/living/carbon/human/H = pullingg
 			if(H.sexcon.knotted_status)
 				H.sexcon.knot_remove()
 		pullingg_freepet_leash = get_freepet_leash(pullingg)

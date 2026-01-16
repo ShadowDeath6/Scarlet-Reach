@@ -50,7 +50,7 @@
 				stackcount -= clamp(stackcount, 2, 3)
 				user.put_in_hands(B)
 		for(var/obj/item/natural/glass/F in get_turf(src))
-			playsound(get_turf(user.loc), 'sound/foley/dropsound/glass_drop.ogg', 90)
+			playsound(user, 'sound/foley/dropsound/glass_drop.ogg', 90)
 			qdel(F)
 
 //................	Glass panes stack	............... //
@@ -115,7 +115,7 @@
 	AddComponent(/datum/component/butchering, 150, 65)
 
 /obj/item/natural/glass_shard/Crossed(mob/living/L)
-	if(istype(L) && has_gravity(loc))
-		playsound(loc, 'sound/foley/glass_step.ogg', HAS_TRAIT(L, TRAIT_LIGHT_STEP) ? 30 : 50, TRUE)
+	if(!(L.movement_type & (FLYING|FLOATING)))
+		playsound(src, 'sound/foley/glass_step.ogg', HAS_TRAIT(L, TRAIT_LIGHT_STEP) ? 30 : 50, TRUE)
 	return ..()
 

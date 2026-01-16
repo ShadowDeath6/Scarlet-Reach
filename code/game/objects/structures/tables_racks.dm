@@ -94,6 +94,10 @@
 /obj/structure/table/CanPass(atom/movable/mover, turf/target)
 	if(istype(mover) && (mover.pass_flags & PASSTABLE))
 		return 1
+	if(isliving(mover))
+		var/mob/living/M = mover
+		if(M.movement_type & FLYING)
+			return 1
 	if(mover.throwing)
 		return 1
 	if(locate(/obj/structure/table) in get_turf(mover))
@@ -198,8 +202,8 @@
 				if(!click_params || !click_params["icon-x"] || !click_params["icon-y"])
 					return
 				//Clamp it so that the icon never moves more than 16 pixels in either direction (thus leaving the table turf)
-				I.pixel_x = initial(I.pixel_x) += CLAMP(text2num(click_params["icon-x"]) - 16, -(world.icon_size/2), world.icon_size/2)
-				I.pixel_y = initial(I.pixel_y) += CLAMP(text2num(click_params["icon-y"]) - 16, -(world.icon_size/2), world.icon_size/2)
+				I.pixel_x = initial(I.pixel_x) += CLAMP(text2num(click_params["icon-x"]) - 16, -(world.icon_size/2), world.icon_size/2) + pixel_x
+				I.pixel_y = initial(I.pixel_y) += CLAMP(text2num(click_params["icon-y"]) - 16, -(world.icon_size/2), world.icon_size/2) + pixel_y
 				return 1
 
 /obj/structure/table/deconstruct(disassembled = TRUE, wrench_disassembly = 0)
@@ -350,6 +354,16 @@
 /obj/structure/table/church/m/alt
 	icon_state = "churchtable_mid_alt"
 
+/obj/structure/table/finestone
+	name = "fine stone table"
+	desc = ""
+	icon = 'icons/roguetown/misc/tables.dmi'
+	icon_state = "stonetable_small"
+	max_integrity = 400
+	smooth = 0
+	climb_offset = 10
+	debris = list(/obj/item/natural/stoneblock = 1)
+
 /obj/structure/table/vtable
 	name = "ancient wooden table"
 	desc = ""
@@ -403,6 +417,7 @@
 	desc = ""
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "fancy_table"
+	smooth = 1
 	canSmoothWith = list(/obj/structure/table/wood/fancy,
 		/obj/structure/table/wood/fancy/black,
 		/obj/structure/table/wood/fancy/blue,
@@ -505,6 +520,10 @@
 /obj/structure/rack/CanPass(atom/movable/mover, turf/target)
 	if(src.density == 0) //Because broken racks -Agouri |TODO: SPRITE!|
 		return 1
+	if(isliving(mover))
+		var/mob/living/M = mover
+		if(M.movement_type & FLYING)
+			return 1
 	if(istype(mover) && (mover.pass_flags & PASSTABLE))
 		return 1
 	else
@@ -589,8 +608,8 @@
 				var/list/click_params = params2list(params)
 				if(!click_params || !click_params["icon-x"] || !click_params["icon-y"])
 					return
-				W.pixel_x = initial(W.pixel_x) + CLAMP(text2num(click_params["icon-x"]) - 16, -(world.icon_size/2), world.icon_size/2)
-				W.pixel_y = initial(W.pixel_y) + CLAMP(text2num(click_params["icon-y"]) - 16, -(world.icon_size/2), world.icon_size/2)
+				W.pixel_x = initial(W.pixel_x) + CLAMP(text2num(click_params["icon-x"]) - 16, -(world.icon_size/2), world.icon_size/2) + pixel_x
+				W.pixel_y = initial(W.pixel_y) + CLAMP(text2num(click_params["icon-y"]) - 16, -(world.icon_size/2), world.icon_size/2) + pixel_y
 				return 1
 	else
 		. = ..()
@@ -603,8 +622,7 @@
 	icon_state = "optable"
 	smooth = SMOOTH_FALSE
 	can_buckle = 1
-	buckle_lying = -1
-	buckle_requires_restraints = 1
+	buckle_lying = 90
 	var/mob/living/carbon/human/patient = null
 
 /obj/structure/table/optable/Initialize()

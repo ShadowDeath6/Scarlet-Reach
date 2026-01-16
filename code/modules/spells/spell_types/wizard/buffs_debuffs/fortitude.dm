@@ -28,7 +28,7 @@
 		return
 
 	var/mob/living/spelltarget = A
-	playsound(get_turf(spelltarget), 'sound/magic/haste.ogg', 80, TRUE, soundping = TRUE)
+	playsound(spelltarget, 'sound/magic/haste.ogg', 80, TRUE, soundping = TRUE)
 
 	if(spelltarget != user)
 		user.visible_message("[user] mutters an incantation and [spelltarget] briefly shines green.")
@@ -59,7 +59,7 @@
 	. = ..()
 	var/filter = owner.get_filter(FORTITUDE_FILTER)
 	if (!filter)
-		owner.add_filter(FORTITUDE_FILTER, 2, list("type" = "outline", "color" = outline_colour, "alpha" = 200, "size" = 1))
+		owner.add_filter(FORTITUDE_FILTER, 2, list("type" = "outline", "color" = outline_colour, "alpha" = 50, "size" = 1))
 	to_chat(owner, span_warning("My body feels lighter..."))
 	ADD_TRAIT(owner, TRAIT_FORTITUDE, MAGIC_TRAIT)
 

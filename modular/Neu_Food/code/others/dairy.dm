@@ -32,7 +32,7 @@
 			to_chat(user, span_warning("Not enough salted milk."))
 			return
 		user.visible_message(span_info("[user] churns butter..."))
-		playsound(get_turf(user), 'modular/Neu_Food/sound/churn.ogg', 100, TRUE, -1)
+		playsound(user, 'modular/Neu_Food/sound/churn.ogg', 100, TRUE, -1)
 		if(do_after(user,long_cooktime, target = src))
 			add_sleep_experience(user, /datum/skill/craft/cooking, user.STAINT)
 			reagents.remove_reagent(/datum/reagent/consumable/milk/salted, 15)
@@ -60,7 +60,7 @@
 	if(istype(I, /obj/item/reagent_containers/food/snacks/egg))
 		to_chat(user, span_notice("Cracking an egg over the butter."))
 		if(do_after(user, short_cooktime, target = src))
-			playsound(get_turf(user), 'modular/Neu_Food/sound/eggbreak.ogg', 100, TRUE, -1)
+			playsound(user, 'modular/Neu_Food/sound/eggbreak.ogg', 100, TRUE, -1)
 			new /obj/item/reagent_containers/food/snacks/rogue/foodbase/squires_delight(drop_location())
 			qdel(I)
 			qdel(src)
@@ -97,6 +97,21 @@
 	foodtype = DAIRY
 	list_reagents = list(/datum/reagent/consumable/nutriment = 2)
 
+/obj/item/reagent_containers/food/snacks/butterslice/attackby(obj/item/I, mob/living/user, params)
+	var/found_table = locate(/obj/structure/table) in (loc)
+	update_cooktime(user)
+	if(istype(I, /obj/item/reagent_containers/food/snacks/sugar))
+		if(isturf(loc)&& (found_table))
+			to_chat(user, span_notice("Mixing in sugar to make frosting..."))
+			if(do_after(user, long_cooktime, target = src))
+				playsound(user, 'sound/foley/dropsound/food_drop.ogg', 30, TRUE, -1)
+				new /obj/item/reagent_containers/food/snacks/rogue/frosting(drop_location())
+				qdel(I)
+				qdel(src)
+			return
+		else
+			to_chat(user, span_warning("You need to put [src] on a table to work on it."))
+	return ..()
 
 /*	............   Making fresh cheese   ................ */
 /obj/item/reagent_containers/glass/bucket/attackby(obj/item/I, mob/living/user, params)
@@ -135,7 +150,7 @@
 	if(istype(I, /obj/item/reagent_containers/food/snacks/rogue/cheese))
 		if(isturf(loc)&& (found_table))
 			user.visible_message(span_info("[user] starts packing the cloth with fresh cheese..."))
-			playsound(get_turf(user), 'sound/foley/dropsound/food_drop.ogg', 30, TRUE, -1)
+			playsound(user, 'sound/foley/dropsound/food_drop.ogg', 30, TRUE, -1)
 			if(do_after(user,3 SECONDS, target = src))
 				add_sleep_experience(user, /datum/skill/craft/cooking, user.STAINT)
 				new /obj/item/reagent_containers/food/snacks/rogue/foodbase/cheesewheel(loc)
@@ -161,7 +176,7 @@
 		if(isturf(loc) && found_table)
 			if(process_step == 4)
 				return
-			playsound(get_turf(user), 'sound/foley/dropsound/food_drop.ogg', 30, TRUE, -1)
+			playsound(user, 'sound/foley/dropsound/food_drop.ogg', 30, TRUE, -1)
 			if(do_after(user, short_cooktime, target = src))
 				add_sleep_experience(user, /datum/skill/craft/cooking, user.STAINT)
 				process_step++
@@ -287,5 +302,15 @@
 	become_rot_type = null
 	rotprocess = null
 
-
-
+// -------------- FROSTING -----------------
+/obj/item/reagent_containers/food/snacks/rogue/frosting
+	name = "frosting"
+	desc = "Butter mixed with sugar and whipped into a delicious frosting"
+	icon = 'modular/Neu_Food/icons/others/dairy.dmi'
+	icon_state = "frosting"
+	bitesize = 1
+	list_reagents = list(/datum/reagent/consumable/nutriment = SNACK_POOR)
+	w_class = WEIGHT_CLASS_TINY
+	tastes = list("sugary frosting"=1)
+	faretype = FARE_NEUTRAL
+	foodtype = DAIRY | SUGAR

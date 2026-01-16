@@ -1,3 +1,5 @@
+GLOBAL_LIST_EMPTY(last_words)
+
 /mob/living/gib(no_brain, no_organs, no_bodyparts)
 	var/prev_lying = lying
 	if(stat != DEAD)
@@ -110,6 +112,8 @@
 //		addtimer(CALLBACK(client, PROC_REF(ghostize), 1, src), 150)
 		add_client_colour(/datum/client_colour/monochrome)
 		client.verbs.Add(GLOB.ghost_verbs)
+		if(last_words)
+			GLOB.last_words |= last_words
 
 	for(var/s in ownedSoullinks)
 		var/datum/soullink/S = s
@@ -148,7 +152,7 @@
 	switch (area_of_death) // we're deliberately obtuse with this.
 		if ("mountains", "mt decapitation")
 			locale = "a twisted tangle of soaring peaks"
-		if ("wilderness", "azure basin")
+		if ("wilderness", "black basin")
 			locale = "somewhere in the wilds"
 		if ("bog", "dense bog")
 			locale = "a wretched, fetid bog"

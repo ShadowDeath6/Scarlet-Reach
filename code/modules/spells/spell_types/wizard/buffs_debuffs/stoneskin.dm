@@ -30,7 +30,7 @@
 		return
 
 	var/mob/living/spelltarget = A
-	playsound(get_turf(spelltarget), 'sound/magic/haste.ogg', 80, TRUE, soundping = TRUE)
+	playsound(spelltarget, 'sound/magic/haste.ogg', 80, TRUE, soundping = TRUE)
 
 	if(spelltarget != user)
 		user.visible_message("[user] mutters an incantation and [spelltarget] 's skin hardens like stone.")
@@ -63,7 +63,7 @@
 	. = ..()
 	var/filter = owner.get_filter(STONESKIN_FILTER)
 	if (!filter)
-		owner.add_filter(STONESKIN_FILTER, 2, list("type" = "outline", "color" = outline_colour, "alpha" = 200, "size" = 1))
+		owner.add_filter(STONESKIN_FILTER, 2, list("type" = "outline", "color" = outline_colour, "alpha" = 50, "size" = 1))
 	to_chat(owner, span_warning("My skin hardens like stone."))
 
 /datum/status_effect/buff/stoneskin/on_remove()

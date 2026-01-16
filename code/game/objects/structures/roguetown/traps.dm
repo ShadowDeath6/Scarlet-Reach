@@ -13,8 +13,8 @@
 
 /obj/structure/spike_pit/Crossed(atom/movable/AM)
 	var/hitsound = pick('sound/combat/hits/bladed/genstab (1).ogg', 'sound/combat/hits/bladed/genstab (2).ogg', 'sound/combat/hits/bladed/genstab (3).ogg')
-	// TO DO: figure out how to either make jumping its own special proc
-	// Or read throw_at to understand how to parse it here to allow jumping
+	if(AM.throwing || AM.jumping) //Jumping is defined on movable for some reason.
+		return
 
 	if(isliving(AM))
 		var/mob/living/L = AM
@@ -62,10 +62,10 @@
 /obj/structure/spike_pit/attackby(obj/item/I, mob/user, params)
 
 	if(istype(I, /obj/item/rogueweapon/shovel))
-		playsound(loc,'sound/items/dig_shovel.ogg', 100, TRUE)
+		playsound(src,'sound/items/dig_shovel.ogg', 100, TRUE)
 		to_chat(user, span_info("I start covering up \the [name]..."))
 		if(do_after(user, 5 SECONDS, src))
-			playsound(loc,'sound/items/empty_shovel.ogg', 100, TRUE)
+			playsound(src,'sound/items/empty_shovel.ogg', 100, TRUE)
 			qdel(src)
 			return
 	. = ..()

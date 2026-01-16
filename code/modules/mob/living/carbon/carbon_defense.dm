@@ -58,22 +58,14 @@
 	if(!skipcatch)	//ugly, but easy
 		if(can_catch_item())
 			if(istype(AM, /obj/item))
-				if(!istype(AM, /obj/item/net))
-					var/obj/item/I = AM
-					if(isturf(I.loc))
-						I.attack_hand(src)
-						if(get_active_held_item() == I) //if our attack_hand() picks up the item...
-							visible_message("<span class='warning'>[src] catches [I]!</span>", \
-											"<span class='danger'>I catch [I] in mid-air!</span>")
-							throw_mode_off()
-							return 1
-				else
-					var/obj/item/net/N
-					visible_message("<span class='warning'>[src] tries to catch \the [N] but gets snared by it!</span>", \
-									"<span class='danger'>Why did I even try to do this...?</span>") // Hahaha dumbass!!!
-					throw_mode_off()
-					N.ensnare(src)
-					return
+				var/obj/item/I = AM
+				if(isturf(I.loc))
+					I.attack_hand(src)
+					if(get_active_held_item() == I) //if our attack_hand() picks up the item...
+						visible_message("<span class='warning'>[src] catches [I]!</span>", \
+										"<span class='danger'>I catch [I] in mid-air!</span>")
+						throw_mode_off()
+						return 1
 	..()
 
 
@@ -82,7 +74,7 @@
 	if(BP)
 		testing("projwound")
 		var/newdam = P.damage * (100-blocked)/100
-		BP.bodypart_attacked_by(P.woundclass, newdam, zone_precise = def_zone, crit_message = TRUE)
+		BP.bodypart_attacked_by(P.woundclass, newdam, zone_precise = def_zone, crit_message = TRUE, weapon = P)
 		return TRUE
 
 /mob/living/carbon/check_projectile_embed(obj/projectile/P, def_zone, blocked)
@@ -224,7 +216,7 @@
 	var/statforce = get_complex_damage(I, user)
 	if(statforce)
 		next_attack_msg.Cut()
-		affecting.bodypart_attacked_by(user.used_intent.blade_class, statforce, crit_message = TRUE)
+		affecting.bodypart_attacked_by(user.used_intent.blade_class, statforce, crit_message = TRUE, weapon = I)
 		apply_damage(statforce, I.damtype, affecting)
 		if(I.damtype == BRUTE && affecting.status == BODYPART_ORGANIC)
 			if(prob(statforce))
@@ -248,15 +240,15 @@
 						update_inv_head()
 
 	if(user == src || pulledby == user)
-		send_item_attack_message(I, user, precise_attack_check(useder, affecting))
+		send_item_attack_message(I, user, precise_attack_check(useder, affecting), affecting)
 	else
-		send_item_attack_message(I, user, affecting.name)
+		send_item_attack_message(I, user, affecting.name, affecting)
 
 	if(statforce)
 		var/probability = I.get_dismemberment_chance(affecting, user, useder)
-		if(prob(probability) && affecting.dismember(I.damtype, user.used_intent?.blade_class, user, user.zone_selected))
+		if(prob(probability) && affecting.dismember(I.damtype, user.used_intent?.blade_class, user, user.zone_selected, vorpal = I.vorpal))
 			I.add_mob_blood(src)
-			playsound(get_turf(src), I.get_dismember_sound(), 80, TRUE)
+			playsound(src, I.get_dismember_sound(), 80, TRUE)
 		return TRUE //successful attack
 
 //ATTACK HAND IGNORING PARENT RETURN VALUE
@@ -331,8 +323,7 @@
 	. = ..()
 	if(. & EMP_PROTECT_CONTENTS)
 		return
-	for(var/X in internal_organs)
-		var/obj/item/organ/O = X
+	for(var/obj/item/organ/O as anything in internal_organs)
 		O.emp_act(severity)
 
 ///Adds to the parent by also adding functionality to propagate shocks through pulling and doing some fluff effects.

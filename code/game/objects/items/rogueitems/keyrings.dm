@@ -17,6 +17,8 @@
 	resistance_flags = FIRE_PROOF
 	experimental_inhand = FALSE
 	component_type = /datum/component/storage/concrete/roguetown/keyring
+	//flipping keyring has a cooldown on to_chat to reduce chatspam
+	COOLDOWN_DECLARE(flip_cooldown)
 
 /obj/item/storage/keyring/Initialize()
 	. = ..()
@@ -94,6 +96,40 @@
 "eflip" = 8)
 			if("onbelt")
 				return list("shrink" = 0.3,"sx" = -2,"sy" = -5,"nx" = 4,"ny" = -5,"wx" = 0,"wy" = -5,"ex" = 2,"ey" = -5,"nturn" = 0,"sturn" = 0,"wturn" = 0,"eturn" = 0,"nflip" = 0,"sflip" = 0,"wflip" = 0,"eflip" = 0,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0)
+
+/obj/item/storage/keyring/rmb_self(mob/user)
+	. = ..()
+	if(.)
+		return
+
+	SpinAnimation(4, 2) // The spin happens regardless of the cooldown
+
+	if(!COOLDOWN_FINISHED(src, flip_cooldown))
+		return
+
+	COOLDOWN_START(src, flip_cooldown, 3 SECONDS)
+	if(prob(10))
+		user.visible_message(
+			span_danger("While trying to flip [src] [user] drops it instead!"),
+			span_userdanger("While trying to flip [src] you drop it instead!"),
+		)
+		var/mob/living/carbon/human/unfortunate_idiot = user
+		var/dropped_keyring = pick(
+			BODY_ZONE_PRECISE_L_FOOT,
+			BODY_ZONE_PRECISE_R_FOOT,
+			)
+		unfortunate_idiot.apply_damage(src.force, BRUTE, dropped_keyring)
+		user.dropItemToGround(src, TRUE)
+	else
+		user.visible_message(
+			span_notice("[user] spins [src] around [user.p_their()] finger"),
+			span_notice("You spin [src] around your finger"),
+		)
+		playsound(src, 'sound/items/keyring_jingle.ogg', 60, FALSE)
+
+	return
+
+
 
 /////////////////// LOCKPICKRING ////////////////////
 
@@ -254,7 +290,31 @@
 	keys = list(/obj/item/roguekey/manor, /obj/item/roguekey/tower, /obj/item/roguekey/mage)
 
 /obj/item/storage/keyring/innkeep
-	keys = list(/obj/item/roguekey/tavern, /obj/item/roguekey/tavernkeep, /obj/item/roguekey/roomviii, /obj/item/roguekey/roomvii, /obj/item/roguekey/roomvi, /obj/item/roguekey/roomv, /obj/item/roguekey/roomiv, /obj/item/roguekey/roomiii, /obj/item/roguekey/roomii, /obj/item/roguekey/roomi, /obj/item/roguekey/fancyroomi, /obj/item/roguekey/fancyroomii, /obj/item/roguekey/fancyroomiii, /obj/item/roguekey/fancyroomiv, /obj/item/roguekey/fancyroomv)
+	keys = list(/obj/item/roguekey/tavern, /obj/item/roguekey/tavernkeep, /obj/item/roguekey/roomhunt, /obj/item/roguekey/roomviii, /obj/item/roguekey/roomvii, /obj/item/roguekey/roomvi, /obj/item/roguekey/roomv, /obj/item/roguekey/roomiv, /obj/item/roguekey/roomiii, /obj/item/roguekey/roomii, /obj/item/roguekey/roomi, /obj/item/roguekey/fancyroomi, /obj/item/roguekey/fancyroomii, /obj/item/roguekey/fancyroomiii, /obj/item/roguekey/fancyroomiv, /obj/item/roguekey/fancyroomv)
+
+/obj/item/storage/keyring/innfancyi // 3 Keys
+	name = "luxury room I keyring"
+	keys = list(/obj/item/roguekey/fancyroomi, /obj/item/roguekey/fancyroomi, /obj/item/roguekey/fancyroomi)
+
+/obj/item/storage/keyring/innfancyii
+	name = "luxury room II keyring"
+	keys = list(/obj/item/roguekey/fancyroomii, /obj/item/roguekey/fancyroomii, /obj/item/roguekey/fancyroomii)
+
+/obj/item/storage/keyring/innfancyiii
+	name = "luxury room III keyring"
+	keys = list(/obj/item/roguekey/fancyroomiii, /obj/item/roguekey/fancyroomiii, /obj/item/roguekey/fancyroomiii)
+
+/obj/item/storage/keyring/innfancyiv
+	name = "luxury room IV keyring"
+	keys = list(/obj/item/roguekey/fancyroomiv, /obj/item/roguekey/fancyroomiv, /obj/item/roguekey/fancyroomiv)
+
+/obj/item/storage/keyring/innfancyv
+	name = "luxury room V keyring"
+	keys = list(/obj/item/roguekey/fancyroomv, /obj/item/roguekey/fancyroomv, /obj/item/roguekey/fancyroomv)
+
+/obj/item/storage/keyring/innhunt // 4 keys
+	name = "HUNT room keyring"
+	keys = list(/obj/item/roguekey/roomhunt, /obj/item/roguekey/roomhunt, /obj/item/roguekey/roomhunt, /obj/item/roguekey/roomhunt)
 
 /obj/item/storage/keyring/priest
 	keys = list(/obj/item/roguekey/priest, /obj/item/roguekey/church, /obj/item/roguekey/graveyard)
@@ -272,7 +332,7 @@
 	keys = list(/obj/item/roguekey/nightman, /obj/item/roguekey/nightmaiden)
 
 /obj/item/storage/keyring/hand
-	keys = list(/obj/item/roguekey/hand, /obj/item/roguekey/steward, /obj/item/roguekey/tavern, /obj/item/roguekey/church, /obj/item/roguekey/walls, /obj/item/roguekey/dungeon, /obj/item/roguekey/garrison, /obj/item/roguekey/manor, /obj/item/roguekey/graveyard, /obj/item/roguekey/armory, /obj/item/roguekey/sergeant, /obj/item/roguekey/knight)
+	keys = list(/obj/item/roguekey/hand, /obj/item/roguekey/royal, /obj/item/roguekey/steward, /obj/item/roguekey/tavern, /obj/item/roguekey/church, /obj/item/roguekey/walls, /obj/item/roguekey/dungeon, /obj/item/roguekey/garrison, /obj/item/roguekey/manor, /obj/item/roguekey/graveyard, /obj/item/roguekey/armory, /obj/item/roguekey/sergeant, /obj/item/roguekey/knight)
 
 /obj/item/storage/keyring/steward
 	keys = list(/obj/item/roguekey/steward, /obj/item/roguekey/garrison, /obj/item/roguekey/manor, /obj/item/roguekey/graveyard)
@@ -299,7 +359,13 @@
 	keys = list(/obj/item/roguekey/hand, /obj/item/roguekey/steward, /obj/item/roguekey/tavern, /obj/item/roguekey/church, /obj/item/roguekey/walls, /obj/item/roguekey/dungeon, /obj/item/roguekey/garrison, /obj/item/roguekey/manor, /obj/item/roguekey/graveyard, /obj/item/roguekey/royal, /obj/item/roguekey/armory, /obj/item/roguekey/sergeant, /obj/item/roguekey/knight)
 
 /obj/item/storage/keyring/heir
-	keys = list(/obj/item/roguekey/manor, /obj/item/roguekey/heir, /obj/item/roguekey/garrison)
+	keys = list(/obj/item/roguekey/manor, /obj/item/roguekey/heir, /obj/item/roguekey/garrison, /obj/item/roguekey/royal)
+
+/obj/item/storage/keyring/heir/mage
+	keys = list(/obj/item/roguekey/manor, /obj/item/roguekey/heir, /obj/item/roguekey/garrison, /obj/item/roguekey/royal, /obj/item/roguekey/tower)
+
+/obj/item/storage/keyring/heir/warrior
+	keys = list(/obj/item/roguekey/manor, /obj/item/roguekey/heir, /obj/item/roguekey/garrison, /obj/item/roguekey/royal, /obj/item/roguekey/walls, /obj/item/roguekey/dungeon)
 
 /obj/item/storage/keyring/mageapprentice
 	keys = list(/obj/item/roguekey/manor, /obj/item/roguekey/tower)

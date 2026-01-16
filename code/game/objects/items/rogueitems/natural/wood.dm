@@ -40,7 +40,7 @@
 	var/skill_level = user.get_skill_level(/datum/skill/labor/lumberjacking)
 	var/planking_time = (40 - (skill_level * 5))
 	if(lumber_amount && I.tool_behaviour == TOOL_SAW)
-		playsound(get_turf(src.loc), 'sound/foley/sawing.ogg', 100)
+		playsound(src.loc, 'sound/foley/sawing.ogg', 100)
 		user.visible_message("<span class='notice'>[user] starts sawing [src] to smaller pieces.</span>")
 		if(do_after(user, planking_time))
 			new /obj/item/grown/log/tree/small(get_turf(src.loc))
@@ -148,14 +148,34 @@
 	user.changeNext_move(CLICK_CD_INTENTCAP)
 	var/skill_level = user.get_skill_level(/datum/skill/craft/carpentry)
 	var/planking_time = (45 - (skill_level * 5))
+	var/woodtotal = 1
+	switch (skill_level) //how many planks you get is random, but higher with more carpentry skill
+		if (0)
+			woodtotal = 1
+		if (1)
+			woodtotal = 1
+		if (2)
+			woodtotal = pick(1,2)
+		if (3)
+			woodtotal = pick(1,2,3)
+		if (4)
+			woodtotal = pick(2,3)
+		if (5)
+			woodtotal = pick(2,3,4)
+		if (6)
+			woodtotal = pick(3,4)
+		else
+			woodtotal = 1
+	if(HAS_TRAIT(user, TRAIT_MASTER_CARPENTER)) //we give extra to those in the role
+		woodtotal += pick(1,2)
 	if(I.tool_behaviour == TOOL_SAW)
-		playsound(get_turf(src.loc), 'sound/foley/sawing.ogg', 100)
+		playsound(src.loc, 'sound/foley/sawing.ogg', 100)
 		user.visible_message("<span class='notice'>[user] starts sawing planks from [src].</span>")
 		if(do_after(user, planking_time))
-			var/obj/item/natural/wood/plank/S = new /obj/item/natural/wood/plank(get_turf(src.loc))
 			if(user.is_holding(src))
 				user.dropItemToGround(src)
-				user.put_in_hands(S)
+			for(var/i=1, i<=woodtotal, ++i)
+				new /obj/item/natural/wood/plank(get_turf(src.loc))
 			user.mind.add_sleep_experience(/datum/skill/craft/carpentry, (user.STAINT*0.5))
 			new /obj/effect/decal/cleanable/debris/woody(get_turf(src))
 			qdel(src)
@@ -235,7 +255,7 @@
 		if(L.m_intent == MOVE_INTENT_RUN)
 			prob2break = 100
 		if(prob(prob2break))
-			if(!(HAS_TRAIT(L, TRAIT_AZURENATIVE) || HAS_TRAIT(L, TRAIT_WOODWALKER) && L.m_intent != MOVE_INTENT_RUN))
+			if(!(HAS_TRAIT(L, TRAIT_REACHNATIVE) || HAS_TRAIT(L, TRAIT_WOODWALKER) && L.m_intent != MOVE_INTENT_RUN))
 				playsound(src,'sound/items/seedextract.ogg', 100, FALSE)
 			qdel(src)
 			if (L.alpha == 0 && L.rogue_sneaking) // not anymore you're not
@@ -295,7 +315,7 @@
 				stackcount -= clamp(stackcount, 2, 4)
 				user.put_in_hands(B)
 		for(var/obj/item/grown/log/tree/stick/F in get_turf(src))
-			playsound(get_turf(user.loc), 'sound/foley/dropsound/wooden_drop.ogg', 100)
+			playsound(user, 'sound/foley/dropsound/wooden_drop.ogg', 100)
 			qdel(F)
 
 
@@ -397,7 +417,7 @@
 				stackcount -= clamp(stackcount, 2, 6)
 				user.put_in_hands(B)
 		for(var/obj/item/natural/wood/plank/F in get_turf(src))
-			playsound(get_turf(user.loc), 'sound/foley/dropsound/wooden_drop.ogg', 80)
+			playsound(user, 'sound/foley/dropsound/wooden_drop.ogg', 80)
 			qdel(F)
 
 /obj/item/natural/bundle/plank

@@ -29,7 +29,7 @@
 		return
 
 	var/mob/living/spelltarget = A
-	playsound(get_turf(spelltarget), 'sound/magic/haste.ogg', 80, TRUE, soundping = TRUE)
+	playsound(spelltarget, 'sound/magic/haste.ogg', 80, TRUE, soundping = TRUE)
 
 	if(spelltarget != user)
 		user.visible_message("[user] mutters an incantation and [spelltarget] 's eyes glimmers.")
@@ -61,7 +61,7 @@
 	. = ..()
 	var/filter = owner.get_filter(HAWKSEYES_FILTER)
 	if (!filter)
-		owner.add_filter(HAWKSEYES_FILTER, 2, list("type" = "outline", "color" = outline_colour, "alpha" = 200, "size" = 1))
+		owner.add_filter(HAWKSEYES_FILTER, 2, list("type" = "outline", "color" = outline_colour, "alpha" = 25, "size" = 1))
 	to_chat(owner, span_warning("My vision sharpens, like that of a hawk."))
 
 

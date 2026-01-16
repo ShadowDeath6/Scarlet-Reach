@@ -18,7 +18,7 @@
 	action_icon_state = "jaunt"
 
 /obj/effect/proc_holder/spell/targeted/ethereal_jaunt/cast(list/targets,mob/user = usr) //magnets, so mostly hardcoded
-	playsound(get_turf(user), 'sound/blank.ogg', 50, TRUE, -1)
+	playsound(user, 'sound/blank.ogg', 50, TRUE, -1)
 	for(var/mob/living/target in targets)
 		INVOKE_ASYNC(src, PROC_REF(do_jaunt), target)
 
@@ -27,7 +27,7 @@
 	var/turf/mobloc = get_turf(target)
 	var/obj/effect/dummy/phased_mob/spell_jaunt/holder = new /obj/effect/dummy/phased_mob/spell_jaunt(mobloc)
 	new jaunt_out_type(mobloc, target.dir)
-	target.ExtinguishMob()
+	target.extinguish_mob()
 	target.forceMove(holder)
 	target.reset_perspective(holder)
 	target.notransform=0 //mob is safely inside holder now, no need for protection.
@@ -42,7 +42,7 @@
 	jaunt_steam(mobloc)
 	target.mobility_flags &= ~MOBILITY_MOVE
 	holder.reappearing = 1
-	playsound(get_turf(target), 'sound/blank.ogg', 50, TRUE, -1)
+	playsound(target, 'sound/blank.ogg', 50, TRUE, -1)
 	sleep(25 - jaunt_in_time)
 	new jaunt_in_type(mobloc, holder.dir)
 	target.setDir(holder.dir)

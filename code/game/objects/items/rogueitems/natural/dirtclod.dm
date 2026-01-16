@@ -10,7 +10,7 @@
 	if(istype(W, /obj/item/rogueweapon/shovel))
 		var/obj/item/rogueweapon/shovel/S = W
 		if(!S.heldclod && user.used_intent.type == /datum/intent/shovelscoop)
-			playsound(loc,'sound/items/dig_shovel.ogg', 100, TRUE)
+			playsound(src,'sound/items/dig_shovel.ogg', 100, TRUE)
 			src.forceMove(S)
 			S.heldclod = src
 			W.update_icon()
@@ -30,10 +30,9 @@
 		for(var/obj/item/natural/dirtclod/D in T)
 			dirtcount++
 			dirts += D
-		if(dirtcount >=5)
+		if(dirtcount >= 5)
 			for(var/obj/item/I in dirts)
-				qdel(I)
-			qdel(src)
+				qdel(I) 
 			new /obj/structure/fluff/clodpile(T)
 
 /obj/item/natural/dirtclod/attack_self(mob/living/user)
@@ -67,7 +66,7 @@
 		var/obj/item/rogueweapon/shovel/S = W
 		if(user.used_intent.type == /datum/intent/shovelscoop)
 			if(!S.heldclod)
-				playsound(loc,'sound/items/dig_shovel.ogg', 100, TRUE)
+				playsound(src,'sound/items/dig_shovel.ogg', 100, TRUE)
 				var/obj/item/J = new /obj/item/natural/dirtclod(S)
 				S.heldclod = J
 				W.update_icon()
@@ -76,7 +75,7 @@
 					qdel(src)
 				return
 			else
-				playsound(loc,'sound/items/empty_shovel.ogg', 100, TRUE)
+				playsound(src,'sound/items/empty_shovel.ogg', 100, TRUE)
 				var/obj/item/I = S.heldclod
 				S.heldclod = null
 				qdel(I)

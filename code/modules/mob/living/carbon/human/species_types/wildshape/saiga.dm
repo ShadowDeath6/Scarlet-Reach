@@ -22,10 +22,14 @@
 		src.STACON = 13
 		src.STAEND = 16 //Because I don't want to give it TRAIT_INFINITE_STAMINA
 		src.STASPD = 15
+		update_move_intent_slowdown() // Apply speed changes
 
 		AddSpell(new /obj/effect/proc_holder/spell/self/saigahoofs)
-		real_name = "Saiga ([stored_mob.real_name])" //So we don't get a random name
 		faction += "saiga" // It IS a saiga
+		if (src.client.prefs?.wildshape_name)
+			real_name = "saiga ([stored_mob.real_name])"
+		else
+			real_name = "saiga"
 
 // SAIGA SPECIES DATUM //
 /datum/species/shapesaiga
@@ -65,7 +69,7 @@
 	)
 
 /datum/species/shapesaiga/send_voice(mob/living/carbon/human/H)
-	playsound(get_turf(H), pick('sound/vo/mobs/saiga/idle (1).ogg','sound/vo/mobs/saiga/idle (2).ogg','sound/vo/mobs/saiga/idle (3).ogg','sound/vo/mobs/saiga/idle (4).ogg','sound/vo/mobs/saiga/idle (5).ogg','sound/vo/mobs/saiga/idle (6).ogg','sound/vo/mobs/saiga/idle (7).ogg'), 100, TRUE, -1)
+	playsound(H, pick('sound/vo/mobs/saiga/idle (1).ogg','sound/vo/mobs/saiga/idle (2).ogg','sound/vo/mobs/saiga/idle (3).ogg','sound/vo/mobs/saiga/idle (4).ogg','sound/vo/mobs/saiga/idle (5).ogg','sound/vo/mobs/saiga/idle (6).ogg','sound/vo/mobs/saiga/idle (7).ogg'), 100, TRUE, -1)
 
 /datum/species/shapesaiga/regenerate_icons(mob/living/carbon/human/H)
 	H.icon = 'icons/roguetown/mob/monster/saiga.dmi'
@@ -120,7 +124,7 @@
 	item_state = null
 	lefthand_file = null
 	righthand_file = null
-	icon = 'icons/roguetown/weapons/32.dmi'
+	icon = 'icons/roguetown/weapons/misc32.dmi'
 	max_blade_int = 600
 	max_integrity = 600
 	force = 20

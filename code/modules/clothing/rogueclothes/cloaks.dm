@@ -833,6 +833,9 @@
 		for(var/obj/item/I in things)
 			STR.remove_from_storage(I, get_turf(src))
 
+/obj/item/clothing/cloak/darkcloak/minotaur/red
+	color = CLOTHING_RED
+
 /obj/item/clothing/cloak/darkcloak/bear
 	name = "direbear cloak"
 	desc = "Made from the finest, warmest bear pelt. It might be worth more than your life."
@@ -859,6 +862,23 @@
 	flags_inv = HIDECROTCH|HIDEBOOB
 
 /obj/item/clothing/cloak/apron/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
+
+/obj/item/clothing/cloak/apron/maid
+	name = "maid apron"
+	desc = "The frilly apron of a housemaster. It has pockets to store small things."
+	detail_color = "_detail"
+	slot_flags = ITEM_SLOT_ARMOR | ITEM_SLOT_CLOAK
+	detail_color = CLOTHING_BLACK
+	icon_state = "maidapron"
+	item_state = "maidapron"
+	mob_overlay_icon = 'icons/roguetown/clothing/onmob/cloaks.dmi'
+	boobed = FALSE
+	grid_width = 64
+	grid_height = 64
+
+/obj/item/clothing/cloak/apron/maid/Initialize(mapload, ...)
 	. = ..()
 	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
 
@@ -1141,6 +1161,18 @@
 	sellprice = 50
 	nodismemsleeves = TRUE
 
+/obj/item/clothing/cloak/heartfelt/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
+
+/obj/item/clothing/cloak/heartfelt/dropped(mob/living/carbon/human/user)
+	..()
+	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
+	if(STR)
+		var/list/things = STR.contents()
+		for(var/obj/item/I in things)
+			STR.remove_from_storage(I, get_turf(src))
+
 /obj/item/clothing/cloak/half
 	name = "halfcloak"
 	desc = ""
@@ -1387,6 +1419,18 @@
 	sleevetype = "shirt"
 	nodismemsleeves = TRUE
 	inhand_mod = TRUE
+
+/obj/item/clothing/cloak/wickercloak/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
+
+/obj/item/clothing/cloak/wickercloak/dropped(mob/living/carbon/human/user)
+	..()
+	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
+	if(STR)
+		var/list/things = STR.contents()
+		for(var/obj/item/I in things)
+			STR.remove_from_storage(I, get_turf(src))
 
 /obj/item/clothing/cloak/tribal
 	name = "tribal pelt"
@@ -1724,11 +1768,15 @@
 	nodismemsleeves = TRUE
 	inhand_mod = TRUE
 
+/obj/item/clothing/cloak/graggar/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
+
 /obj/item/clothing/cloak/graggar/pickup(mob/living/user)
 	if(!HAS_TRAIT(user, TRAIT_HORDE))
 		to_chat(user, "<font color='red'>UNWORTHY HANDS TOUCHING THIS CLOAK, CEASE OR BE RENDED ASUNDER!</font>")
 		user.adjust_fire_stacks(5)
-		user.IgniteMob()
+		user.ignite_mob()
 		user.Stun(40)
 	..()
 
@@ -1752,6 +1800,48 @@
 	desc = "A cloak meant to keep one's body warm in the cold of the mountains as well as the dampness of Scarlet Reach."
 	icon_state = "snowcloak"
 
+/obj/item/clothing/cloak/poncho
+	name = "cloth poncho"
+	desc = "A loose garment that is usually draped across ones upper body. No one's quite sure of its cultural origin."
+	icon_state = "poncho"
+	item_state = "poncho"
+	alternate_worn_layer = TABARD_LAYER
+	boobed = FALSE
+	flags_inv = HIDECROTCH|HIDEBOOB
+	slot_flags = ITEM_SLOT_CLOAK|ITEM_SLOT_ARMOR
+	sleeved = 'icons/roguetown/clothing/onmob/cloaks.dmi'
+	nodismemsleeves = TRUE
+	color = CLOTHING_WHITE
+	detail_tag = "_detail"
+	detail_color = CLOTHING_WHITE
+
+/obj/item/clothing/cloak/poncho/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
+
+/obj/item/clothing/cloak/poncho/dropped(mob/living/carbon/human/user)
+	..()
+	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
+	if(STR)
+		var/list/things = STR.contents()
+		for(var/obj/item/I in things)
+			STR.remove_from_storage(I, get_turf(src))
+
+/obj/item/clothing/cloak/poncho/fancycoat
+	name = "fancy coat"
+	desc = "A loose garment that is usually draped across ones upper body. No one's quite sure of its cultural origin but it does look fancy."
+	icon_state = "fancycoat"
+	item_state = "fancycoat"
+	alternate_worn_layer = TABARD_LAYER
+	boobed = FALSE
+	flags_inv = HIDECROTCH|HIDEBOOB
+	slot_flags = ITEM_SLOT_CLOAK|ITEM_SLOT_ARMOR
+	sleeved = 'icons/roguetown/clothing/onmob/cloaks.dmi'
+	nodismemsleeves = TRUE
+	color = CLOTHING_WHITE
+	detail_tag = "_detail"
+	detail_color = CLOTHING_WHITE
+
 //eastern update
 
 /obj/item/clothing/cloak/eastcloak1
@@ -1768,6 +1858,10 @@
 	slot_flags = ITEM_SLOT_BACK_R|ITEM_SLOT_CLOAK
 	allowed_race = NON_DWARVEN_RACE_TYPES
 
+/obj/item/clothing/cloak/eastcloak1/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
+
 /obj/item/clothing/cloak/eastcloak2
 	name = "leather cloak"
 	desc = "A brown cloak. There's nothing special on it."
@@ -1782,20 +1876,28 @@
 	slot_flags = ITEM_SLOT_BACK_R|ITEM_SLOT_CLOAK
 	allowed_race = NON_DWARVEN_RACE_TYPES
 
+/obj/item/clothing/cloak/eastcloak2/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
+
 // new knight captain drip
-/obj/item/clothing/cloak/captain
-	name = "captain's cape"
-	desc = "A cape with a gold embroided heraldry of Scarlet Reach."
-	icon = 'icons/roguetown/clothing/special/captain.dmi'
-	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/captain.dmi'
-	sleeved = 'icons/roguetown/clothing/special/onmob/captain.dmi'
+/obj/item/clothing/cloak/champion
+	name = "champion's cape"
+	desc = "A cape with a gold embroided heraldry of Scarlet Reach, worn by the realm's champion."
+	icon = 'icons/roguetown/clothing/special/champion.dmi'
+	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/champion.dmi'
+	sleeved = 'icons/roguetown/clothing/special/onmob/champion.dmi'
 	sleevetype = "shirt"
-	icon_state = "capcloak"
+	icon_state = "champcloak"
 	detail_tag = "_detail"
 	alternate_worn_layer = CLOAK_BEHIND_LAYER
 	detail_color = CLOTHING_BLUE
 
-/obj/item/clothing/cloak/captain/update_icon()
+/obj/item/clothing/cloak/champion/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
+
+/obj/item/clothing/cloak/champion/update_icon()
 	cut_overlays()
 	if(get_detail_tag())
 		var/mutable_appearance/pic = mutable_appearance(icon(icon, "[icon_state][detail_tag]"))
@@ -1804,18 +1906,18 @@
 			pic.color = get_detail_color()
 		add_overlay(pic)
 
-/obj/item/clothing/cloak/captain/lordcolor(primary,secondary)
+/obj/item/clothing/cloak/champion/lordcolor(primary,secondary)
 	detail_color = primary
 	update_icon()
 
-/obj/item/clothing/cloak/captain/Initialize()
+/obj/item/clothing/cloak/champion/Initialize()
 	. = ..()
 	if(GLOB.lordprimary)
 		lordcolor(GLOB.lordprimary,GLOB.lordsecondary)
 	else
 		GLOB.lordcolor += src
 
-/obj/item/clothing/cloak/captain/Destroy()
+/obj/item/clothing/cloak/champion/Destroy()
 	GLOB.lordcolor -= src
 	return ..()
 
@@ -1848,3 +1950,11 @@
 /obj/item/clothing/cloak/absolutionistrobe/ComponentInitialize()
 	. = ..()
 	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
+
+
+/obj/item/clothing/cloak/apron/ogre
+	name = "giant apron"
+	desc = "An apron of such grand size could take the brunt of a whole spilled soup pot and still leave the cook dry..."
+	mob_overlay_icon = 'icons/roguetown/clothing/onmob/32x64/ogre_onmob.dmi'
+	icon_state = "cookapron"
+	allowed_race = OGRE_RACE_TYPES

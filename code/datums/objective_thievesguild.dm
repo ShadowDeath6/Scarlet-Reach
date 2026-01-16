@@ -17,7 +17,6 @@
         list("Staff of the Shepherd", /obj/item/rogueweapon/woodstaff/aries),
         list("Crown of Scarlet Reach", /obj/item/clothing/head/roguetown/crown/serpcrown),
         list("Bell Ringer", /obj/item/rogueweapon/mace/church),
-        list("Pepper Mill", /obj/item/reagent_containers/food/condiment/peppermill),
         list("Sword of the Mad Duke", /obj/item/rogueweapon/sword/rapier/lord),
         list("Judgement", /obj/item/rogueweapon/sword/long/judgement),
         list("Holy Book", /obj/item/book/rogue/bookofpriests),
@@ -48,7 +47,7 @@
     var/list/valid_roles
     valid_roles = list("Grand Duke", "Prince", "Priest", "Priestess", "Councillor", "Acolyte", "Inquisitor", "Merchant", "Town Elder", "Guildmaster", "Steward", "Clerk")
     var/list/strong_combat_roles
-    strong_combat_roles = list("Knight", "Marshal", "Knight Captain", "Man at Arms", "Sergeant", "Warden", "Watchman", "Squire", "Dungeoneer", "Mercenary", "Veteran")
+    strong_combat_roles = list("Knight", "Marshal", "Man at Arms", "Sergeant", "Warden", "Watchman", "Squire", "Dungeoneer", "Mercenary", "Veteran")
     var/list/candidates
     candidates = list()
     var/list/available_roles = list()
