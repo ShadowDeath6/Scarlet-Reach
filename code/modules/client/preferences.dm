@@ -290,7 +290,7 @@ GLOBAL_LIST_EMPTY(chosen_names)
 	randomize_all_customizer_accessories()
 	reset_descriptors()
 	tail_type = /obj/item/bodypart/taur
-	if(new_race.allowed_tail_types)
+	if(LAZYLEN(new_race.allowed_tail_types))
 		tail_type = pick(new_race.allowed_tail_types)
 	virtue_origin = new pref_species.origin_default
 	if(virtue_origin.uniquefaith)

@@ -7,6 +7,9 @@
 	desc = "fill this in later<br>\
 	(+1 Strength, -1 Speed, Strong kicks, Longstrider, Strong stomach)"
 	default_color = "FFFFFF"
+	is_subrace = TRUE
+	origin = "the Underdark"
+	base_name = "Beastvolk"
 	species_traits = list(EYECOLOR, LIPS, HAIR, TAUR_BODY, OLDGREY, MUTCOLORS)
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_MAGIC | MIRROR_PRIDE | RACE_SWAP | SLIME_EXTRACT
 	possible_ages = ALL_AGES_LIST
@@ -57,7 +60,6 @@
 		/datum/customizer/organ/snout/lamia,
 		/datum/customizer/organ/ears/lamia,
 		/datum/customizer/organ/testicles/anthro,
-		/datum/customizer/organ/wings/lamia,
 		/datum/customizer/organ/horns/lamia,
 		/datum/customizer/organ/penis/lamia, //yeah we fuck spiders keep moving
 		/datum/customizer/organ/breasts/human,
